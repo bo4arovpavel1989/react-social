@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/bo4arovpavel1989/react-social#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "react-router-dom": "^4.2.2"
   }
 }
