@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/common/Header';
 import Main from './components/common/Main';
 import Register from './components/common/Register';

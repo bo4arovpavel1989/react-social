@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "react-scripts start"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/bo4arovpavel1989/react-social#readme",
   "dependencies": {
+    "bootstrap": "^4.1.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
@@ -30,6 +32,7 @@
     "babelify": "^8.0.0",
     "browserify": "^16.2.2",
     "gulp": "^3.9.1",
+    "react-scripts": "^1.1.4",
     "vinyl-source-stream": "^2.0.0"
   }
 }

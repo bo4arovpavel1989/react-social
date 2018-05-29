@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../css/bootstrap.min.css'
 
 class Main extends React.Component	{
 	constructor(){
