@@ -1,22 +1,41 @@
 import React from 'react';
-import '../../css/bootstrap.min.css'
+import {API_URL} from '../../config';
+import {handleResponse} from '../../helpers';
 
 class Main extends React.Component	{
 	constructor(){
 		super();
 		this.state = {
 			isLogged: false,
-			loginData: {login:'',password:''}
+			loginData: {login:'',password:''},
+			loading:false,
+			error:null
 		}
+		
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
 	handleChange(e) {
-		console.log(e.target)
+		
 	}
 	
 	handleSubmit(e){
 		e.preventDefault();
-		console.log(e.target);
+		
+		this.setState({loading:true})
+		
+		fetch(`${API_URL}/`,{method:'POST',mode:'cors'})
+			.then(handleResponse)
+			.then((result)=>{
+				console.log(result)
+			})
+			.catch((error) => {
+				console.log(error)
+				this.setState({
+				error: error.errorMessage, 
+				loading:false
+			});
+});
 	}
 	
 	render(){
@@ -26,7 +45,6 @@ class Main extends React.Component	{
 				<label htmlFor="inputLogin" className="col-sm-2 control-label">Логин</label>
 				<div className="col-sm-10">
 					<div className="input-group">
-						<div className="input-group-addon">@</div>	
 						<input type="login" onChange={this.handleChange} className="form-control" id="inputLogin" placeholder="Login" />
 					</div>
 				</div>

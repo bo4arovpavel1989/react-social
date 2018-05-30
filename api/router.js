@@ -4,20 +4,22 @@ var getRequestsHandlers=require('./getrequests.js');
 
 var deleteRequestsHandlers=require('./deleterequests.js');
 
+var noMiddleware = require('./middlewarefunctions.js').noMiddleware;
+
 
 var getRequests = [
 	{
-		url: '/',
-		middleware: ()=>{},
-		callback: ()=>{}
+		url: '/login',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.login
 	}
 ];
 
 var postRequests = [
 	{
-		url: '/ordercallback',
-		middleware: ()=>{},
-		callback: ()=>{}
+		url: '/login',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.login
 	}
 ];
 
