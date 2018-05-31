@@ -7,16 +7,29 @@ class Main extends React.Component	{
 		super();
 		this.state = {
 			isLogged: false,
-			loginData: {login:'',password:''},
 			loading:false,
-			error:null
+			login:'',
+			passwd:'',
+			error:null,
+			allFieldsUsed:false
 		}
 		
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 	}
 	
 	handleChange(e) {
+		let fieldType = e.target.id.toString(),
+			state = {};
+			
+		state[fieldType] = e.target.value.toString();
 		
+		this.setState(state);
+		
+		if (this.state.login !== '' && this.state.passwd !== '')
+			this.setState({allFieldsUsed:true})
+		else 
+			this.setState({allFieldsUsed:false})
 	}
 	
 	handleSubmit(e){
@@ -24,7 +37,10 @@ class Main extends React.Component	{
 		
 		this.setState({loading:true})
 		
-		fetch(`${API_URL}/`,{method:'POST',mode:'cors'})
+		let login = e.target[0].value,
+			passwd = e.target[1].value;
+		
+		fetch(`${API_URL}/login`,{method:'POST',mode:'cors'})
 			.then(handleResponse)
 			.then((result)=>{
 				console.log(result)
@@ -45,19 +61,19 @@ class Main extends React.Component	{
 				<label htmlFor="inputLogin" className="col-sm-2 control-label">Логин</label>
 				<div className="col-sm-10">
 					<div className="input-group">
-						<input type="login" onChange={this.handleChange} className="form-control" id="inputLogin" placeholder="Login" />
+						<input type="login" onChange={this.handleChange} className="form-control" id="login" placeholder="Login" />
 					</div>
 				</div>
 			</div>
 			<div className="form-group">
 				<label htmlFor="inputPassword" className="col-sm-2 control-label">Пароль</label>
 				<div className="col-sm-10">
-					<input type="password" onChange={this.handleChange} className="form-control" id="inputPassword" placeholder="Password"/>
+					<input type="password" onChange={this.handleChange} className="form-control" id="passwd" placeholder="Password"/>
 				</div>
 			</div>
 			<div className="form-group">
 				<div className="col-sm-offset-2 col-sm-10">
-					<input className="btn btn-primary btn-lg" type="submit" value="Вход"/>
+					<input disabled={this.state.allFieldsUsed ? false : true} className="btn btn-primary btn-lg" type="submit" value="Вход"/>
 				</div>
 			</div>
 		</form>
