@@ -2,7 +2,7 @@ import React from 'react';
 import {API_URL} from '../../config';
 import {handleResponse} from '../../helpers';
 
-class Main extends React.Component	{
+class Login extends React.Component	{
 	constructor(){
 		super();
 		this.state = {
@@ -37,21 +37,33 @@ class Main extends React.Component	{
 		
 		this.setState({loading:true})
 		
-		let login = e.target[0].value,
-			passwd = e.target[1].value;
+		let {login,passwd} = this.state;
 		
-		fetch(`${API_URL}/login`,{method:'POST',mode:'cors'})
+		let data = JSON.stringify({login,passwd});
+		
+		console.log(data);
+		
+		fetch(`${API_URL}/login`,{
+				method:'POST',
+				mode:'cors',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body:data
+			})
 			.then(handleResponse)
-			.then((result)=>{
-				console.log(result)
+			.then((data)=>{
+				localStorage.setItem('token', data.token);
+				localStorage.setItem('login', data.login);
 			})
 			.catch((error) => {
 				console.log(error)
 				this.setState({
-				error: error.errorMessage, 
-				loading:false
+					error: error.errorMessage, 
+					loading:false
+				});
 			});
-});
 	}
 	
 	render(){
@@ -81,4 +93,4 @@ class Main extends React.Component	{
 	}
 }
 
-export default Main;
+export default Login;
