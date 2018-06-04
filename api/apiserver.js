@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors');
 var app = express();
 var router = require('./router.js').router;
 var bodyParser = require('body-parser')
@@ -23,7 +24,6 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
 server.on('request', app);
 
 router(app);

@@ -24,12 +24,12 @@ class Login extends React.Component	{
 			
 		state[fieldType] = e.target.value.toString();
 		
-		this.setState(state);
-		
-		if (this.state.login !== '' && this.state.passwd !== '')
-			this.setState({allFieldsUsed:true})
-		else 
-			this.setState({allFieldsUsed:false})
+		this.setState(state,()=>{
+			if (this.state.login !== '' && this.state.passwd !== '')
+				this.setState({allFieldsUsed:true})
+			else 
+				this.setState({allFieldsUsed:false})	
+		});
 	}
 	
 	handleSubmit(e){
@@ -46,6 +46,7 @@ class Login extends React.Component	{
 		fetch(`${API_URL}/login`,{
 				method:'POST',
 				mode:'cors',
+				//credentials: 'include',
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
@@ -57,6 +58,9 @@ class Login extends React.Component	{
 				localStorage.setItem('token', data.token);
 				localStorage.setItem('login', data.login);
 				console.log( document.cookie );
+				this.setState({ 
+					loading:false
+				});
 			})
 			.catch((error) => {
 				console.log(error)

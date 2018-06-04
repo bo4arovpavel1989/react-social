@@ -1,8 +1,8 @@
 const authService = require('./customfunctions.js').authService;
 
 module.exports.login = function(req,res){
-	console.log(req.session)
 	let cred = req.body;
+	console.log(req);
 	if(authService(cred))
 		req.session.user = cred.login;
 	console.log(req.session)
