@@ -56,6 +56,7 @@ class Login extends React.Component	{
 			.then((data)=>{
 				localStorage.setItem('token', data.token);
 				localStorage.setItem('login', data.login);
+				console.log( document.cookie );
 			})
 			.catch((error) => {
 				console.log(error)

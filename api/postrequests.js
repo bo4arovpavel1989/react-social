@@ -1,8 +1,12 @@
+const authService = require('./customfunctions.js').authService;
+
 module.exports.login = function(req,res){
-	console.log(req.body);
+	console.log(req.session)
 	let cred = req.body;
-	console.log(cred.login)
-	res.json({token:'token',login:cred.login})
+	if(authService(cred))
+		req.session.user = cred.login;
+	console.log(req.session)
+	res.json({'a':1});
 }
 
 module.exports.checkToken = function(req,res){
