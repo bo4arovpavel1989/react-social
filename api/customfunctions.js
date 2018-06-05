@@ -1,8 +1,15 @@
-module.exports.authService = function(cred){
-	console.log(cred)
-	if(cred.passwd === '1') {
-		console.log(1)
-		return true;
+var dbQueries = require('./dbqueries')
+
+module.exports.authService = {
+	login:function(cred){
+		
+	},
+	checkTokem:function(){
+		
+	},
+	logout:function(){
+		
 	}
-	//TODO write ssid to session storage;
 }
+
+

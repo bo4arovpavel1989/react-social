@@ -41,7 +41,7 @@ class App extends React.Component {
 				<Switch>
 					<Route path='/' component={Login} exact/>
 					<Route path='/register' component={Register} exact/>
-					<Route path='/personal/"id' component={Personal} exact/>
+					<Route path='/personal/:id' component={Personal} exact/>
 				</Switch>
 			</div>
 		</BrowserRouter>		
