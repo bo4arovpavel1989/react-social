@@ -6,6 +6,7 @@ var models = {};
 
 models.User = new mongoose.Schema({
 	login: {type: String, required: true},
+	loginUpperCase: {type: String, required: true},
 	passwd: {type: String, required: true},
 	session: {type: String, default: '0'}
 });

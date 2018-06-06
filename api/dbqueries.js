@@ -1,5 +1,4 @@
 var models = require('./models')
-console.log(models)
 
 var dbQueries = {
 	find: function(schema, val, opt){
