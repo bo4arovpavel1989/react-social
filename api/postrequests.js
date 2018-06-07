@@ -5,7 +5,7 @@ module.exports.login = function(req,res){
 	console.log(cred);
 	authService.login(cred)
 				.then(rep=>{
-					if(rep) res.json({auth:true, token:'123'})
+					if(rep.auth) res.json({auth:true, res:rep.res,token:res.token})
 					else res.json({auth:false}) 
 				})
 				.catch(err=>{

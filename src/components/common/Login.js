@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse} from '../../helpers';
 import './login.css'
@@ -99,6 +100,9 @@ class Login extends React.Component	{
 			<div className={"alert alert-danger" + (this.state.authFail ? '' : ' hidden')}>
 			  <strong>Oh snap!</strong> Wrong login or password!
 			</div>
+		<div className='register'>
+			<Link to={`/register`}>Регистрация</Link>
+		</div>
 		</div>
 		);
 	}
