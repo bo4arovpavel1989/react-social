@@ -1,5 +1,4 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse} from '../../helpers';
 import './register.css';
@@ -11,9 +10,10 @@ class Register extends React.Component {
 		
 		this.state = {
 			login: '',
+			validLogin:true,
 			passwd1: '',
 			passwd2: '',
-			email: '',,
+			email: '',
 			passwdCorrect:true,
 			allFieldsUsed:false
 		}
@@ -26,16 +26,37 @@ class Register extends React.Component {
 	handleChange(e) {
 		let fieldType = e.target.id.toString(),
 			state = {};
-			
+				
 		state[fieldType] = e.target.value.toString();
 		
 		this.setState(state,()=>{
-			
 			if (this.state.login !== '' && this.state.passwd !== '')
 				this.setState({allFieldsUsed:true})
 			else 
 				this.setState({allFieldsUsed:false})	
 		});
+	}
+	
+	checkLogin(){
+		let login = document.getElementById('login').value;
+		console.log(login);
+		
+		fetch(`${API_URL}/checklogin`,{
+				method:'POST',
+				mode:'cors',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body:JSON.stringify({login})
+			})
+			.then(handleResponse)
+			.then((rep)=>{
+					this.setState(rep)
+			})
+			.catch((error) => {
+				console.log(error)
+			});
 	}
 	
 	handleSubmit(e){
@@ -78,7 +99,7 @@ class Register extends React.Component {
 					<label htmlFor="inputLogin" className="col-sm-2 control-label">Логин</label>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input type="login" onChange={this.handleChange} className="form-control" id="login" placeholder="Login" />
+							<input type="login" onChange={(this.handleChange)} onKeyUp={this.checkLogin} className={"form-control " + (this.state.validLogin ? '' : 'invalid')} id="login" placeholder="Login" />
 						</div>
 					</div>
 				</div>
@@ -98,7 +119,7 @@ class Register extends React.Component {
 					<label htmlFor="inputLogin" className="col-sm-2 control-label">Логин</label>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input type="email" onChange={this.handleChange} className="form-control" id="login" placeholder="E-Mail" />
+							<input type="email" onChange={this.handleChange} className="form-control" id="email" placeholder="E-Mail" />
 						</div>
 					</div>
 				</div>

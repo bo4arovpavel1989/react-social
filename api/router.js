@@ -20,6 +20,11 @@ var postRequests = [
 		url: '/login',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.login
+	},
+	{
+		url: '/checklogin',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.checkLogin
 	}
 ];
 
