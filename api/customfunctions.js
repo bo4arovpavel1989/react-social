@@ -3,7 +3,9 @@ var jwt = require('jsonwebtoken');
 
 module.exports.authService = {
 	login:function(cred){
+		
 		return new Promise((resolve, reject)=>{
+			
 			db.findOne('User',{loginUpperCase:cred.login.toUpperCase()})
 				.then(res=>{
 					if(!res) resolve({auth:false,res:null});
@@ -12,7 +14,9 @@ module.exports.authService = {
 				.catch(err=>{
 					reject(err);
 				})
+				
 		})
+		
 	},
 	checkToken:function(){
 		

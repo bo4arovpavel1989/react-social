@@ -21,6 +21,7 @@ class Register extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.checkPassword = this.checkPassword.bind(this);
+		this.checkLogin = this.checkLogin.bind(this);
 	}
 		
 	handleChange(e) {
@@ -39,7 +40,6 @@ class Register extends React.Component {
 	
 	checkLogin(){
 		let login = document.getElementById('login').value;
-		console.log(login);
 		
 		fetch(`${API_URL}/checklogin`,{
 				method:'POST',
