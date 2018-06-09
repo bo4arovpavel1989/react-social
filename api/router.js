@@ -22,9 +22,9 @@ var postRequests = [
 		callback: postRequestsHandlers.login
 	},
 	{
-		url: '/checklogin',
+		url: '/checkvalidity',
 		middleware: noMiddleware,
-		callback: postRequestsHandlers.checkLogin
+		callback: postRequestsHandlers.checkValidity
 	}
 ];
 

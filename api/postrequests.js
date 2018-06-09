@@ -16,14 +16,22 @@ module.exports.login = function(req,res){
 				})
 }
 
-module.exports.checkLogin = function(req, res){
-	let login = req.body.login;
+module.exports.checkValidity = function(req, res){
+	let val = req.body.val,
+		inp = req.body.inp,
+		query = {},
+		validity = {};
+		
+	query[`${inp}UpperCase`] = val.toUpperCase();
 	
-	db.find('User', {loginUpperCase:login.toUpperCase()},(err,rep)=>{
+	db.find('User', query,(err,rep)=>{
+		
 		if(rep.length === 0 && !err) 
-			res.json({validLogin:true});
+			validity[`${inp}Valid`] = true;
 		else 
-			res.json({validLogin:false});
+			validity[`${inp}Valid`] = false;
+		
+		res.json(validity);
+		
 	})
-	
 }
