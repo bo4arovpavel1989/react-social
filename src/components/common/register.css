@@ -1,3 +1,14 @@
 .invalid {
 	border-color:red;
+	color:red;
+}
+
+.hidden{
+	display:none;
+}
+
+.validMessage{
+	font-size: 10pt;
+	font-style: italic;
+	color:red;	
 }
