@@ -34,7 +34,12 @@ var dbQueries = {
 		});
 	},
 	create: function(schema, val, opt){
-		return new models[schema](val).save();
+		return new Promise((resolve, reject)=>{
+			return new models[schema](val).save((err, rep)=>{
+				if(err) reject(err);
+				else resolve(rep);
+			});
+		});	
 	},
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse} from '../../helpers';
 import './register.css';
@@ -16,7 +17,8 @@ class Register extends React.Component {
 			passwd2: '',
 			email: '',
 			passwdCorrect:true,
-			allFieldsUsed:false
+			allFieldsUsed:false,
+			registerFail:false
 		}
 		
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,59 +29,77 @@ class Register extends React.Component {
 		
 	handleChange(e) {
 		let fieldType = e.target.id.toString(),
+			value = e.target.value.toString(),
 			state = {},
 			allFieldsUsed;
 				
-		state[fieldType] = e.target.value.toString();
-				
-		this.setState(state,()=>{
+		state[fieldType] = value;
+		
+		this.checkValidity(fieldType)
+			.then(()=>{
+				this.setState(state,()=>{
 
-			allFieldsUsed = this.state.loginValid && 
-				this.state.emailValid	&& 
-				this.state.login !== '' && 
-				this.state.passwd1 !== '' && 
-				this.state.email !== '' && 
-				this.state.passwdCorrect;
-			
-			console.log(allFieldsUsed)
-			console.log(this.state)
-			
-			this.setState({allFieldsUsed})
-			
-		});
+					allFieldsUsed = this.state.loginValid && 
+						this.state.emailValid	&& 
+						this.state.login !== '' && 
+						this.state.passwd1 !== '' && 
+						this.state.email !== '' && 
+						this.state.passwdCorrect;
+					
+					console.log(allFieldsUsed)
+					console.log(this.state)
+					
+					this.setState({allFieldsUsed})
+					
+				});
+			})
+			.catch((err)=>{
+				console.log(err)
+			})
+		
 	}
-	
-	checkValidity(inp, cb){
+		
+	checkValidity(inp){
 		let val = document.getElementById(inp).value;
 		
-		if(inp === 'login' || inp === 'email')
-			fetch(`${API_URL}/checkvalidity`,{
-					method:'POST',
-					mode:'cors',
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					body:JSON.stringify({val,inp})
-				})
-				.then(handleResponse)
-				.then((rep)=>{
-						this.setState(rep)
-						cb();
-				})
-				.catch((error) => {
-					console.log(error)
-					cb();
-				});
-		else 
-			cb();
+		return new Promise((resolve, reject)=>{
+			if(inp === 'login' || inp === 'email')
+				fetch(`${API_URL}/checkvalidity`,{
+						method:'POST',
+						mode:'cors',
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						body:JSON.stringify({val,inp})
+					})
+					.then(handleResponse)
+					.then((rep)=>{
+							this.setState(rep,()=>{
+								resolve();
+							})
+					})
+					.catch((error) => {
+						reject(error);
+					});
+			else if(inp.search(/passwd/) !== -1)
+				this.checkPasswd()
+					.then(()=>resolve());
+			else 
+				resolve();
+		})
+		
 	}
 	
 	checkPasswd(){
-		let passwd1 = document.getElementById('passwd1').value,
-			passwd2 = document.getElementById('passwd2').value;
-			
-		this.setState({passwdCorrect:(passwd1 === passwd2)})	
+		return new Promise((resolve, reject)=>{
+			let passwd1 = document.getElementById('passwd1').value,
+				passwd2 = document.getElementById('passwd2').value;
+				
+			this.setState({passwdCorrect:(passwd1 === passwd2)},()=>{
+				resolve();
+			})	
+		})
 	}
 	
 	handleSubmit(e){
@@ -87,9 +107,9 @@ class Register extends React.Component {
 		
 		this.setState({loading:true})
 		
-		let {login,passwd} = this.state;
+		let {login,passwd1, email} = this.state;
 		
-		let data = JSON.stringify({login,passwd});
+		let data = JSON.stringify({login,passwd:passwd1, email});
 				
 		fetch(`${API_URL}/register`,{
 				method:'POST',
@@ -101,8 +121,12 @@ class Register extends React.Component {
 				body:data
 			})
 			.then(handleResponse)
-			.then((data)=>{
-				console.log(data)
+			.then((register)=>{
+				console.log(register);
+				if(register.success)			
+					this.props.history.push(`/`)
+				else 
+					this.setState({registerFail:true})
 			})
 			.catch((error) => {
 				console.log(error)
@@ -120,7 +144,7 @@ class Register extends React.Component {
 					<span className={'validMessage ' + (this.state.loginValid ? 'hidden' : '')}>Логин уже занят!</span>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input type="login" onChange={(this.handleChange)} onKeyUp={()=>this.checkValidity('login')} className={"form-control " + (this.state.loginValid ? '' : 'invalid')} id="login" placeholder="Login" />
+							<input type="login" onChange={(this.handleChange)}  className={"form-control " + (this.state.loginValid ? '' : 'invalid')} id="login" placeholder="Login" />
 						</div>
 					</div>
 				</div>
@@ -128,13 +152,13 @@ class Register extends React.Component {
 					<label htmlFor="inputPassword" className={"col-sm-2 control-label" + (this.state.passwdCorrect ? '' : ' invalid')}>Пароль</label>
 					<span className={'validMessage ' + (this.state.passwdCorrect ? 'hidden' : '')}>Пароли должны совпадать!</span>
 					<div className="col-sm-10">
-						<input type="password"  value={this.state.passwd} onChange={this.handleChange}  onKeyUp={this.checkPasswd} className={"form-control " + (this.state.passwdCorrect ? '' : 'invalid')} id="passwd1" placeholder="Password"/>
+						<input type="password"  value={this.state.passwd} onChange={this.handleChange}  className={"form-control " + (this.state.passwdCorrect ? '' : 'invalid')} id="passwd1" placeholder="Password"/>
 					</div>
 				</div>
 				<div className="form-group">
 					<label htmlFor="inputPassword" className="col-sm-2 control-label">Повторите пароль</label>
 					<div className="col-sm-10">
-						<input type="password"  value={this.state.passwd} onChange={this.handleChange}  onKeyUp={this.checkPasswd} className="form-control" id="passwd2" placeholder="Password"/>
+						<input type="password"  value={this.state.passwd} onChange={this.handleChange}  className="form-control" id="passwd2" placeholder="Password"/>
 					</div>
 				</div>
 				<div className="form-group">
@@ -142,7 +166,7 @@ class Register extends React.Component {
 					<span className={'validMessage ' + (this.state.emailValid ? 'hidden' : '')}>Пользователь с данным E-Mail уже зарегистрирован!</span>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input type="email" onChange={this.handleChange}  onKeyUp={()=>this.checkValidity('email')} className={"form-control " + (this.state.emailValid ? '' : 'invalid')} id="email" placeholder="E-Mail" />
+							<input type="email" onChange={this.handleChange} className={"form-control " + (this.state.emailValid ? '' : 'invalid')} id="email" placeholder="E-Mail" />
 						</div>
 					</div>
 				</div>
@@ -158,4 +182,4 @@ class Register extends React.Component {
 }
 
 
-export default Register;
+export default withRouter(Register);

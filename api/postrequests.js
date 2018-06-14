@@ -35,3 +35,14 @@ module.exports.checkValidity = function(req, res){
 		
 	})
 }
+
+module.exports.register = function(req, res){
+	let data = req.body;
+	
+	data.loginUpperCase = data.login.toUpperCase();
+	data.emailUpperCase = data.email.toUpperCase();
+		
+	db.create('User', data)
+		.then(rep=>res.json({success:true}))
+		.catch(err=>res.json({success:false}));	
+}

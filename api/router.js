@@ -25,6 +25,11 @@ var postRequests = [
 		url: '/checkvalidity',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.checkValidity
+	},
+	{
+		url: '/register',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.register
 	}
 ];
 
