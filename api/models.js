@@ -14,8 +14,7 @@ models.User = new mongoose.Schema({
 
 models.Session = new mongoose.Schema({
 	login: {type: String, required: true},
-	session: {type: String, require: true},
-	date: {type: Date, expires: 3600, default: Date.now}
+	session: {type: String, require: true}
 });
 
 

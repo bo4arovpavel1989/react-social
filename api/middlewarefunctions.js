@@ -1,4 +1,4 @@
-var authService = require('./customfunctions').authService;
+const authService = require('./customfunctions').authService;
 
 module.exports.noMiddleware = function(req, res, next){
 	next();

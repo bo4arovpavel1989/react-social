@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse} from '../../helpers';
 import './login.css'
@@ -47,7 +47,6 @@ class Login extends React.Component	{
 		fetch(`${API_URL}/login`,{
 				method:'POST',
 				mode:'cors',
-				//credentials: 'include',
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
@@ -56,11 +55,19 @@ class Login extends React.Component	{
 			})
 			.then(handleResponse)
 			.then((data)=>{
+				
 				console.log(data)
+				
 				this.setState({ 
 					loading:false,
 					authFail: !data.auth,
 					passwd:''
+				},()=>{
+					if(data.auth) {
+						localStorage.setItem('token',data.token);
+						localStorage.setItem('login',login);
+						this.props.history.push(`/personal/${login}`);
+					}	
 				});
 			})
 			.catch((error) => {
@@ -108,4 +115,4 @@ class Login extends React.Component	{
 	}
 }
 
-export default Login;
+export default withRouter(Login);

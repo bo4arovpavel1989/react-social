@@ -1,9 +1,9 @@
-var db = require('./dbqueries')
-var jwt = require('jsonwebtoken');
+const db = require('./dbqueries')
+const jwt = require('jsonwebtoken');
+const secret = require('./credentials');
 
 module.exports.authService = {
 	login:function(cred){
-		
 		return new Promise((resolve, reject)=>{
 			
 			db.findOne('User',{loginUpperCase:cred.login.toUpperCase()})
@@ -27,7 +27,7 @@ module.exports.authService = {
 }
 
 function setToken(res){
-	return jwt.sign({login:res.login, email:res.email}, res.secret);
+	return jwt.sign({login:res.login, email:res.email}, secret.secret);
 }
 
 

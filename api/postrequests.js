@@ -1,19 +1,27 @@
 const authService = require('./customfunctions.js').authService;
-var db = require('./dbqueries');
+const db = require('./dbqueries');
 
 module.exports.login = function(req,res){
 	let cred = req.body;
 	
 	authService.login(cred)
-				.then(rep=>{
-					if(rep.auth) 
+		.then(rep=>{
+			if(rep.auth) {
+				db.update('Session', {login:cred.login},{session:res.token},{upsert:true})
+					.then(()=>{
 						res.json({auth:true, res:rep.res,token:res.token})
-					else
+					})
+					.catch(err=>{
+						console.log(err);
 						res.json({auth:false}) 
-				})
-				.catch(err=>{
-					res.json({auth:false})
-				})
+					})
+			}	
+			else
+				res.json({auth:false}) 
+		})
+		.catch(err=>{
+			res.json({auth:false})
+		})
 }
 
 module.exports.checkValidity = function(req, res){
