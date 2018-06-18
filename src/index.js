@@ -30,6 +30,11 @@ class App extends React.Component {
 			return;
 		
 		checkToken(JSON.stringify({token,login}))
+					.then(rep=>{
+						console.log(rep)
+						if(!rep.err)
+							this.setState({isLogged:rep.auth});
+					})
 	}
 
 	render(){

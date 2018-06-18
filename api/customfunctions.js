@@ -18,8 +18,15 @@ module.exports.authService = {
 		})
 		
 	},
-	checkToken:function(){
-		
+	checkToken:function(data){
+		return new Promise((resolve, reject)=>{
+			db.findOne('Session', data)
+				.then(rep=>{
+					if(rep) resolve(true);
+					else resolve (false);
+				})
+				.catch(err=>resolve(err))
+		})
 	},
 	logout:function(){
 		
@@ -27,7 +34,7 @@ module.exports.authService = {
 }
 
 function setToken(res){
-	return jwt.sign({login:res.login, email:res.email}, secret.secret);
+	return jwt.sign({login:res.login, email:res.email, date:new Date()}, secret.secret);
 }
 
 

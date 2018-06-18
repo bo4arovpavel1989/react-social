@@ -21,11 +21,9 @@ export const checkToken = (data) => {
 		})
 		.then(handleResponse)
 		.then((result)=>{
-			console.log(result)
 			resolve(result)
 		})
 		.catch((error) => {
-			console.log(error)
 			reject(error);
 		});
 	

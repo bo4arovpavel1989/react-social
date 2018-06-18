@@ -7,9 +7,10 @@ module.exports.login = function(req,res){
 	authService.login(cred)
 		.then(rep=>{
 			if(rep.auth) {
-				db.update('Session', {login:cred.login},{session:res.token},{upsert:true})
+				console.log(rep.token)
+				db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
 					.then(()=>{
-						res.json({auth:true, res:rep.res,token:res.token})
+						res.json({auth:true, res:rep.res,token:rep.token})
 					})
 					.catch(err=>{
 						console.log(err);
@@ -53,4 +54,16 @@ module.exports.register = function(req, res){
 	db.create('User', data)
 		.then(rep=>res.json({success:true}))
 		.catch(err=>res.json({success:false}));	
+}
+
+module.exports.checkToken = function(req, res){
+	let data = req.body;
+	
+	authService.checkToken(data)
+				.then(rep=>{
+					res.json({auth:rep})
+				})
+				.catch(err=>{
+					res.status(500).json({err:'Internal server error!'})
+				})
 }

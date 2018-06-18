@@ -27,6 +27,11 @@ var postRequests = [
 		callback: postRequestsHandlers.checkValidity
 	},
 	{
+		url: '/checktoken',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.checkToken
+	},
+	{
 		url: '/register',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.register

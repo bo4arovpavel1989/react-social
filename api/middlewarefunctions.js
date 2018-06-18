@@ -5,5 +5,11 @@ module.exports.noMiddleware = function(req, res, next){
 };
 
 module.exports.checkAccess = function(req, res, next){
-	next();
+	authService.checkToken(req.body)
+			.then(rep=>{
+				if(rep)
+					next();
+				else 
+					res.redirect('/');
+			})l
 };

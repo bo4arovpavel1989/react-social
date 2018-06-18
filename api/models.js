@@ -14,7 +14,7 @@ models.User = new mongoose.Schema({
 
 models.Session = new mongoose.Schema({
 	login: {type: String, required: true},
-	session: {type: String, require: true}
+	token: {type: String, require: true}
 });
 
 
