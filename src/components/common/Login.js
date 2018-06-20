@@ -1,7 +1,8 @@
 import React from 'react';
+import EventEmitter from 'events';
 import {Link, withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
-import {handleResponse} from '../../helpers';
+import {handleResponse,eventEmitter} from '../../helpers';
 import './login.css'
 
 class Login extends React.Component	{
@@ -19,6 +20,10 @@ class Login extends React.Component	{
 		
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+	}
+	
+	loginEmitter(){
+		eventEmitter.emit('login');
 	}
 	
 	handleChange(e) {
@@ -55,9 +60,6 @@ class Login extends React.Component	{
 			})
 			.then(handleResponse)
 			.then((data)=>{
-				
-				console.log(data)
-				
 				this.setState({ 
 					loading:false,
 					authFail: !data.auth,
@@ -66,6 +68,7 @@ class Login extends React.Component	{
 					if(data.auth) {
 						localStorage.setItem('token',data.token);
 						localStorage.setItem('login',login);
+						this.loginEmitter();
 						this.props.history.push(`/personal/${login}`);
 					}	
 				});

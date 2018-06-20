@@ -1,4 +1,5 @@
 import {API_URL} from './config';
+import EventEmitter from 'events';
 
 export const handleResponse = (response) => {
 	return response.json().then(json=>{
@@ -29,3 +30,6 @@ export const checkToken = (data) => {
 	
 	});
 }
+
+export var eventEmitter = new EventEmitter();
+

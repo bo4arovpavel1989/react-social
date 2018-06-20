@@ -11,5 +11,5 @@ module.exports.checkAccess = function(req, res, next){
 					next();
 				else 
 					res.redirect('/');
-			})l
+			})
 };
