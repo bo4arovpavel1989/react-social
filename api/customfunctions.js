@@ -20,16 +20,24 @@ module.exports.authService = {
 	},
 	checkToken:function(data){
 		return new Promise((resolve, reject)=>{
+			
 			db.findOne('Session', data)
 				.then(rep=>{
 					if(rep) resolve(true);
 					else resolve (false);
 				})
-				.catch(err=>resolve(err))
+				.catch(err=>reject(err))
+				
 		})
 	},
-	logout:function(){
+	logoff:function(data){
+		return new Promise((resolve, reject)=>{
 		
+			db.del('Session',data)
+				.then(rep=>resolve(rep))
+				.catch(err=>reject(err))
+			
+		});	
 	}
 }
 

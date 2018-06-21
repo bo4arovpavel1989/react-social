@@ -22,6 +22,11 @@ var postRequests = [
 		callback: postRequestsHandlers.login
 	},
 	{
+		url:'/logoff',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.logoff
+	},
+	{
 		url: '/checkvalidity',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.checkValidity

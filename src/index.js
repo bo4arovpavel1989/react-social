@@ -7,7 +7,8 @@ import Register from './components/common/Register';
 import NotAllowed from './components/common/NotAllowed';
 import Personal from './components/personal/Personal';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import {checkToken,eventEmitter} from './helpers';
+import {checkToken, getToken, eventEmitter} from './helpers';
+import {API_URL} from './config';
 
 
 class App extends React.Component {
@@ -20,6 +21,7 @@ class App extends React.Component {
 		
 		this.listenToLogin = this.listenToLogin.bind(this);
 		this.checkLogging = this.checkLogging.bind(this);
+		this.logoff = this.logoff.bind(this);
 	}
 	
 	componentDidMount(){
@@ -29,30 +31,46 @@ class App extends React.Component {
 	
 	listenToLogin(){
 		eventEmitter.on('login',()=>{
-			console.log(this.state)
-			//this.setState({islogged:true})
+			this.setState({isLogged:true})
 		})
 	}
 	
-	checkLogging(){
-		let token = localStorage.getItem('token');
-		let login = localStorage.getItem('login');
-		
-		if(!token) 
+	checkLogging(){		
+		if(!getToken()) 
 			return;
 		
-		checkToken(JSON.stringify({token,login}))
+		checkToken(JSON.stringify(getToken()))
 					.then(rep=>{
 						if(!rep.err)
 							this.setState({isLogged:rep.auth});
 					})
 	}
-
+	
+	logoff(){
+		localStorage.clear();
+		
+		if(getToken())
+			fetch(`${API_URL}/logoff`,{
+				method:'POST',
+				mode:'cors',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body:getToken()
+			});
+	
+		this.setState({isLogged:false});
+	}
+	
 	render(){
 		return (
 		<BrowserRouter>
 			<div className='container'>
-				<Header/>
+				<Header 
+					isLogged={this.state.isLogged}
+					logoff={this.logoff}
+				/>
 				
 				<Switch>
 					<Route path='/' render={this.state.isLogged ? Personal : Login} exact/>

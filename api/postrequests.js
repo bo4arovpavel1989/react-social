@@ -25,6 +25,18 @@ module.exports.login = function(req,res){
 		})
 }
 
+module.exports.logoff = function(req, res){
+	let cred = req.body;
+	
+	authService.logoff(cred)
+		.then(rep=>{
+			res.end();
+		})
+		.catch(err=>{
+			res.end();
+		})
+}
+
 module.exports.checkValidity = function(req, res){
 	let val = req.body.val,
 		inp = req.body.inp,

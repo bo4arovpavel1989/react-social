@@ -31,5 +31,15 @@ export const checkToken = (data) => {
 	});
 }
 
+export const getToken = () => {
+	if(localStorage.getItem('token') && localStorage.getItem('login'))
+		return {
+			token:localStorage.getItem('token'),
+			login:localStorage.getItem('login')
+		}
+		
+	return false;	
+}
+
 export var eventEmitter = new EventEmitter();
 
