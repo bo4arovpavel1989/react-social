@@ -45,16 +45,17 @@ module.exports.checkValidity = function(req, res){
 		
 	query[`${inp}UpperCase`] = val.toUpperCase();
 	
-	db.find('User', query,(err,rep)=>{
-		
-		if(rep.length === 0 && !err) 
-			validity[`${inp}Valid`] = true;
-		else 
-			validity[`${inp}Valid`] = false;
-		
-		res.json(validity);
-		
-	})
+	db.find('User', query)
+		.then(rep=>{
+			if(rep.length === 0 && !err) 
+				validity[`${inp}Valid`] = true;
+			else 
+				validity[`${inp}Valid`] = false;
+			
+			res.json(validity);
+			
+		})
+		.catch(err=>res.json({err}))
 }
 
 module.exports.register = function(req, res){
@@ -78,4 +79,12 @@ module.exports.checkToken = function(req, res){
 				.catch(err=>{
 					res.status(500).json({err:'Internal server error!'})
 				})
+}
+
+module.exports.getPerson = function(req, res){
+	let login = req.params.id;
+	
+	db.findOne('User',{login})
+		.then(rep=>res.JSON({rep}))
+		.catch(err=>res.JSON({err}))
 }

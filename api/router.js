@@ -5,6 +5,7 @@ var getRequestsHandlers=require('./getrequests.js');
 var deleteRequestsHandlers=require('./deleterequests.js');
 
 var noMiddleware = require('./middlewarefunctions.js').noMiddleware;
+var checkAccess = require('./middlewarefunctions.js').checkAccess;
 
 
 var getRequests = [
@@ -40,6 +41,11 @@ var postRequests = [
 		url: '/register',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.register
+	},
+	{
+		url: '/person/:login',
+		middleware: noMiddleware,
+		callback: postRequestsHandlers.getPerson
 	}
 ];
 

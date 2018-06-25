@@ -22,7 +22,10 @@ export const checkToken = (data) => {
 		})
 		.then(handleResponse)
 		.then((result)=>{
-			resolve(result)
+			if(!result.err)
+				resolve(result)
+			else	
+				reject(result.err)
 		})
 		.catch((error) => {
 			reject(error);
@@ -43,3 +46,13 @@ export const getToken = () => {
 
 export var eventEmitter = new EventEmitter();
 
+
+export var standardFetch = {
+			method:'POST',
+			mode:'cors',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body:JSON.stringify(getToken())
+		}

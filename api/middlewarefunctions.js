@@ -10,6 +10,6 @@ module.exports.checkAccess = function(req, res, next){
 				if(rep)
 					next();
 				else 
-					res.redirect('/');
+					res.JSON({forbidden:true});
 			})
 };

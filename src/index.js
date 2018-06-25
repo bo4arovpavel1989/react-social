@@ -75,7 +75,7 @@ class App extends React.Component {
 				<Switch>
 					<Route path='/' render={this.state.isLogged ? Personal : Login} exact/>
 					<Route path='/register' component={Register} exact/>
-					<Route path='/personal/:id' render={this.state.isLogged ? Personal : NotAllowed}/>
+					<Route path='/personal/:id' render={this.state.isLogged ? Personal : NotAllowed} exact/>
 				</Switch>
 			</div>
 		</BrowserRouter>		
