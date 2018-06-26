@@ -60,10 +60,10 @@ class Register extends React.Component {
 	}
 		
 	checkValidity(inp){
-		let val = document.getElementById(inp).value;
+		let val = document.getElementById(inp).value; //declare value of the input
 		
 		return new Promise((resolve, reject)=>{
-			if(inp === 'login' || inp === 'email')
+			if(inp === 'login' || inp === 'email') //if input type is login pr email check if login or email available
 				fetch(`${API_URL}/checkvalidity`,{
 						method:'POST',
 						mode:'cors',
@@ -82,7 +82,7 @@ class Register extends React.Component {
 					.catch((error) => {
 						reject(error);
 					});
-			else if(inp.search(/passwd/) !== -1)
+			else if(inp.search(/passwd/) !== -1) //if input type is password check correctness of pasword
 				this.checkPasswd()
 					.then(()=>resolve());
 			else 

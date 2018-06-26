@@ -68,8 +68,9 @@ class Login extends React.Component	{
 					if(data.auth) {
 						localStorage.setItem('token',data.token);
 						localStorage.setItem('login',login);
+						localStorage.setItem('id',data.res._id);
 						this.loginEmitter();
-						this.props.history.push(`/personal/${login}`);
+						this.props.history.push(`/personal/${data.res._id}`);
 					}	
 				});
 			})

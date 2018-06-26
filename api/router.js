@@ -43,7 +43,7 @@ var postRequests = [
 		callback: postRequestsHandlers.register
 	},
 	{
-		url: '/person/:login',
+		url: '/personal/:id',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.getPerson
 	}

@@ -26,7 +26,7 @@ class Personal extends React.Component {
 	}
 	
 	getPersonalData(person){
-		fetch(`${API_URL}/person/${person}`,standardFetch)
+		fetch(`${API_URL}/personal/${person}`,standardFetch)
 			.then(handleResponse)
 			.then((rep)=>{
 				if(!rep.err && !rep.forbidden)
@@ -41,7 +41,7 @@ class Personal extends React.Component {
 			})
 	}
 	
-	componentWillMount(){
+	componentDidMount(){
 		const person = this.props.match.params.id;
 		
 		this.checkAccess()
@@ -61,6 +61,8 @@ class Personal extends React.Component {
 }
 	
 	render(){
+		let data = this.state.data;			
+		
 		if(this.state.loading)
 			return(
 				<div>
@@ -84,7 +86,7 @@ class Personal extends React.Component {
 			
 		return (
 			<div className='container'>
-				Привет, я {this.state.data.login}!
+				Привет, я {data.rep.login}!
 			</div>
 		)	
 	}

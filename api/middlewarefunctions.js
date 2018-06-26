@@ -10,6 +10,7 @@ module.exports.checkAccess = function(req, res, next){
 				if(rep)
 					next();
 				else 
-					res.JSON({forbidden:true});
+					res.json({forbidden:true});
 			})
+			.catch(err=>res.json({err:true}))
 };

@@ -7,7 +7,6 @@ module.exports.login = function(req,res){
 	authService.login(cred)
 		.then(rep=>{
 			if(rep.auth) {
-				console.log(rep.token)
 				db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
 					.then(()=>{
 						res.json({auth:true, res:rep.res,token:rep.token})
@@ -47,7 +46,7 @@ module.exports.checkValidity = function(req, res){
 	
 	db.find('User', query)
 		.then(rep=>{
-			if(rep.length === 0 && !err) 
+			if(rep.length === 0) 
 				validity[`${inp}Valid`] = true;
 			else 
 				validity[`${inp}Valid`] = false;
@@ -82,9 +81,9 @@ module.exports.checkToken = function(req, res){
 }
 
 module.exports.getPerson = function(req, res){
-	let login = req.params.id;
+	let id = req.params.id;
 	
-	db.findOne('User',{login})
-		.then(rep=>res.JSON({rep}))
-		.catch(err=>res.JSON({err}))
+	db.findOne('User',{_id:id})
+		.then(rep=>res.json({rep}))
+		.catch(err=>res.json({err}))
 }
