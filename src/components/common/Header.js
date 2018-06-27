@@ -1,5 +1,6 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link,withRouter} from 'react-router-dom';
+import './Header.css'
 
 const Header = (props) => {
 	const {isLogged, logoff} = props;
@@ -11,8 +12,8 @@ const Header = (props) => {
 			</Link>
 			{
 				isLogged ?
-					(<div className='pull-right'>
-						<a className='pull-right logoff' onClick={logoff}>
+					(<div className='pull-right logoff'>
+						<a className='pull-right' onClick={logoff}>
 							Выйти
 						</a>
 					</div>) : ''
@@ -21,4 +22,4 @@ const Header = (props) => {
 		)
 }
 
-export default Header;
+export default  withRouter(Header);

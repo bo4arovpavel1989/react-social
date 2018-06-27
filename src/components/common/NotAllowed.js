@@ -1,11 +1,7 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
 
-class NotAllowed extends React.Component	{
-	constructor(){
-		super();
-	}
-		
+class NotAllowed extends React.Component	{		
 	render(){
 		return (
 		<div>

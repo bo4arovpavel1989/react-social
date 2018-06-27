@@ -61,7 +61,6 @@ class App extends React.Component {
 			});
 	
 		this.setState({isLogged:false});
-		window.location.assign('/');
 	}
 	
 	render(){

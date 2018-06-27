@@ -1,0 +1,8 @@
+.logoff {
+	text-align:right;
+}
+
+.logoff  a {
+	color: blue;
+	cursor:pointer;
+}

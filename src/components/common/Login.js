@@ -1,5 +1,4 @@
 import React from 'react';
-import EventEmitter from 'events';
 import {Link, withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse,eventEmitter} from '../../helpers';

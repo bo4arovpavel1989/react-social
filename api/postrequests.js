@@ -46,11 +46,7 @@ module.exports.checkValidity = function(req, res){
 	
 	db.find('User', query)
 		.then(rep=>{
-			if(rep.length === 0) 
-				validity[`${inp}Valid`] = true;
-			else 
-				validity[`${inp}Valid`] = false;
-			
+			validity[`${inp}Valid`] = (rep.length === 0);
 			res.json(validity);
 			
 		})
@@ -82,7 +78,7 @@ module.exports.checkToken = function(req, res){
 
 module.exports.getPerson = function(req, res){
 	let id = req.params.id;
-	
+	console.log(id);
 	db.findOne('User',{_id:id})
 		.then(rep=>res.json({rep}))
 		.catch(err=>res.json({err}))

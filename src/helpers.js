@@ -47,12 +47,14 @@ export const getToken = () => {
 export var eventEmitter = new EventEmitter();
 
 
-export var standardFetch = {
-			method:'POST',
-			mode:'cors',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			body:JSON.stringify(getToken())
-		}
+export var standardFetch = ()=>{
+	return {
+				method:'POST',
+				mode:'cors',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body:JSON.stringify(getToken())
+			}
+}	

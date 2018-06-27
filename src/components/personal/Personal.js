@@ -2,6 +2,7 @@ import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {checkToken,handleResponse,standardFetch} from '../../helpers';
 import {API_URL} from '../../config';
+import './Personal.css';
 
 class Personal extends React.Component {
 	constructor(){
@@ -26,13 +27,14 @@ class Personal extends React.Component {
 	}
 	
 	getPersonalData(person){
-		fetch(`${API_URL}/personal/${person}`,standardFetch)
+		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
+				console.log(rep)
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
-					this.setState({isLogged:false})
+					this.setState({isLogged:false,loading:false})
 				else
 					this.setState({error:true})
 			})
@@ -42,7 +44,11 @@ class Personal extends React.Component {
 	}
 	
 	componentDidMount(){
-		const person = this.props.match.params.id;
+		let person = this.props.match.params.id;
+		if(!person && localStorage.getItem('id')) {
+			person = localStorage.getItem('id')
+			this.props.history.push(`/personal/${person}`);
+		}
 		
 		this.checkAccess()
 			.then(auth=>{
@@ -54,15 +60,19 @@ class Personal extends React.Component {
 	
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
-			const newPerson = nextProps.match.params.id;
+			let newPerson = nextProps.match.params.id;
+			if(!newPerson && localStorage.getItem('id')) {
+				newPerson = localStorage.getItem('id')
+				this.props.history.push(`/personal/${newPerson}`);
+			}
 			
 			this.getPersonalData(newPerson);
 		}
 }
 	
 	render(){
-		let data = this.state.data;			
-		
+		let data = this.state.data.rep;			
+		console.log(this.state);
 		if(this.state.loading)
 			return(
 				<div>
@@ -86,7 +96,7 @@ class Personal extends React.Component {
 			
 		return (
 			<div className='container'>
-				Привет, я {data.rep.login}!
+				Привет, я {data.login}!
 			</div>
 		)	
 	}
