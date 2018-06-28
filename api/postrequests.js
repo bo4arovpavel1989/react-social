@@ -1,5 +1,6 @@
 const authService = require('./customfunctions.js').authService;
 const db = require('./dbqueries');
+const async = require('async');
 
 module.exports.login = function(req,res){
 	let cred = req.body;
@@ -58,10 +59,25 @@ module.exports.register = function(req, res){
 	
 	data.loginUpperCase = data.login.toUpperCase();
 	data.emailUpperCase = data.email.toUpperCase();
+	
+	async.parallel([
+		(cb)=>{
+			db.create('User', data)
+				.then(rep=>cb())
+				.catch(err=>cb(new Error('An error occured creating user')));
+		},
+		(cb)=>{
+			db.create('Personal', data)
+				.then(rep=>cb())
+				.catch(err=>cb(new Error('An error occured creating user')));
+			
+		}
+		],(err)=>{
+			if(!err) res.json({success:true});
+			else res.status(500).json({success:false});
+	});
+
 		
-	db.create('User', data)
-		.then(rep=>res.json({success:true}))
-		.catch(err=>res.json({success:false}));	
 }
 
 module.exports.checkToken = function(req, res){
@@ -78,8 +94,23 @@ module.exports.checkToken = function(req, res){
 
 module.exports.getPerson = function(req, res){
 	let id = req.params.id;
-	console.log(id);
-	db.findOne('User',{_id:id})
-		.then(rep=>res.json({rep}))
-		.catch(err=>res.json({err}))
+	
+	async.waterfall([
+		(cb)=>{
+			db.findOne('User',{_id:id})
+				.then(rep=>cb(null, rep.login))
+				.catch(err=>cb(err, null))
+		},
+		(login, cb)=>{
+			db.findOne('Personal',{login})
+				.then(rep=>cb(null, rep))
+				.catch(err=>cb(err, null))
+			
+		}
+		],(err, rep)=>{
+			console.log(rep);
+			if(!err) res.json({rep})
+			else res.status(500).json({err})	
+	})
+	
 }

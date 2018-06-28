@@ -3,7 +3,7 @@ import {Link,withRouter} from 'react-router-dom';
 import './Header.css'
 
 const Header = (props) => {
-	const {isLogged, logoff} = props;
+	const {isLogged, logoff, id} = props;
 	
 	return (
 		<div>
@@ -13,6 +13,9 @@ const Header = (props) => {
 			{
 				isLogged ?
 					(<div className='pull-right logoff'>
+						<Link to={`/edit/${id}`}>
+							Редактировать страницу
+						</Link>
 						<a className='pull-right' onClick={logoff}>
 							Выйти
 						</a>

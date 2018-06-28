@@ -6,6 +6,7 @@ import Login from './components/common/Login';
 import Register from './components/common/Register';
 import NotAllowed from './components/common/NotAllowed';
 import Personal from './components/personal/Personal';
+import Edit from './components/personal/Edit';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {checkToken, getToken, eventEmitter} from './helpers';
 import {API_URL} from './config';
@@ -16,7 +17,8 @@ class App extends React.Component {
 	constructor(){
 		super();
 		this.state={
-			isLogged:false
+			isLogged:false,
+			id:''
 		}
 		
 		this.listenToLogin = this.listenToLogin.bind(this);
@@ -42,7 +44,7 @@ class App extends React.Component {
 		checkToken(JSON.stringify(getToken()))
 					.then(rep=>{
 						if(!rep.err)
-							this.setState({isLogged:rep.auth});
+							this.setState({isLogged:rep.auth,id:localStorage.getItem('id')});
 					})
 	}
 	
@@ -70,12 +72,14 @@ class App extends React.Component {
 				<Header 
 					isLogged={this.state.isLogged}
 					logoff={this.logoff}
+					id={this.state.id}
 				/>
 				
 				<Switch>
 					<Route path='/' render={this.state.isLogged ? Personal : Login} exact/>
 					<Route path='/register' component={Register} exact/>
 					<Route path='/personal/:id' render={this.state.isLogged ? Personal : NotAllowed} exact/>
+					<Route path='/edit/:id' render={this.state.isLogged ? Edit : NotAllowed} exact/>
 				</Switch>
 			</div>
 		</BrowserRouter>		

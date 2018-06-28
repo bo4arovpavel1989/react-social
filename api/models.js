@@ -17,8 +17,17 @@ models.Session = new mongoose.Schema({
 	token: {type: String, require: true}
 });
 
+models.Personal = new mongoose.Schema({
+	login: {type: String, required: true},
+	loginUpperCase: {type: String, required: true},
+	emailUpperCase: {type: String, required: true},
+	name:{type: String},
+	birthDate:{type:Date},
+	activity:{type:String}
+});
 
 models.User = mongoose.model('user', models.User);
+models.Personal = mongoose.model('personal', models.Personal);
 models.Session = mongoose.model('session', models.Session);
 
 module.exports = models;

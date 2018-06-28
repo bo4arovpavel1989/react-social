@@ -3,6 +3,7 @@
 }
 
 .logoff  a {
-	color: blue;
+	color: blue !important;
 	cursor:pointer;
+	margin:10px;
 }

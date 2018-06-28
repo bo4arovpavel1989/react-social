@@ -9,7 +9,6 @@ class Personal extends React.Component {
 		super();
 		this.state = {
 			loading:true,
-			isLogged:false,
 			login:'',
 			error:false,
 			data:{}
@@ -30,7 +29,6 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				console.log(rep)
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
@@ -45,23 +43,20 @@ class Personal extends React.Component {
 	
 	componentDidMount(){
 		let person = this.props.match.params.id;
+		
 		if(!person && localStorage.getItem('id')) {
 			person = localStorage.getItem('id')
 			this.props.history.push(`/personal/${person}`);
 		}
 		
-		this.checkAccess()
-			.then(auth=>{
-				if(auth)
-					this.getPersonalData(person);
-			})
+		this.getPersonalData(person);
 	}
 	
 	
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
-			if(!newPerson && localStorage.getItem('id')) {
+			if(!newPerson && localStorage.getItem('id')) { //if user clicked header when been logged in
 				newPerson = localStorage.getItem('id')
 				this.props.history.push(`/personal/${newPerson}`);
 			}
@@ -80,14 +75,7 @@ class Personal extends React.Component {
 				</div>
 			)
 			
-		if(!this.state.isLogged)
-			return (
-				<div>
-					Пожалуйста, <Link to={`/`}>залогиньтесь</Link>, чтобы продолжить!
-				</div>
-			)
-			
-		if(this.state.error)
+		if(this.state.error || !data)
 			return(
 				<div>
 					Произошла ошибка во время обработки запроса. Попробуйте позже!
