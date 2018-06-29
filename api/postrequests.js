@@ -109,7 +109,7 @@ module.exports.getPerson = function(req, res){
 		}
 		],(err, rep)=>{
 			console.log(rep);
-			if(!err) res.json({rep})
+			if(!err) res.json(rep)
 			else res.status(500).json({err})	
 	})
 	

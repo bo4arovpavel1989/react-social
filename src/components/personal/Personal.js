@@ -14,15 +14,7 @@ class Personal extends React.Component {
 			data:{}
 		}
 		
-		this.checkAccess = this.checkAccess.bind(this);
 		this.getPersonalData = this.getPersonalData.bind(this);
-	}
-	
-	checkAccess(){
-		return new Promise((resolve,reject)=>{
-			checkToken().then(rep=>this.setState({isLogged:rep.auth},()=>resolve(rep.auth)))
-						.catch(err=>this.setstate({error:true},()=>reject()))		
-		});			
 	}
 	
 	getPersonalData(person){
@@ -66,8 +58,8 @@ class Personal extends React.Component {
 }
 	
 	render(){
-		let data = this.state.data.rep;			
-		console.log(this.state);
+		let data = this.state.data;	
+		
 		if(this.state.loading)
 			return(
 				<div>

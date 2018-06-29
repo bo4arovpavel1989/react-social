@@ -21,9 +21,11 @@ models.Personal = new mongoose.Schema({
 	login: {type: String, required: true},
 	loginUpperCase: {type: String, required: true},
 	emailUpperCase: {type: String, required: true},
-	name:{type: String},
+	name:{type: String, default:'Аноним'},
 	birthDate:{type:Date},
-	activity:{type:String}
+	activity:{type:String},
+	avatar:{type:String},
+	thumbAvatar: {type:String}
 });
 
 models.User = mongoose.model('user', models.User);
