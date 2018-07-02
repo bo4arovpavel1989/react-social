@@ -44,8 +44,13 @@ var postRequests = [
 	},
 	{
 		url: '/personal/:id',
-		middleware: noMiddleware,
+		middleware: checkAccess,
 		callback: postRequestsHandlers.getPerson
+	},
+	{
+		url: '/edit',
+		middleware: checkAccess,
+		callback: postRequestsHandlers.editPerson
 	}
 ];
 

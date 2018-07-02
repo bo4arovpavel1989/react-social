@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
-import {checkToken,handleResponse,standardFetch} from '../../helpers';
+import {checkToken,handleResponse,standardFetch,attouchCred} from '../../helpers';
 import {API_URL} from '../../config';
 import './Edit.css';
 
@@ -21,6 +21,7 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
+				console.log(rep);
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
@@ -38,7 +39,6 @@ class Personal extends React.Component {
 	}
 	
 	handleChange(e){
-		console.log(this.state);
 		let data = this.state.data;
 		
 		data[e.target.id] = e.target.value;
@@ -51,21 +51,29 @@ class Personal extends React.Component {
 		
 		this.setState({loading:true})
 		
-		let data = JSON.stringify(this.state.data);
-						
-		fetch(`${API_URL}/register`,{
+		let data = this.state.data;
+		
+		attouchCred(data);
+				
+		fetch(`${API_URL}/edit`,{
 				method:'POST',
 				mode:'cors',
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
-				body:data
+				body:JSON.stringify(data)
 			})
 			.then(handleResponse)
 			.then((rep)=>{
+				if(rep.success) 
+					alert('Успешно сохранено!');
+				this.setState({loading:false});
+				
 			})
 			.catch((error) => {
+				alert('Ошибка сохранения');
+				this.setState({loading:false});
 			});
 		
 	}
@@ -89,7 +97,7 @@ class Personal extends React.Component {
 						<label htmlFor="date" className="col-sm-2 control-label">Дата рождения</label>
 						<div className="col-sm-10">
 							<div className="input-group">
-								<input type="date"  value={data.birthDate} id="birthDate" onChange={this.handleChange}/>
+								<input type="date"  value={data.birthDate ? data.birthDate.split('T')[0] : ''} id="birthDate" onChange={this.handleChange}/>
 							</div>
 						</div>
 					</div>
@@ -103,7 +111,7 @@ class Personal extends React.Component {
 					</div>
 					<div className="form-group">
 						<div className="col-sm-offset-2 col-sm-10">
-							<input  className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
+							<input  disabled={this.state.loading ? true : false} className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
 						</div>
 					</div>
 				</form>

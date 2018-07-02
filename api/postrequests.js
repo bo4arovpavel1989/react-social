@@ -114,3 +114,15 @@ module.exports.getPerson = function(req, res){
 	})
 	
 }
+
+module.exports.editPerson = function(req, res){
+	let login = req.body.login;
+	let data = req.body;
+	
+	console.log(1);
+	console.log(data);
+	
+	db.update('Personal', {login},{$set:data})
+		.then(rep=>{console.log(rep);res.json({success:true})})
+		.catch(err=>{console.log(err);res.status(500).end()})
+}

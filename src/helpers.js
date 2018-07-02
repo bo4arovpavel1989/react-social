@@ -58,3 +58,7 @@ export var standardFetch = ()=>{
 				body:JSON.stringify(getToken())
 			}
 }	
+
+export var attouchCred = (obj) => {
+	return Object.assign(obj, getToken());
+}

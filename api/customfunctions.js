@@ -21,7 +21,7 @@ module.exports.authService = {
 	checkToken:function(data){
 		return new Promise((resolve, reject)=>{
 			
-			db.findOne('Session', data)
+			db.findOne('Session', {login:data.login,token:data.token})
 				.then(rep=>{
 					if(rep) resolve(true);
 					else resolve (false);

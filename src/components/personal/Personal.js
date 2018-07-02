@@ -76,7 +76,7 @@ class Personal extends React.Component {
 			
 		return (
 			<div className='container'>
-				Привет, я {data.login}!
+				Привет, я {data.name}!
 			</div>
 		)	
 	}
