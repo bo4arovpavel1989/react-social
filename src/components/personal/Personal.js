@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
-import {checkToken,handleResponse,standardFetch} from '../../helpers';
+import {checkToken,getToken,handleResponse,standardFetch} from '../../helpers';
 import {API_URL} from '../../config';
 import './Personal.css';
 
@@ -18,6 +18,7 @@ class Personal extends React.Component {
 	}
 	
 	getPersonalData(person){
+		
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{

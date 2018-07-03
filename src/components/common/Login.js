@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
-import {handleResponse,eventEmitter} from '../../helpers';
+import {handleResponse,eventEmitter,setToken} from '../../helpers';
 import './login.css'
 
 class Login extends React.Component	{
@@ -65,8 +65,8 @@ class Login extends React.Component	{
 					passwd:''
 				},()=>{
 					if(data.auth) {
-						console.log(1)
 						this.loginEmitter();
+						setToken(data);
 						this.props.history.push(`/personal/${data.id}`);
 					}	
 				});

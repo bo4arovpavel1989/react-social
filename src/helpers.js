@@ -40,7 +40,7 @@ export const setToken = (data) => {
 	
 	localStorage.setItem('token',data.token);
 	localStorage.setItem('login',data.login);
-	localStorage.setItem('id',data.res._id);	
+	localStorage.setItem('id',data.id);	
 }
 
 export const getToken = () => {

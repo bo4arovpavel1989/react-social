@@ -4,19 +4,13 @@ const async = require('async');
 
 module.exports.login = function(req,res){
 	let cred = req.body;
-	console.log('login');
 	
 	authService.login(cred)
 		.then(rep=>{
 			if(rep.auth) {
 				db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
-					.then(()=>{
-						console.log(rep);
-						res.json(rep)
-					})
-					.catch(err=>{
-						res.json({auth:false}) 
-					})
+					.then(()=>res.json(rep))
+					.catch(err=>res.json({auth:false})
 			}	
 			else
 				res.json({auth:false}) 
@@ -28,7 +22,6 @@ module.exports.login = function(req,res){
 
 module.exports.logoff = function(req, res){
 	let cred = req.body;
-	console.log('logoff');
 	
 	authService.logoff(cred)
 		.then(rep=>{
@@ -96,7 +89,6 @@ module.exports.checkToken = function(req, res){
 
 module.exports.getPerson = function(req, res){
 	let id = req.params.id;
-	console.log('getperson');
 	
 	async.waterfall([
 		(cb)=>{
