@@ -34,9 +34,19 @@ export const checkToken = (data) => {
 	});
 }
 
+export const setToken = (data) => {
+	if(!data)
+		return;
+	
+	localStorage.setItem('token',data.token);
+	localStorage.setItem('login',data.login);
+	localStorage.setItem('id',data.res._id);	
+}
+
 export const getToken = () => {
 	if(localStorage.getItem('token') && localStorage.getItem('login'))
 		return {
+			id:localStorage.getItem('id'),
 			token:localStorage.getItem('token'),
 			login:localStorage.getItem('login')
 		}

@@ -65,11 +65,9 @@ class Login extends React.Component	{
 					passwd:''
 				},()=>{
 					if(data.auth) {
-						localStorage.setItem('token',data.token);
-						localStorage.setItem('login',login);
-						localStorage.setItem('id',data.res._id);
+						console.log(1)
 						this.loginEmitter();
-						this.props.history.push(`/personal/${data.res._id}`);
+						this.props.history.push(`/personal/${data.id}`);
 					}	
 				});
 			})

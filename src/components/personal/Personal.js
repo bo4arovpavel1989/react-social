@@ -21,6 +21,7 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
+				console.log(rep)
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
@@ -29,6 +30,8 @@ class Personal extends React.Component {
 					this.setState({error:true})
 			})
 			.catch(error=>{
+				console.log(2)
+				console.log(error)
 				this.setState({error:true})
 			})
 	}
@@ -59,18 +62,18 @@ class Personal extends React.Component {
 	
 	render(){
 		let data = this.state.data;	
-		
-		if(this.state.loading)
-			return(
-				<div>
-					Загрузка...
-				</div>
-			)
 			
 		if(this.state.error || !data)
 			return(
 				<div>
 					Произошла ошибка во время обработки запроса. Попробуйте позже!
+				</div>
+			)
+		
+		if(this.state.loading)
+			return(
+				<div>
+					Загрузка...
 				</div>
 			)	
 			

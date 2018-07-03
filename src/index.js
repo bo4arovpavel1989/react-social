@@ -44,7 +44,7 @@ class App extends React.Component {
 		checkToken(JSON.stringify(getToken()))
 					.then(rep=>{
 						if(!rep.err)
-							this.setState({isLogged:rep.auth,id:localStorage.getItem('id')});
+							this.setState({isLogged:rep.auth,id:getToken().id});
 					})
 	}
 	

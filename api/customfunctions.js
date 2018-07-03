@@ -6,10 +6,10 @@ module.exports.authService = {
 	login:function(cred){
 		return new Promise((resolve, reject)=>{
 			
-			db.findOne('User',{loginUpperCase:cred.login.toUpperCase()})
+			db.findOne('User',{loginUpperCase:cred.login.toUpperCase(),passwd:cred.passwd})
 				.then(res=>{
 					if(!res) resolve({auth:false,res:null});
-					else  resolve({auth:cred.passwd === res.passwd,res:res, token:setToken(res)});
+					else  resolve({auth:true, id:res._id, login: res.login, token:setToken(res)});
 				})
 				.catch(err=>{
 					reject(err);
@@ -42,7 +42,7 @@ module.exports.authService = {
 }
 
 function setToken(res){
-	return jwt.sign({login:res.login, email:res.email, date:new Date()}, secret.secret);
+	return jwt.sign({login:res.login, pass:res.passwd, email:res.email, date:new Date()}, secret.secret);
 }
 
 

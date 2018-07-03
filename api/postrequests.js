@@ -4,16 +4,17 @@ const async = require('async');
 
 module.exports.login = function(req,res){
 	let cred = req.body;
+	console.log('login');
 	
 	authService.login(cred)
 		.then(rep=>{
 			if(rep.auth) {
 				db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
 					.then(()=>{
-						res.json({auth:true, res:rep.res,token:rep.token})
+						console.log(rep);
+						res.json(rep)
 					})
 					.catch(err=>{
-						console.log(err);
 						res.json({auth:false}) 
 					})
 			}	
@@ -27,6 +28,7 @@ module.exports.login = function(req,res){
 
 module.exports.logoff = function(req, res){
 	let cred = req.body;
+	console.log('logoff');
 	
 	authService.logoff(cred)
 		.then(rep=>{
@@ -94,6 +96,7 @@ module.exports.checkToken = function(req, res){
 
 module.exports.getPerson = function(req, res){
 	let id = req.params.id;
+	console.log('getperson');
 	
 	async.waterfall([
 		(cb)=>{
@@ -108,7 +111,6 @@ module.exports.getPerson = function(req, res){
 			
 		}
 		],(err, rep)=>{
-			console.log(rep);
 			if(!err) res.json(rep)
 			else res.status(500).json({err})	
 	})
@@ -119,10 +121,7 @@ module.exports.editPerson = function(req, res){
 	let login = req.body.login;
 	let data = req.body;
 	
-	console.log(1);
-	console.log(data);
-	
 	db.update('Personal', {login},{$set:data})
-		.then(rep=>{console.log(rep);res.json({success:true})})
-		.catch(err=>{console.log(err);res.status(500).end()})
+		.then(rep=>res.json({success:true}))
+		.catch(err=>res.status(500).end())
 }
