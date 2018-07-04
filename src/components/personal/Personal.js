@@ -1,6 +1,6 @@
 import React from 'react';
-import {Link, withRouter} from 'react-router-dom';
-import {checkToken,getToken,handleResponse,standardFetch} from '../../helpers';
+import {withRouter} from 'react-router-dom';
+import {handleResponse,standardFetch} from '../../helpers';
 import {API_URL} from '../../config';
 import './Personal.css';
 

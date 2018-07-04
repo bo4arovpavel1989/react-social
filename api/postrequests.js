@@ -10,7 +10,7 @@ module.exports.login = function(req,res){
 			if(rep.auth) {
 				db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
 					.then(()=>res.json(rep))
-					.catch(err=>res.json({auth:false})
+					.catch(err=>res.json({auth:false}))
 			}	
 			else
 				res.json({auth:false}) 

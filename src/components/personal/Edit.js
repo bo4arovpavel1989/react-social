@@ -1,8 +1,10 @@
 import React from 'react';
-import {Link, withRouter} from 'react-router-dom';
-import {checkToken,handleResponse,standardFetch,attouchCred} from '../../helpers';
+import {withRouter} from 'react-router-dom';
+import {handleResponse,standardFetch,attouchCred} from '../../helpers';
 import {API_URL} from '../../config';
 import './Edit.css';
+import Avatar from './forms/Avatar';
+import Data from './forms/Data';
 
 class Personal extends React.Component {
 	constructor(){
@@ -10,11 +12,14 @@ class Personal extends React.Component {
 		this.state = {
 			loading:true,
 			error:false,
-			data:{}
+			data:{},
+			file:''
 		}
 		
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleUpload = this.handleUpload.bind(this);
+		this.handleImageChange = this.handleImageChange.bind(this);
 	}
 	
 	getPersonalData(person){
@@ -78,43 +83,49 @@ class Personal extends React.Component {
 		
 	}
 	
+	handleUpload(e){
+		e.preventDefault();
+		
+		this.setState({loading:true});
+		
+		let data = new FormData()
+		data.append('file', this.state.file);
+		data.append('user', 'hubot');
+		
+		console.log(this.state.file)
+	}
+	
+	handleImageChange(e){
+		e.preventDefault();
+
+		let reader = new FileReader();
+		let file = e.target.files[0];
+
+		reader.onloadend = () => this.setState({file})
+		
+	}	
+	
 	render(){
-		let data = this.state.data;
 		
 		return (
 			<div>
 				<h1>Расскажите о себе</h1>
-				<form className="form-horizontal" onSubmit={this.handleSubmit}>
-					<div className="form-group">
-						<label htmlFor="name" className="col-sm-2 control-label">Имя</label>
-						<div className="col-sm-10">
-							<div className="input-group">
-								<input type="text"  value={data.name} id="name" placeholder="Ваше имя..." onChange={this.handleChange}/>
-							</div>
-						</div>
-					</div>
-					<div className="form-group">
-						<label htmlFor="date" className="col-sm-2 control-label">Дата рождения</label>
-						<div className="col-sm-10">
-							<div className="input-group">
-								<input type="date"  value={data.birthDate ? data.birthDate.split('T')[0] : ''} id="birthDate" onChange={this.handleChange}/>
-							</div>
-						</div>
-					</div>
-					<div className="form-group">
-						<label htmlFor="activity" className="col-sm-2 control-label">Род деятельности</label>
-						<div className="col-sm-10">
-							<div className="input-group">
-								<input type="text"  value={data.activity} id="activity" onChange={this.handleChange}/>
-							</div>
-						</div>
-					</div>
-					<div className="form-group">
-						<div className="col-sm-offset-2 col-sm-10">
-							<input  disabled={this.state.loading ? true : false} className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
-						</div>
-					</div>
-				</form>
+				
+				<Data
+					data = {this.state.data}
+					handleSubmit = {this.handleSubmit}
+					handleChange = {this.handleChange}
+				/>
+				
+				<Avatar
+					loading = {this.state.loading}
+					handleUpload = {this.handleUpload}
+					handleImageChange = {this.handleImageChange}
+				/>
+				
+				<div className="imgPreview">
+				</div>
+				
 			</div>
 		)
 	}	
