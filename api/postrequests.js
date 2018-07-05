@@ -1,6 +1,7 @@
 const authService = require('./customfunctions.js').authService;
 const db = require('./dbqueries');
 const async = require('async');
+const formidable = require('formidable');
 
 module.exports.login = function(req,res){
 	let cred = req.body;
@@ -116,4 +117,13 @@ module.exports.editPerson = function(req, res){
 	db.update('Personal', {login},{$set:data})
 		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).end())
+}
+
+module.exports.avatarUpload = function(req, res){
+	let form = new formidable.IncomingForm();
+	form.type = 'multipart/form-data';
+		
+	form.parse(req, function(err, fields, files) {
+		//TODO save image
+	});
 }

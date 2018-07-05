@@ -6,6 +6,7 @@ var deleteRequestsHandlers=require('./deleterequests.js');
 
 var noMiddleware = require('./middlewarefunctions.js').noMiddleware;
 var checkAccess = require('./middlewarefunctions.js').checkAccess;
+var checkFileAccess = require('./middlewarefunctions.js').checkFileAccess;
 
 
 var getRequests = [
@@ -51,6 +52,11 @@ var postRequests = [
 		url: '/edit',
 		middleware: checkAccess,
 		callback: postRequestsHandlers.editPerson
+	},
+	{
+		url: '/avatarupload',
+		middleware: checkFileAccess,
+		callback: postRequestsHandlers.avatarUpload
 	}
 ];
 

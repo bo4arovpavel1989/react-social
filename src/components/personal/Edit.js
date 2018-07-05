@@ -1,6 +1,6 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-import {handleResponse,standardFetch,attouchCred} from '../../helpers';
+import {handleResponse,standardFetch,getToken,attouchCred} from '../../helpers';
 import {API_URL} from '../../config';
 import './Edit.css';
 import Avatar from './forms/Avatar';
@@ -12,14 +12,13 @@ class Personal extends React.Component {
 		this.state = {
 			loading:true,
 			error:false,
-			data:{},
-			file:''
+			data:{}
 		}
 		
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleUpload = this.handleUpload.bind(this);
-		this.handleImageChange = this.handleImageChange.bind(this);
+		this.getFile = this.getFile.bind(this);
 	}
 	
 	getPersonalData(person){
@@ -89,20 +88,33 @@ class Personal extends React.Component {
 		this.setState({loading:true});
 		
 		let data = new FormData()
-		data.append('file', this.state.file);
-		data.append('user', 'hubot');
+		data.append('file', this.uploadFile.files[0]);
+		data.append('login', getToken().login);
+		data.append('token', getToken().token);
 		
-		console.log(this.state.file)
+		console.log(data)
+		
+		fetch(`${API_URL}/avatarupload`,{
+				method:'POST',
+				mode:'cors',
+				body:data
+			})
+			.then(handleResponse)
+			.then((rep)=>{
+				if(rep.success) 
+					alert('Успешно сохранено!');
+				this.setState({loading:false});
+				
+			})
+			.catch((error) => {
+				alert('Ошибка сохранения');
+				this.setState({loading:false});
+			});
+		
 	}
 	
-	handleImageChange(e){
-		e.preventDefault();
-
-		let reader = new FileReader();
-		let file = e.target.files[0];
-
-		reader.onloadend = () => this.setState({file})
-		
+	getFile(ref){
+		this.uploadFile = ref
 	}	
 	
 	render(){
@@ -120,7 +132,7 @@ class Personal extends React.Component {
 				<Avatar
 					loading = {this.state.loading}
 					handleUpload = {this.handleUpload}
-					handleImageChange = {this.handleImageChange}
+					getFile = {this.getFile}
 				/>
 				
 				<div className="imgPreview">

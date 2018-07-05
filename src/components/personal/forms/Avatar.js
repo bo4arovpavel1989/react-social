@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Avatar = (props) => {
-	const {loading, handleImageChange, handleUpload} = props;
+	const {loading, handleUpload, getFile} = props;
 	
 	return (	
 			<form className="form-horizontal" onSubmit={handleUpload}>
@@ -9,7 +9,7 @@ const Avatar = (props) => {
 					<label htmlFor="name" className="col-sm-2 control-label">Аватар</label>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input className="fileInput"   type="file"  onChange={handleImageChange} />
+							<input className="fileInput"  ref={getFile} type="file" />
 						</div>
 					</div>
 				</div>
