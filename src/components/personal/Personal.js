@@ -1,6 +1,6 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-import {handleResponse,standardFetch} from '../../helpers';
+import {handleResponse,standardFetch, getToken} from '../../helpers';
 import {API_URL} from '../../config';
 import './Personal.css';
 
@@ -22,7 +22,6 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				console.log(rep)
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
@@ -31,8 +30,6 @@ class Personal extends React.Component {
 					this.setState({error:true})
 			})
 			.catch(error=>{
-				console.log(2)
-				console.log(error)
 				this.setState({error:true})
 			})
 	}
@@ -40,8 +37,8 @@ class Personal extends React.Component {
 	componentDidMount(){
 		let person = this.props.match.params.id;
 		
-		if(!person && localStorage.getItem('id')) {
-			person = localStorage.getItem('id')
+		if(!person && getToken()) {
+			person = getToken().id
 			this.props.history.push(`/personal/${person}`);
 		}
 		
@@ -52,8 +49,8 @@ class Personal extends React.Component {
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
-			if(!newPerson && localStorage.getItem('id')) { //if user clicked header when been logged in
-				newPerson = localStorage.getItem('id')
+			if(!newPerson && getToken()) { //if user clicked header when been logged in
+				newPerson = getToken().id;
 				this.props.history.push(`/personal/${newPerson}`);
 			}
 			

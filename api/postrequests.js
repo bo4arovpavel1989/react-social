@@ -1,7 +1,11 @@
-const authService = require('./customfunctions.js').authService;
-const db = require('./dbqueries');
 const async = require('async');
 const formidable = require('formidable');
+const fs = require('fs-extra');
+const easyimg = require('easyimage');
+
+const authService = require('./customfunctions.js').authService;
+const saveAvatar = require('./customfunctions.js').saveAvatar;
+const db = require('./dbqueries');
 
 module.exports.login = function(req,res){
 	let cred = req.body;
@@ -125,5 +129,25 @@ module.exports.avatarUpload = function(req, res){
 		
 	form.parse(req, function(err, fields, files) {
 		//TODO save image
+		if (files.upload.size !== 0 && files.upload.size !== undefined){
+			
+			let thumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_thumb.jpg';
+			let microThumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_micro_thumb.jpg';
+			let fileName = __dirname + '/../src/images/personal/' + fields.id + '.jpg';
+			let htmlFileName = '/images/personal/' + fields.id + '.jpg';
+			let htmlThumbFileName = '/images/personal/' + fields.id + '_thumb.jpg';
+			let htmlMicroThumbFileName = '/images/personal/' + fields.id + '_micro_thumb.jpg';
+			
+			saveAvatar(files,fileName,thumbFileName,microThumbFileName)
+					.then((rep)=>{
+						db.update('Person',{_id:fields.id},{avatar:htmlFileName,thumbAvatar:htmlThumbFileName,microAvatar:htmlMicroThumbFileName})
+							.then(()=>res.json({success:true}))
+							.catch(err=>res.json({err:true}))
+					})
+					.catch((err)=>res.json({err:true}))
+			
+		} else {
+			res.json({empty:true});
+		}
 	});
 }

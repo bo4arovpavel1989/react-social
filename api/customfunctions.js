@@ -1,6 +1,8 @@
 const db = require('./dbqueries')
 const jwt = require('jsonwebtoken');
 const secret = require('./credentials');
+const async = require('async');
+const fs = require('fs-extra');
 
 module.exports.authService = {
 	login:function(cred){
@@ -45,4 +47,43 @@ function setToken(res){
 	return jwt.sign({login:res.login, pass:res.passwd, email:res.email, date:new Date()}, secret.secret);
 }
 
+module.exports.saveAvatar = function(files,filename,dst,dst2){
+	return new Promise((resolve, reject)=>{
+		
+		async.series([
+			(cb)=>{
+				makeResize(files,dst,200,200,(err,rep)=>{
+					if(err) cb(new Error(err))
+					else cb();	
+				})
+			},
+			(cb)=>{
+				makeResize(files,dst2,50,50,(err,rep)=>{
+					if(err) cb(new Error(err))
+					else cb();	
+				})
+			},
+			(cb)=>{
+				fs.rename(files.upload.path,filename,(err,rep)=>{
+					if(err) cb(new Error(err));
+					else cb();
+				})
+			}
+			],(err)=>{
+				if(err) reject(err);
+				else resolve(true);
+		});
+
+	});
+}
+
+function makeResize(files,dst,w,h,cb){
+	easyimg.resize({src: files.upload.path, dst: dst, width:w, heighth}, function(err, stdout, stderr) {
+			if (err) 
+				fs.unlink(files.upload.path, (err)=>cb('Error loading avatar', false));
+		}).then(
+				(img) => cb(null, true),
+				(err) => fs.unlink(files.upload.path, err=>cb('Error resizing, source delete', false))
+		); 	
+}
 

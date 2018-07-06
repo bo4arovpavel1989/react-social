@@ -25,7 +25,8 @@ models.Personal = new mongoose.Schema({
 	birthDate:{type:Date},
 	activity:{type:String},
 	avatar:{type:String},
-	thumbAvatar: {type:String}
+	thumbAvatar: {type:String},
+	microAvatar: {type:String}
 });
 
 models.User = mongoose.model('user', models.User);

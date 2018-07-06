@@ -91,6 +91,7 @@ class Personal extends React.Component {
 		data.append('file', this.uploadFile.files[0]);
 		data.append('login', getToken().login);
 		data.append('token', getToken().token);
+		data.append('id', getToken().id);
 		
 		console.log(data)
 		
