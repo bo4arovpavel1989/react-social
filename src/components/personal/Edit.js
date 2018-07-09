@@ -109,7 +109,7 @@ class Personal extends React.Component {
 				
 			})
 			.catch((error) => {
-				alert('Ошибка сохранения');
+				alert('Ошибка во время сохранения!');
 				this.setState({loading:false});
 			});
 		

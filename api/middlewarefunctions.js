@@ -13,7 +13,7 @@ module.exports.checkAccess = function(req, res, next){
 				else 
 					res.json({forbidden:true});
 			})
-			.catch(err=>res.json({err:true}))
+			.catch(err=>res.status(500).json({err:err}))
 };
 
 module.exports.checkFileAccess = function(req, res, next){
@@ -31,7 +31,7 @@ module.exports.checkFileAccess = function(req, res, next){
 				else 
 					res.json({forbidden:true});
 			})
-			.catch(err=>res.json({err:true}))
+			.catch(err=>res.status(500).json({err:err}))
 			
 	});
 };

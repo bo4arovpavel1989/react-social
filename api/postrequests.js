@@ -1,7 +1,6 @@
 const async = require('async');
 const formidable = require('formidable');
 const fs = require('fs-extra');
-const easyimg = require('easyimage');
 const _ = require('lodash');
 
 const authService = require('./customfunctions.js').authService;
@@ -138,11 +137,11 @@ module.exports.avatarUpload = function(req, res){
 		
 		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
 				.then((rep)=>{
-					db.update('Person',{_id:fields.id},{avatar:htmlFileName,thumbAvatar:htmlThumbFileName,microAvatar:htmlMicroThumbFileName})
+					db.update('Personal',{_id:fields.id},{avatar:htmlFileName,thumbAvatar:htmlThumbFileName,microAvatar:htmlMicroThumbFileName})
 						.then(()=>res.json({success:true}))
-						.catch(err=>res.json({err:true}))
+						.catch(err=>res.json({err:err}))
 				})
-				.catch((err)=>res.status(500).json({err:err}))
+				.catch(err=>res.status(500).json({err:err}))
 		
 	} else {
 		res.json({empty:true});

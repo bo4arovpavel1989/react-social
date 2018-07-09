@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const secret = require('./credentials');
 const async = require('async');
 const fs = require('fs-extra');
+const easyimg = require('easyimage');
 
 module.exports.authService = {
 	login:function(cred){
@@ -64,13 +65,18 @@ module.exports.saveAvatar = function(files,filename,dst,dst2){
 				})
 			},
 			(cb)=>{
-				fs.rename(files.file.path,filename,(err,rep)=>{
+				fs.copy(files.file.path,filename,(err,rep)=>{ //made copy coz its saved on different devices
 					if(err) cb(new Error(err));
 					else cb();
 				})
+			},
+			(cb)=>{
+				fs.unlink(files.file.path, (err)=>{
+					if(err) cb(new Error(err));
+					else cb();
+				});
 			}
 			],(err)=>{
-				console.log(err)
 				if(err) reject(err);
 				else resolve(true);
 		});
@@ -79,7 +85,7 @@ module.exports.saveAvatar = function(files,filename,dst,dst2){
 }
 
 function makeResize(files,dst,w,h,cb){
-	easyimg.resize({src: files.file.path, dst: dst, width:w, heighth}, function(err, stdout, stderr) {
+	easyimg.resize({src: files.file.path, dst: dst, width:w, h}, function(err, stdout, stderr) {
 			if (err) 
 				fs.unlink(files.file.path, (err)=>cb('Error loading avatar', false));
 		}).then(
