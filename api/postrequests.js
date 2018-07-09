@@ -2,6 +2,7 @@ const async = require('async');
 const formidable = require('formidable');
 const fs = require('fs-extra');
 const easyimg = require('easyimage');
+const _ = require('lodash');
 
 const authService = require('./customfunctions.js').authService;
 const saveAvatar = require('./customfunctions.js').saveAvatar;
@@ -21,7 +22,7 @@ module.exports.login = function(req,res){
 				res.json({auth:false}) 
 		})
 		.catch(err=>{
-			res.json({auth:false})
+			res.status(500).json({err:err})
 		})
 }
 
@@ -124,30 +125,27 @@ module.exports.editPerson = function(req, res){
 }
 
 module.exports.avatarUpload = function(req, res){
-	let form = new formidable.IncomingForm();
-	form.type = 'multipart/form-data';
+	let files = req.files;	
+	let fields = req.fields;
+	if (!_.isEmpty(files)){
 		
-	form.parse(req, function(err, fields, files) {
-		//TODO save image
-		if (files.upload.size !== 0 && files.upload.size !== undefined){
-			
-			let thumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_thumb.jpg';
-			let microThumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_micro_thumb.jpg';
-			let fileName = __dirname + '/../src/images/personal/' + fields.id + '.jpg';
-			let htmlFileName = '/images/personal/' + fields.id + '.jpg';
-			let htmlThumbFileName = '/images/personal/' + fields.id + '_thumb.jpg';
-			let htmlMicroThumbFileName = '/images/personal/' + fields.id + '_micro_thumb.jpg';
-			
-			saveAvatar(files,fileName,thumbFileName,microThumbFileName)
-					.then((rep)=>{
-						db.update('Person',{_id:fields.id},{avatar:htmlFileName,thumbAvatar:htmlThumbFileName,microAvatar:htmlMicroThumbFileName})
-							.then(()=>res.json({success:true}))
-							.catch(err=>res.json({err:true}))
-					})
-					.catch((err)=>res.json({err:true}))
-			
-		} else {
-			res.json({empty:true});
-		}
-	});
-}
+		let thumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_thumb.jpg';
+		let microThumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_micro_thumb.jpg';
+		let fileName = __dirname + '/../src/images/personal/' + fields.id + '.jpg';
+		let htmlFileName = '/images/personal/' + fields.id + '.jpg';
+		let htmlThumbFileName = '/images/personal/' + fields.id + '_thumb.jpg';
+		let htmlMicroThumbFileName = '/images/personal/' + fields.id + '_micro_thumb.jpg';
+		
+		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
+				.then((rep)=>{
+					db.update('Person',{_id:fields.id},{avatar:htmlFileName,thumbAvatar:htmlThumbFileName,microAvatar:htmlMicroThumbFileName})
+						.then(()=>res.json({success:true}))
+						.catch(err=>res.json({err:true}))
+				})
+				.catch((err)=>res.status(500).json({err:err}))
+		
+	} else {
+		res.json({empty:true});
+	}
+	
+};

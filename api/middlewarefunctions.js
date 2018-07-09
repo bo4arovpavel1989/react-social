@@ -23,8 +23,11 @@ module.exports.checkFileAccess = function(req, res, next){
 	form.parse(req, function(err, fields, files) {
 		authService.checkToken(fields)
 			.then(rep=>{
-				if(rep)
+				if(rep) {
+					req.fields = fields;
+					req.files = files;
 					next();
+				}
 				else 
 					res.json({forbidden:true});
 			})

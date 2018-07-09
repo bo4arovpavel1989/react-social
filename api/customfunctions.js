@@ -64,12 +64,13 @@ module.exports.saveAvatar = function(files,filename,dst,dst2){
 				})
 			},
 			(cb)=>{
-				fs.rename(files.upload.path,filename,(err,rep)=>{
+				fs.rename(files.file.path,filename,(err,rep)=>{
 					if(err) cb(new Error(err));
 					else cb();
 				})
 			}
 			],(err)=>{
+				console.log(err)
 				if(err) reject(err);
 				else resolve(true);
 		});
@@ -78,12 +79,12 @@ module.exports.saveAvatar = function(files,filename,dst,dst2){
 }
 
 function makeResize(files,dst,w,h,cb){
-	easyimg.resize({src: files.upload.path, dst: dst, width:w, heighth}, function(err, stdout, stderr) {
+	easyimg.resize({src: files.file.path, dst: dst, width:w, heighth}, function(err, stdout, stderr) {
 			if (err) 
-				fs.unlink(files.upload.path, (err)=>cb('Error loading avatar', false));
+				fs.unlink(files.file.path, (err)=>cb('Error loading avatar', false));
 		}).then(
 				(img) => cb(null, true),
-				(err) => fs.unlink(files.upload.path, err=>cb('Error resizing, source delete', false))
+				(err) => fs.unlink(files.file.path, err=>cb('Error resizing, source delete', false))
 		); 	
 }
 

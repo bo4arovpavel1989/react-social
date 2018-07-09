@@ -93,8 +93,6 @@ class Personal extends React.Component {
 		data.append('token', getToken().token);
 		data.append('id', getToken().id);
 		
-		console.log(data)
-		
 		fetch(`${API_URL}/avatarupload`,{
 				method:'POST',
 				mode:'cors',
@@ -102,8 +100,11 @@ class Personal extends React.Component {
 			})
 			.then(handleResponse)
 			.then((rep)=>{
+				console.log(rep)
 				if(rep.success) 
 					alert('Успешно сохранено!');
+				if(rep.empty)
+					alert('Изображение не загружено!')
 				this.setState({loading:false});
 				
 			})
@@ -115,7 +116,7 @@ class Personal extends React.Component {
 	}
 	
 	getFile(ref){
-		this.uploadFile = ref
+		this.uploadFile = ref;
 	}	
 	
 	render(){
