@@ -131,13 +131,14 @@ module.exports.avatarUpload = function(req, res){
 		let thumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_thumb.jpg';
 		let microThumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_micro_thumb.jpg';
 		let fileName = __dirname + '/../src/images/personal/' + fields.id + '.jpg';
-		let htmlFileName = '/images/personal/' + fields.id + '.jpg';
-		let htmlThumbFileName = '/images/personal/' + fields.id + '_thumb.jpg';
-		let htmlMicroThumbFileName = '/images/personal/' + fields.id + '_micro_thumb.jpg';
+		let avatar = '/images/personal/' + fields.id + '.jpg';
+		let thumbAvatar = '/images/personal/' + fields.id + '_thumb.jpg';
+		let microAvatar = '/images/personal/' + fields.id + '_micro_thumb.jpg';
 		
 		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
 				.then((rep)=>{
-					db.update('Personal',{_id:fields.id},{avatar:htmlFileName,thumbAvatar:htmlThumbFileName,microAvatar:htmlMicroThumbFileName})
+					console.log(fields.id)
+					db.update('Personal',{login:fields.login},{$set:{avatar,thumbAvatar,microAvatar}})
 						.then(()=>res.json({success:true}))
 						.catch(err=>res.json({err:err}))
 				})

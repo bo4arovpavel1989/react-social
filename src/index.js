@@ -26,7 +26,7 @@ class App extends React.Component {
 		this.logoff = this.logoff.bind(this);
 	}
 	
-	componentDidMount(){
+	componentWillMount(){
 		this.checkLogging();
 		this.listenToLogin();
 	}

@@ -2,6 +2,9 @@ import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {handleResponse,standardFetch, getToken} from '../../helpers';
 import {API_URL} from '../../config';
+import AvatarPlace from './AvatarPlace';
+import PersonalData from './PersonalData';
+import Sidebar from './Sidebar';
 import './Personal.css';
 
 class Personal extends React.Component {
@@ -60,7 +63,7 @@ class Personal extends React.Component {
 	
 	render(){
 		let data = this.state.data;	
-			
+		console.log(data);	
 		if(this.state.error || !data)
 			return(
 				<div>
@@ -78,6 +81,19 @@ class Personal extends React.Component {
 		return (
 			<div className='container'>
 				Привет, я {data.name}!
+				<div className="row">
+					<div className="col-md-2">
+						<Sidebar/>
+					</div>
+					<div className="col-md-3">
+						<AvatarPlace
+							img = {data.thumbAvatar}
+						/>
+					</div>
+					<div className="col-md-3">
+						<PersonalData/>
+					</div>
+				</div>
 			</div>
 		)	
 	}

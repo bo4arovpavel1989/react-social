@@ -20,6 +20,7 @@ const dbQueries = {
 	update: function(schema, get, set, opt){
 		return new Promise((resolve, reject)=>{
 			models[schema].update(get, set, opt).exec((err, rep)=>{
+				console.log(rep)
 				if(err) reject(err)
 				else resolve(rep);	
 			})
