@@ -12,4 +12,4 @@ node_modules
 npm-debug.log
 book_img
 api/credentials.js
-scr/images/
+public/images/

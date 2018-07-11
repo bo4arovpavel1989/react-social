@@ -5,6 +5,7 @@ import {API_URL} from '../../config';
 import AvatarPlace from './AvatarPlace';
 import PersonalData from './PersonalData';
 import Sidebar from './Sidebar';
+import Wall from './Wall';
 import './Personal.css';
 
 class Personal extends React.Component {
@@ -14,7 +15,8 @@ class Personal extends React.Component {
 			loading:true,
 			login:'',
 			error:false,
-			data:{}
+			data:{},
+			myPage:true
 		}
 		
 		this.getPersonalData = this.getPersonalData.bind(this);
@@ -45,6 +47,7 @@ class Personal extends React.Component {
 			this.props.history.push(`/personal/${person}`);
 		}
 		
+		this.setState({myPage:person === getToken().id}) //check if its my page
 		this.getPersonalData(person);
 	}
 	
@@ -57,13 +60,14 @@ class Personal extends React.Component {
 				this.props.history.push(`/personal/${newPerson}`);
 			}
 			
+			this.setState({myPage:newPerson === getToken().id}) //check if its my page
 			this.getPersonalData(newPerson);
 		}
 }
 	
 	render(){
 		let data = this.state.data;	
-		console.log(data);	
+		
 		if(this.state.error || !data)
 			return(
 				<div>
@@ -80,7 +84,6 @@ class Personal extends React.Component {
 			
 		return (
 			<div className='container'>
-				Привет, я {data.name}!
 				<div className="row">
 					<div className="col-md-2">
 						<Sidebar/>
@@ -88,11 +91,17 @@ class Personal extends React.Component {
 					<div className="col-md-3">
 						<AvatarPlace
 							img = {data.thumbAvatar}
+							myPage= {this.state.myPage}
 						/>
 					</div>
 					<div className="col-md-3">
-						<PersonalData/>
+						<PersonalData
+							data = {data}
+						/>
 					</div>
+				</div>
+				<div>	
+					<Wall/>
 				</div>
 			</div>
 		)	

@@ -128,9 +128,9 @@ module.exports.avatarUpload = function(req, res){
 	let fields = req.fields;
 	if (!_.isEmpty(files)){
 		
-		let thumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_thumb.jpg';
-		let microThumbFileName = __dirname + '/../src/images/personal/' + fields.id + '_micro_thumb.jpg';
-		let fileName = __dirname + '/../src/images/personal/' + fields.id + '.jpg';
+		let thumbFileName = __dirname + '/../public/images/personal/' + fields.id + '_thumb.jpg';
+		let microThumbFileName = __dirname + '/../public/images/personal/' + fields.id + '_micro_thumb.jpg';
+		let fileName = __dirname + '/../public/images/personal/' + fields.id + '.jpg';
 		let avatar = '/images/personal/' + fields.id + '.jpg';
 		let thumbAvatar = '/images/personal/' + fields.id + '_thumb.jpg';
 		let microAvatar = '/images/personal/' + fields.id + '_micro_thumb.jpg';
