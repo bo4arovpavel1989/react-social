@@ -9,6 +9,14 @@ const dbQueries = {
 			});
 		});
 	},
+	findBy: function(schema, val, sort, skip, limit){
+		return new Promise((resolve, reject)=>{
+			models[schema].find(val).sort(sort).skip(skip).limit(limit).exec((err, rep)=>{
+				if(err) reject(err)
+				else resolve(rep);
+			})
+		});
+	},
 	findOne: function(schema, val, opt){
 		return new Promise((resolve, reject)=>{
 			models[schema].findOne(val, opt, (err, rep)=>{

@@ -1,6 +1,6 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-import {handleResponse,standardFetch, getToken} from '../../helpers';
+import {handleResponse,standardFetch, getToken,eventEmitter} from '../../helpers';
 import {API_URL} from '../../config';
 import AvatarPlace from './AvatarPlace';
 import PersonalData from './PersonalData';
@@ -13,6 +13,7 @@ class Personal extends React.Component {
 		super();
 		this.state = {
 			loading:true,
+			person:'',
 			login:'',
 			error:false,
 			data:{},
@@ -23,6 +24,8 @@ class Personal extends React.Component {
 	}
 	
 	getPersonalData(person){
+		this.setState({person}) //set id of the pages's owner
+		this.setState({myPage:person === getToken().id}) //check if its my page
 		
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
@@ -30,7 +33,7 @@ class Personal extends React.Component {
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
-					this.setState({isLogged:false,loading:false})
+					eventEmitter.emit('logoff')
 				else
 					this.setState({error:true})
 			})
@@ -47,7 +50,6 @@ class Personal extends React.Component {
 			this.props.history.push(`/personal/${person}`);
 		}
 		
-		this.setState({myPage:person === getToken().id}) //check if its my page
 		this.getPersonalData(person);
 	}
 	
@@ -60,7 +62,6 @@ class Personal extends React.Component {
 				this.props.history.push(`/personal/${newPerson}`);
 			}
 			
-			this.setState({myPage:newPerson === getToken().id}) //check if its my page
 			this.getPersonalData(newPerson);
 		}
 }
@@ -101,7 +102,9 @@ class Personal extends React.Component {
 					</div>
 				</div>
 				<div>	
-					<Wall/>
+					<Wall
+						id = {this.state.person}
+					/>
 				</div>
 			</div>
 		)	

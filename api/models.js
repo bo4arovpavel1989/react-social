@@ -29,8 +29,17 @@ models.Personal = new mongoose.Schema({
 	microAvatar: {type:String}
 });
 
+models.Wall = new mongoose.Schema({
+	login: {type: String, required: true},
+	date: {type:Date, default: Date.now()},
+	entry: {type: String},
+	author: {type: String},
+	like: {type:Number, default: 0}
+});
+
 models.User = mongoose.model('user', models.User);
 models.Personal = mongoose.model('personal', models.Personal);
+models.Wall = mongoose.model('wall', models.Wall);
 models.Session = mongoose.model('session', models.Session);
 
 module.exports = models;

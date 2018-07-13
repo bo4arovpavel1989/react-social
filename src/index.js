@@ -35,6 +35,10 @@ class App extends React.Component {
 		eventEmitter.on('login',()=>{
 			this.setState({isLogged:true})
 		})
+		
+		eventEmitter.on('logoff',()=>{
+			this.setState({isLogged:false})
+		})
 	}
 	
 	checkLogging(){		

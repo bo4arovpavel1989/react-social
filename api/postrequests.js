@@ -114,6 +114,31 @@ module.exports.getPerson = function(req, res){
 	
 }
 
+module.exports.getWall = function(req, res){
+	let id = req.params.id;
+	let skip = req.query.q;
+	const howmany = 10; //number if wall twits got per 1 time
+	
+	async.waterfall([
+		(cb)=>{
+			db.findOne('User',{_id:id})
+				.then(rep=>cb(null, rep.login))
+				.catch(err=>cb(err, null))
+		},
+		(login, cb)=>{
+			db.findBy('Wall', {login}, {date:-1}, skip, howmany)
+				.then(rep=>cb(null, rep))
+				.catch(err=>cb(err, null))
+			
+		}
+		],(err, rep)=>{
+			if(!err) res.json(rep)
+			else res.status(500).json({err})	
+	})
+	
+};
+
+
 module.exports.editPerson = function(req, res){
 	let login = req.body.login;
 	let data = req.body;
