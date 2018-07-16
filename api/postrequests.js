@@ -116,9 +116,9 @@ module.exports.getPerson = function(req, res){
 
 module.exports.getWall = function(req, res){
 	let id = req.params.id;
-	let skip = req.query.q;
+	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number if wall twits got per 1 time
-	
+	console.log(id)
 	async.waterfall([
 		(cb)=>{
 			db.findOne('User',{_id:id})

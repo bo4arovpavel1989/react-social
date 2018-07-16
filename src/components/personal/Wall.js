@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link,withRouter} from 'react-router-dom';
 import {handleResponse,standardFetch, getToken, eventEmitter} from '../../helpers';
+import MakePost from './MakePost';
 import {API_URL} from '../../config';
 
 class Wall extends React.Component {
@@ -8,7 +9,7 @@ class Wall extends React.Component {
 		super();
 		
 		this.state = {
-			person:'',
+			person:'', //owner of the wall
 			data:[],
 			loading:false
 		}
@@ -18,7 +19,7 @@ class Wall extends React.Component {
 	getWall(person){
 		this.setState({loading:true});
 		
-		fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch())
+		fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch()) //q means quantity of wall posts already loaded 
 			.then(handleResponse)
 			.then((rep)=>{
 				if(!rep.err && !rep.forbidden)
@@ -35,7 +36,7 @@ class Wall extends React.Component {
 	}
 	
 	componentDidMount(){
-		this.setState({person:this.props.person},() => this.getWall(this.state.person));
+		this.setState({person:this.props.id},() => this.getWall(this.state.person));
 	}
 	
 	render(){
@@ -49,16 +50,30 @@ class Wall extends React.Component {
 				</div>
 			)
 		
-		if(!data)
+		if(data.length === 0)
 			return (
-				<div className='text-center'>
-					Записей на стене нет...
+				<div className='wall text-center'>
+					<div className='text-center'>
+						<MakePost
+							id = {this.state.person} //make post to who
+						/>
+					</div>
+					<div className='text-center'>
+						Записей на стене нет...
+					</div>
 				</div>
 			)
 		
 		return (	
-				<div className='text-center'>	
-					Это стена
+				<div className='wall text-center'>
+					<div className='text-center'>	
+						Это стена
+					</div>
+					<div className='text-left'>
+						<MakePost
+							id = {this.state.person} //make post to who
+						/>
+					</div>
 				</div>
 			)
 		

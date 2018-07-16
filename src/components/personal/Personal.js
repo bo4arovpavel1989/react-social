@@ -101,7 +101,7 @@ class Personal extends React.Component {
 						/>
 					</div>
 				</div>
-				<div>	
+				<div className="wall text-center">	
 					<Wall
 						id = {this.state.person}
 					/>
