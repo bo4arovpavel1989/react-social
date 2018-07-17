@@ -118,7 +118,7 @@ module.exports.getWall = function(req, res){
 	let id = req.params.id;
 	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number if wall twits got per 1 time
-	console.log(id)
+	
 	async.waterfall([
 		(cb)=>{
 			db.findOne('User',{_id:id})
@@ -126,7 +126,7 @@ module.exports.getWall = function(req, res){
 				.catch(err=>cb(err, null))
 		},
 		(login, cb)=>{
-			db.findBy('Wall', {login}, {date:-1}, skip, howmany)
+			db.findBy('Wall', {id}, {date:-1}, skip, howmany)
 				.then(rep=>cb(null, rep))
 				.catch(err=>cb(err, null))
 			
@@ -138,6 +138,16 @@ module.exports.getWall = function(req, res){
 	
 };
 
+module.exports.makePost = function(req, res){
+	let post = {};
+		post.author = req.body.id;
+		post.id = req.body.person;
+		post.entry = req.body.post;
+	
+	db.create('Wall', post)
+		.then(rep=>res.json({success:true}))
+		.catch(err=>res.status(500).json({err}))
+};
 
 module.exports.editPerson = function(req, res){
 	let login = req.body.login;

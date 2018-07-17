@@ -1,5 +1,5 @@
 import React from 'react';
-import {handleResponse,standardFetch,getToken,attouchCred} from '../../helpers';
+import {handleResponse,standardFetch,attouchCred,eventEmitter} from '../../helpers';
 import {API_URL} from '../../config';
 
 class MakePost extends React.Component {
@@ -7,11 +7,12 @@ class MakePost extends React.Component {
 		super();
 		this.state = {
 			allFieldsUsed:false,
-			post:{},
+			post:'',
 			loading:false
 		}
 		
 		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 	
 	handleChange(e) {
@@ -24,9 +25,29 @@ class MakePost extends React.Component {
 		
 		this.setState({loading:true});
 		
-		let data = this.state.post;
+		let data = {};
+			data.post = this.state.post;
+			data.person = this.props.id;
 		
 		attouchCred(data);
+		
+		fetch(`${API_URL}/makepost`,{
+				method:'POST',
+				mode:'cors',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body:JSON.stringify(data)
+			})
+			.then(handleResponse)
+			.then((rep)=>{
+				this.setState({loading:false});
+				eventEmitter.emit('newpost');
+			})
+			.catch((error) => {
+				this.setState({loading:false});
+			});
 		
 	}
 	render(){

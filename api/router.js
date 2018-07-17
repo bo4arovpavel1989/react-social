@@ -54,6 +54,12 @@ var postRequests = [
 		callback: postRequestsHandlers.getWall
 	},
 	{
+		url:'/makepost',
+		middleware: checkAccess,
+		callback: postRequestsHandlers.makePost
+		
+	},
+	{
 		url: '/edit',
 		middleware: checkAccess,
 		callback: postRequestsHandlers.editPerson

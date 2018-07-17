@@ -35,8 +35,18 @@ class Wall extends React.Component {
 			})
 	}
 	
+	listenToNewPosts(){
+		eventEmitter.on('newpost',()=>{
+			this.getWall(this.state.person)
+		})
+	}
+	
 	componentDidMount(){
-		this.setState({person:this.props.id},() => this.getWall(this.state.person));
+		this.setState({person:this.props.id},() => {
+			this.getWall(this.state.person);
+			this.listenToNewPosts();
+		});
+		
 	}
 	
 	render(){

@@ -9,7 +9,8 @@ models.User = new mongoose.Schema({
 	loginUpperCase: {type: String, required: true},
 	emailUpperCase: {type: String, required: true},
 	passwd: {type: String, required: true},
-	session: {type: String, default: '0'}
+	session: {type: String, default: '0'},
+	liked:{type:Array}
 });
 
 models.Session = new mongoose.Schema({
@@ -30,7 +31,7 @@ models.Personal = new mongoose.Schema({
 });
 
 models.Wall = new mongoose.Schema({
-	login: {type: String, required: true},
+	id: {type: String, required: true},
 	date: {type:Date, default: Date.now()},
 	entry: {type: String},
 	author: {type: String},
