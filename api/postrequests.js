@@ -15,7 +15,7 @@ module.exports.login = function(req,res){
 			if(rep.auth) 
 				return Promise.all([rep, db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})])
 			else
-				res.json({auth:false}) 
+				return Promise.resolve([{auth:false}]) //made array coz i use array in first case if rep.auth === true
 		})
 		.then(reps=>res.json(reps[0]))
 		.catch(err=>{
