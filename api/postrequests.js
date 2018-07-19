@@ -12,14 +12,12 @@ module.exports.login = function(req,res){
 	
 	authService.login(cred)
 		.then(rep=>{
-			if(rep.auth) {
-				db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
-					.then(()=>res.json(rep))
-					.catch(err=>res.json({auth:false}))
-			}	
+			if(rep.auth) 
+				return Promise.all([rep, db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})])
 			else
 				res.json({auth:false}) 
 		})
+		.then(reps=>res.json(reps[0]))
 		.catch(err=>{
 			res.status(500).json({err:err})
 		})
