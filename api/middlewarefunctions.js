@@ -6,7 +6,8 @@ module.exports.noMiddleware = function(req, res, next){
 };
 
 module.exports.checkAccess = function(req, res, next){
-	authService.checkToken(req.body)
+	console.log(req)
+	authService.checkToken(req.headers)
 			.then(rep=>{
 				if(rep)
 					next();
@@ -21,7 +22,7 @@ module.exports.checkFileAccess = function(req, res, next){
 	form.type = 'multipart/form-data';
 		
 	form.parse(req, function(err, fields, files) {
-		authService.checkToken(fields)
+		authService.checkToken(req.headers)
 			.then(rep=>{
 				if(rep) {
 					req.fields = fields;

@@ -11,9 +11,14 @@ var checkFileAccess = require('./middlewarefunctions.js').checkFileAccess;
 
 var getRequests = [
 	{
-		url: '/login',
-		middleware: noMiddleware,
-		callback: postRequestsHandlers.login
+		url: '/getwall/:id',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.getWall
+	},
+	{
+		url: '/personal/:id',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.getPerson
 	}
 ];
 
@@ -42,16 +47,6 @@ var postRequests = [
 		url: '/register',
 		middleware: noMiddleware,
 		callback: postRequestsHandlers.register
-	},
-	{
-		url: '/personal/:id',
-		middleware: checkAccess,
-		callback: postRequestsHandlers.getPerson
-	},
-	{
-		url: '/getwall/:id',
-		middleware: checkAccess,
-		callback: postRequestsHandlers.getWall
 	},
 	{
 		url:'/makepost',

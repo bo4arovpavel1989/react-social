@@ -54,21 +54,23 @@ export const getToken = () => {
 	return false;	
 }
 
-export var eventEmitter = new EventEmitter();
+export const eventEmitter = new EventEmitter();
 
 
-export var standardFetch = ()=>{
+export const standardFetch = ()=>{
 	return {
-				method:'POST',
+				method:'GET',
 				mode:'cors',
 				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body:JSON.stringify(getToken())
+					'Accept': 'application,text/plain',
+					'Content-Type': 'application,text/plain',
+					'id':getToken().id,
+					'login':getToken().login,
+					'token':getToken().token
+				}
 			}
 }	
 
-export var attouchCred = (obj) => {
+export const attouchCred = (obj) => {
 	return Object.assign(obj, getToken());
 }

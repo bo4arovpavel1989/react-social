@@ -45,10 +45,7 @@ class Register extends React.Component {
 						this.state.passwd1 !== '' && 
 						this.state.email !== '' && 
 						this.state.passwdCorrect;
-					
-					console.log(allFieldsUsed)
-					console.log(this.state)
-					
+										
 					this.setState({allFieldsUsed})
 					
 				});
