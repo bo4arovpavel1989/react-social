@@ -19,6 +19,11 @@ var getRequests = [
 		url: '/personal/:id',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.getPerson
+	},
+	{
+		url: '/post-personal/:id',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.getPostPersonData
 	}
 ];
 

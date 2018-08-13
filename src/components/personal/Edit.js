@@ -25,7 +25,6 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				console.log(rep);
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep,loading:false})
 				else if(rep.forbidden)
@@ -58,7 +57,7 @@ class Personal extends React.Component {
 		let data = this.state.data;
 		
 		attouchCred(data);
-				
+		
 		fetch(`${API_URL}/edit`,{
 				method:'POST',
 				mode:'cors',

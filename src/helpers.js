@@ -62,8 +62,8 @@ export const standardFetch = ()=>{
 				method:'GET',
 				mode:'cors',
 				headers: {
-					'Accept': 'application,text/plain',
-					'Content-Type': 'application,text/plain',
+					'Accept': 'application/json,text/plain',
+					'Content-Type': 'application/json,text/plain',
 					'id':getToken().id,
 					'login':getToken().login,
 					'token':getToken().token

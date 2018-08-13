@@ -6,8 +6,14 @@ module.exports.noMiddleware = function(req, res, next){
 };
 
 module.exports.checkAccess = function(req, res, next){
-	console.log(req)
-	authService.checkToken(req.headers)
+	let cred;
+
+	if(req.headers.id)
+		cred = req.headers;
+	else
+		cred = req.body;
+	
+	authService.checkToken(cred)
 			.then(rep=>{
 				if(rep)
 					next();

@@ -65,7 +65,7 @@ class Personal extends React.Component {
 			
 			this.getPersonalData(newPerson);
 		}
-}
+	}
 	
 	render(){
 		let data = this.state.data;	
@@ -102,7 +102,7 @@ class Personal extends React.Component {
 						/>
 					</div>
 				</div>
-				<div className="wall text-center">	
+				<div className="text-center">	
 					<Wall
 						id = {this.state.person}
 					/>

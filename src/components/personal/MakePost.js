@@ -1,6 +1,7 @@
 import React from 'react';
-import {handleResponse,standardFetch,attouchCred,eventEmitter} from '../../helpers';
+import {handleResponse,attouchCred,eventEmitter} from '../../helpers';
 import {API_URL} from '../../config';
+import './MakePost.css';
 
 class MakePost extends React.Component {
 	constructor(){
@@ -52,8 +53,7 @@ class MakePost extends React.Component {
 	}
 	render(){
 		return (	
-			<div>
-				<form className="form-inline" onSubmit={this.handleSubmit}>
+				<form className="makepostform form-inline" onSubmit={this.handleSubmit}>
 					<div className="form-group">
 						<div className="col-sm-10">
 							<div className="input-group">
@@ -67,7 +67,6 @@ class MakePost extends React.Component {
 						</div>
 					</div>
 				</form>
-			</div>
 			)
 	}	
 }

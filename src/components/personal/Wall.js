@@ -1,7 +1,8 @@
 import React from 'react';
-import {Link,withRouter} from 'react-router-dom';
-import {handleResponse,standardFetch, getToken, eventEmitter} from '../../helpers';
+import {withRouter} from 'react-router-dom';
+import {handleResponse,standardFetch, eventEmitter} from '../../helpers';
 import MakePost from './MakePost';
+import Post from './Post';
 import {API_URL} from '../../config';
 
 class Wall extends React.Component {
@@ -49,9 +50,16 @@ class Wall extends React.Component {
 		
 	}
 	
+	componentWillReceiveProps(nextProps){
+		if (this.props.location.pathname !== nextProps.location.pathname) {
+			let newPerson = nextProps.match.params.id;
+			
+			this.getWall(newPerson);
+		}
+	}
+	
 	render(){
 		let data = this.state.data;
-		console.log(data);
 		
 		if(this.state.loading)
 			return(
@@ -76,13 +84,15 @@ class Wall extends React.Component {
 		
 		return (	
 				<div className='wall text-center'>
-					<div className='text-center'>	
-						Это стена
-					</div>
-					<div className='text-left'>
+					<div className='text-center'>
 						<MakePost
 							id = {this.state.person} //make post to who
 						/>
+					</div>
+					<div className='text-left'>
+						{data.map((e, i) => {
+							return (<Post key={i} data={e}/>)
+						})}
 					</div>
 				</div>
 			)
