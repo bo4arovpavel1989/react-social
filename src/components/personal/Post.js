@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link, withRouter} from 'react-router-dom';
 import './Post.css'
 import {handleResponse, standardFetch} from '../../helpers';
 import {API_URL} from '../../config';
@@ -29,7 +30,6 @@ class Post extends React.Component {
 	
 	getUserData(){	
 		let author = this.state.author;
-		console.log(author)
 	
 		fetch(`${API_URL}/post-personal/${author}`,standardFetch())
 			.then(handleResponse)
@@ -47,18 +47,26 @@ class Post extends React.Component {
 		
 		return (	
 				<div className='post'>
-					<div>
-						<img src={microAvatar}/>
+					<div className='postHeader'>
+						<div className='postAvatar'>
+							<Link to={`/personal/${author}`}>
+								<img src={microAvatar}/>
+							</Link>
+						</div>
+						<div className='postAuthor'>
+							<Link to={`/personal/${author}`}>
+								<div className='postAuthorName'>{name}</div>
+							</Link>
+							<div className='postAuthorDate'>{date.split('T')[0]}</div>
+						</div>
 					</div>
-					<div>
-						<div>{name}</div>
-						<div>{entry}</div>
-						<div>{date.split('T')[0]}</div>
-						<div>{like}</div>
+					<div className='postEntry'>
+						<div className='postEntryText'>{entry}</div>
+						<div className='postEntryLike'>&#x2764; {like}</div>
 					</div>
 				</div>
 			)
 	}	
 }
 
-export default Post;
+export default withRouter(Post);

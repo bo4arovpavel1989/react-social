@@ -28,7 +28,7 @@ module.exports.checkFileAccess = function(req, res, next){
 	form.type = 'multipart/form-data';
 		
 	form.parse(req, function(err, fields, files) {
-		authService.checkToken(req.headers)
+		authService.checkToken(fields)
 			.then(rep=>{
 				if(rep) {
 					req.fields = fields;

@@ -96,7 +96,7 @@ class Login extends React.Component	{
 				<div className="form-group">
 					<label htmlFor="inputPassword" className="col-sm-2 control-label">Пароль</label>
 					<div className="col-sm-10">
-						<input type="password"  value={this.state.passwd} onChange={this.handleChange} className="form-control" id="passwd" placeholder="Password"/>
+						<input type="password" value={this.state.passwd} onChange={this.handleChange} className="form-control" id="passwd" placeholder="Password"/>
 					</div>
 				</div>
 				<div className="form-group">

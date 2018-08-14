@@ -20,20 +20,21 @@ class Wall extends React.Component {
 	getWall(person){
 		this.setState({loading:true});
 		
-		fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch()) //q means quantity of wall posts already loaded 
-			.then(handleResponse)
-			.then((rep)=>{
-				if(!rep.err && !rep.forbidden)
-					this.setState({data:rep,loading:false})
-				else if(rep.forbidden)
-					eventEmitter.emit('logoff')
-				else
+		if(person)
+			fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch()) //q means quantity of wall posts already loaded 
+				.then(handleResponse)
+				.then((rep)=>{
+					if(!rep.err && !rep.forbidden)
+						this.setState({data:rep,loading:false})
+					else if(rep.forbidden)
+						eventEmitter.emit('logoff')
+					else
+						this.setState({error:true})
+				})
+				.catch(error=>{
+					console.log(error)
 					this.setState({error:true})
-			})
-			.catch(error=>{
-				console.log(error)
-				this.setState({error:true})
-			})
+				})
 	}
 	
 	listenToNewPosts(){
@@ -54,6 +55,7 @@ class Wall extends React.Component {
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
 			
+			this.setState({person:newPerson});
 			this.getWall(newPerson);
 		}
 	}
@@ -76,7 +78,7 @@ class Wall extends React.Component {
 							id = {this.state.person} //make post to who
 						/>
 					</div>
-					<div className='text-center'>
+					<div className='text-center postEntry'>
 						Записей на стене нет...
 					</div>
 				</div>

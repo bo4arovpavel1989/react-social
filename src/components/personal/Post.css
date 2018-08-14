@@ -1,5 +1,28 @@
 .post {
 	margin-top:20px;
 	display:flex;
+	flex-direction:column;
+}
+
+.postHeader {
+	display:flex;
 	flex-direction:row;
 }
+
+.postAuthor{
+	margin-left:20px;
+}
+
+.postAuthorDate{
+	color:#b4b0b0
+}
+
+.postEntry{
+	margin-top:20px;
+	margin-left:70px;
+}
+
+.postEntryLike{
+	margin-top:20px;
+}
+

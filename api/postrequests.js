@@ -95,7 +95,7 @@ module.exports.makePost = function(req, res){
 		post.author = req.body.id;
 		post.id = req.body.person;
 		post.entry = req.body.post;
-	
+		post.date = Date.now();
 	db.create('Wall', post)
 		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).json({err}))
