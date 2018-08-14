@@ -7,7 +7,6 @@ import {API_URL} from '../../config';
 class Post extends React.Component {
 	constructor(){
 		super();
-		
 		this.state = {
 			author:'',
 			name:'',
@@ -15,14 +14,18 @@ class Post extends React.Component {
 			entry:'',
 			date:'',
 			like:0,
+			liked:false
 		}
 		
+		this.like = this.like.bind(this);
 		this.getUserData = this.getUserData.bind(this);
 	}
 	
 	componentWillMount(){
 		let {data} = this.props;
 		
+		
+		console.log(this.props)
 		this.setState(data, ()=>{
 			this.getUserData();
 		});
@@ -41,10 +44,28 @@ class Post extends React.Component {
 			})
 	}
 	
+	like(){
+		let postId = this.props.data._id;
+		
+		fetch(`${API_URL}/like/${postId}`,standardFetch())
+			.then(handleResponse)
+			.then((rep)=>{
+				let like = this.state.like;
+				
+				if(rep.newLike)
+					this.setState({like:++like, liked:true})
+				else
+					this.setState({like:--like, liked:false})
+			})
+			.catch(error=>{
+				console.log(error)
+			})
+		
+	}
 	
 	render(){
-		let {author, entry, date, like, name, microAvatar} = this.state;
-		
+		let {author, entry, date, like, name, microAvatar, liked} = this.state;
+		console.log(liked);
 		return (	
 				<div className='post'>
 					<div className='postHeader'>
@@ -62,7 +83,7 @@ class Post extends React.Component {
 					</div>
 					<div className='postEntry'>
 						<div className='postEntryText'>{entry}</div>
-						<div className='postEntryLike'>&#x2764; {like}</div>
+						<div className={'postEntryLike ' + (liked ? 'liked' : '')} onClick={this.like}>&#x2764; {like}</div>
 					</div>
 				</div>
 			)

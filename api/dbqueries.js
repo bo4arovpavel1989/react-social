@@ -9,9 +9,9 @@ const dbQueries = {
 			});
 		});
 	},
-	findBy: function(schema, val, sort, skip, limit){
+	findBy: function(schema, val, sort, skip, limit, select){
 		return new Promise((resolve, reject)=>{
-			models[schema].find(val).sort(sort).skip(skip).limit(limit).exec((err, rep)=>{
+			models[schema].find(val).sort(sort).skip(skip).limit(limit).select(select).exec((err, rep)=>{
 				if(err) reject(err)
 				else resolve(rep);
 			})

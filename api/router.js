@@ -24,6 +24,11 @@ var getRequests = [
 		url: '/post-personal/:id',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.getPostPersonData
+	},
+	{
+		url: '/like/:id',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.likePost
 	}
 ];
 

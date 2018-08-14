@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {withRouter} from 'react-router-dom';
 import {handleResponse,standardFetch, eventEmitter} from '../../helpers';
 import MakePost from './MakePost';
@@ -14,6 +15,8 @@ class Wall extends React.Component {
 			data:[],
 			loading:false
 		}
+		
+		this.checkLikedPosts = this.checkLikedPosts.bind(this);
 	}
 	
 	
@@ -24,8 +27,10 @@ class Wall extends React.Component {
 			fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch()) //q means quantity of wall posts already loaded 
 				.then(handleResponse)
 				.then((rep)=>{
-					if(!rep.err && !rep.forbidden)
-						this.setState({data:rep,loading:false})
+					if(!rep.err && !rep.forbidden){
+						let data = this.checkLikedPosts(rep);
+						this.setState({data,loading:false})
+					}
 					else if(rep.forbidden)
 						eventEmitter.emit('logoff')
 					else
@@ -35,6 +40,23 @@ class Wall extends React.Component {
 					console.log(error)
 					this.setState({error:true})
 				})
+	}
+	
+	checkLikedPosts(rep){
+		let posts = rep.posts;
+		let likedPosts = rep.likedPosts;
+		let postsToRender = [];
+		
+		posts.map((p,i) => {
+			if(_.includes(likedPosts, p._id))
+				p.liked = true;
+			else
+				p.liked = false;
+			
+			postsToRender.push(p);
+		});
+		
+		return postsToRender;
 	}
 	
 	listenToNewPosts(){

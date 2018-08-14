@@ -35,7 +35,8 @@ models.Wall = new mongoose.Schema({
 	date: {type:Date, default: Date.now()},
 	entry: {type: String},
 	author: {type: String},
-	like: {type:Number, default: 0}
+	like: {type:Number, default: 0},
+	likers:{type:Array,default:[]}
 });
 
 models.User = mongoose.model('user', models.User);

@@ -124,7 +124,6 @@ module.exports.avatarUpload = function(req, res){
 		
 		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
 				.then((rep)=>{
-					console.log(fields.id)
 					db.update('Personal',{login:fields.login},{$set:{avatar,thumbAvatar,microAvatar}})
 						.then(()=>res.json({success:true}))
 						.catch(err=>res.json({err:err}))
