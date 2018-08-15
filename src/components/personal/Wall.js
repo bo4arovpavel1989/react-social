@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {withRouter} from 'react-router-dom';
-import {handleResponse,standardFetch, eventEmitter} from '../../helpers';
+import {handleResponse,standardFetch, eventEmitter, getToken} from '../../helpers';
 import MakePost from './MakePost';
 import Post from './Post';
 import {API_URL} from '../../config';
@@ -13,6 +13,7 @@ class Wall extends React.Component {
 		this.state = {
 			person:'', //owner of the wall
 			data:[],
+			myWall:false,
 			loading:false
 		}
 		
@@ -22,6 +23,7 @@ class Wall extends React.Component {
 	
 	getWall(person){
 		this.setState({loading:true});
+		let me = getToken().id;
 		
 		if(person)
 			fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch()) //q means quantity of wall posts already loaded 
@@ -29,7 +31,7 @@ class Wall extends React.Component {
 				.then((rep)=>{
 					if(!rep.err && !rep.forbidden){
 						let data = this.checkLikedPosts(rep);
-						this.setState({data,loading:false})
+						this.setState({data,loading:false, myWall:(me === person)})
 					}
 					else if(rep.forbidden)
 						eventEmitter.emit('logoff')
@@ -48,6 +50,7 @@ class Wall extends React.Component {
 		let postsToRender = [];
 		
 		posts.map((p,i) => {
+			console.log(p);
 			if(_.includes(likedPosts, p._id))
 				p.liked = true;
 			else
@@ -84,6 +87,7 @@ class Wall extends React.Component {
 	
 	render(){
 		let data = this.state.data;
+		let myWall = this.state.myWall;
 		
 		if(this.state.loading)
 			return(
@@ -115,7 +119,7 @@ class Wall extends React.Component {
 					</div>
 					<div className='text-left'>
 						{data.map((e, i) => {
-							return (<Post key={i} data={e}/>)
+							return (<Post key={i} myWall = {myWall} data={e}/>)
 						})}
 					</div>
 				</div>

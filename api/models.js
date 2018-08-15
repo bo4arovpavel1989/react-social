@@ -31,10 +31,10 @@ models.Personal = new mongoose.Schema({
 });
 
 models.Wall = new mongoose.Schema({
-	id: {type: String, required: true},
+	id: {type: String, required: true}, //id of the walls owner
 	date: {type:Date, default: Date.now()},
 	entry: {type: String},
-	author: {type: String},
+	author: {type: String}, //id of the post author
 	like: {type:Number, default: 0},
 	likers:{type:Array,default:[]}
 });

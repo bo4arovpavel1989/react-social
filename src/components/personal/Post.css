@@ -26,8 +26,15 @@
 	margin-top:20px;
 	cursor:pointer;
 	width:30px;
+	display:inline;
 }
 
 .liked {
 	color:red;
+}
+
+.deletePost{
+	display:inline;
+	margin-left:20px;
+	cursor:pointer;
 }

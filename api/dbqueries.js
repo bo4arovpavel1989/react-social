@@ -37,6 +37,7 @@ const dbQueries = {
 	del:  function(schema, val, opt){
 		return new Promise((resolve, reject)=>{
 			models[schema].find(val).remove().exec((err, rep)=>{
+				console.log(rep)
 				if(err) reject(err)
 				else resolve(rep);	
 			})

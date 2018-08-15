@@ -100,3 +100,8 @@ module.exports.handleLike = function(rep, _id, liker){
 	else 
 		db.update('Wall', {_id}, {$pull:{likers:{$in:[liker]}}, $inc:{like:-1}});
 }
+
+module.exports.checkPostRemove = function(rep, remover){
+	console.log ((rep.author === remover) || (rep.id === remover));
+	return ((rep.author === remover) || (rep.id === remover)); //check if its wall owner or post author;
+}

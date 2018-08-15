@@ -78,9 +78,9 @@ var postRequests = [
 
 var deleteRequests = [
 	{
-		url: '/admin/deletecategory',
-		middleware: ()=>{},
-		callback: ()=>{}
+		url: '/removepost/:id',
+		middleware: checkAccess,
+		callback: deleteRequestsHandlers.removePost
 	}
 ];
 

@@ -26,7 +26,7 @@ module.exports.getPerson = function(req, res){
 }
 
 module.exports.getWall = function(req, res){
-	let liker = req.headers.id;
+	let liker = req.headers.id; //id of the wall viewer
 	let id = req.params.id;//id of the wall owner
 	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number if wall twits got per 1 time
@@ -35,7 +35,7 @@ module.exports.getWall = function(req, res){
 	
 	async.parallel([
 		(cb)=>{
-			db.findBy('Wall', {id}, {date:-1}, skip, howmany, 'author like entry date')
+			db.findBy('Wall', {id}, {date:-1}, skip, howmany, 'author like entry date') //find wall posts by the id of the wall owner
 				.then(rep=>{
 					posts = rep;
 					cb();
@@ -44,7 +44,7 @@ module.exports.getWall = function(req, res){
 			
 		},
 		(cb)=>{
-			db.find('Wall', {id, likers:{$in:[liker]}})
+			db.find('Wall', {id, likers:{$in:[liker]}}) //find wall posts by the id of the wall owner and likes of wall viewer
 				.then(rep=>{
 					if(rep)
 						rep.map((r,i) => {
@@ -58,7 +58,7 @@ module.exports.getWall = function(req, res){
 		}
 		],(err)=>{
 			let sendData = {posts, likedPosts}
-			console.log(sendData)
+			
 			if(!err) res.json(sendData)
 			else res.status(500).json({err})	
 	})
