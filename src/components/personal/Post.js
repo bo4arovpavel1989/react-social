@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './Post.css'
 import {handleResponse, standardFetch, getToken} from '../../helpers';
 import {API_URL} from '../../config';
@@ -103,7 +104,7 @@ class Post extends React.Component {
 						<div className='postHeader'>
 							<div className='postAvatar'>
 								<Link to={`/personal/${author}`}>
-									<img src={microAvatar}/>
+									<img src={microAvatar} alt='avatar_image'/>
 								</Link>
 							</div>
 							<div className='postAuthor'>
@@ -123,6 +124,11 @@ class Post extends React.Component {
 				
 		return null;	
 	}	
+}
+
+Post.propTypes = {
+	myWall:PropTypes.bool.isRequired,
+	data:PropTypes.object.isRequired
 }
 
 export default withRouter(Post);

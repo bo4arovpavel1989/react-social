@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const PersonalData = (props) => {
 	const {data} = props;
@@ -20,6 +21,10 @@ const PersonalData = (props) => {
 				</div>
 			</div>
 		)
+}
+
+PersonalData.propTypes = {
+	data:PropTypes.object.isRequired
 }
 
 export default  PersonalData;

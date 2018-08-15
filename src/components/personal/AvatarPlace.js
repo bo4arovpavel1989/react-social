@@ -1,5 +1,6 @@
 import React from 'react';
 import './AvatarPlace.css';
+import PropTypes from 'prop-types';
 
 const AvatarPlace = (props) => {
 	const {img,myPage} = props;
@@ -19,6 +20,11 @@ const AvatarPlace = (props) => {
 				</div>
 			</div>
 		)
+}
+
+AvatarPlace.propTypes = {
+	img: PropTypes.string,
+	myPage:PropTypes.bool.isRequired
 }
 
 export default  AvatarPlace;

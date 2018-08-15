@@ -13,7 +13,7 @@ class Personal extends React.Component {
 		super();
 		this.state = {
 			loading:true,
-			person:'',
+			person:'', //id of the page owner
 			login:'',
 			error:false,
 			data:{},

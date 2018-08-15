@@ -3,18 +3,17 @@ import {Link,withRouter} from 'react-router-dom';
 import './Sidebar.css';
 
 const Sidebar = (props) => {
-	const {} = props;
 	
 	return (	
 			<div>
 				<Link to='/'>
-					<button className='btn-success sidebutton'>Моя страница</button>
+					<button className='btn-primary sidebutton'>Моя страница</button>
 				</Link>
 				<Link to='/messages'>
-					<button className='btn-success sidebutton'>Мои сообщеньки</button>
+					<button className='btn-primary sidebutton'>Мои сообщеньки</button>
 				</Link>
 				<Link to='/options'>
-					<button className='btn-success sidebutton'>Мои настройки</button>
+					<button className='btn-primary sidebutton'>Мои настройки</button>
 				</Link>
 			</div>
 		)

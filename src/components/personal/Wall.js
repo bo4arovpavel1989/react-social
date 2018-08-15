@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {withRouter} from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {handleResponse,standardFetch, eventEmitter, getToken} from '../../helpers';
 import MakePost from './MakePost';
 import Post from './Post';
@@ -50,7 +51,6 @@ class Wall extends React.Component {
 		let postsToRender = [];
 		
 		posts.map((p,i) => {
-			console.log(p);
 			if(_.includes(likedPosts, p._id))
 				p.liked = true;
 			else
@@ -119,7 +119,7 @@ class Wall extends React.Component {
 					</div>
 					<div className='text-left'>
 						{data.map((e, i) => {
-							return (<Post key={i} myWall = {myWall} data={e}/>)
+							return (<Post key={e._id} myWall = {myWall} data={e}/>)
 						})}
 					</div>
 				</div>
@@ -127,6 +127,10 @@ class Wall extends React.Component {
 		
 	}
 	
+}
+
+Wall.propTypes = {
+	id:PropTypes.string.isRequired
 }
 
 export default  withRouter(Wall);

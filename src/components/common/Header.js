@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link,withRouter} from 'react-router-dom';
+import PropTypes from 'prop-types';
 import './Header.css'
 
 const Header = (props) => {
@@ -7,7 +8,7 @@ const Header = (props) => {
 	
 	return (
 		<div>
-			<Link to='/'>
+			<Link className='header' to='/'>
 				<h1>React Social</h1>
 			</Link>
 			{
@@ -23,6 +24,12 @@ const Header = (props) => {
 			}
 		</div>	
 		)
+}
+
+Header.propTypes = {
+	isLogged: PropTypes.bool.isRequired,
+	id: PropTypes.string.isRequired,
+	logoff: PropTypes.func.isRequired
 }
 
 export default  withRouter(Header);

@@ -1,3 +1,6 @@
+.header:hover {
+	text-decoration: none !important;
+}
 .logoff {
 	text-align:right;
 }

@@ -28,8 +28,10 @@ module.exports.getPerson = function(req, res){
 module.exports.getWall = function(req, res){
 	let liker = req.headers.id; //id of the wall viewer
 	let id = req.params.id;//id of the wall owner
+	
 	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number if wall twits got per 1 time
+	
 	let posts = [];
 	let likedPosts = [];
 	
