@@ -39,9 +39,17 @@ models.Wall = new mongoose.Schema({
 	likers:{type:Array,default:[]}
 });
 
+models.Message =  new mongoose.Schema({
+	id:{type:String, required:true},//from whom message
+	message:{type:String, required:true},
+	date:{type:Date},
+	isRead:{type:Boolean, default:false}
+});
+
 models.User = mongoose.model('user', models.User);
 models.Personal = mongoose.model('personal', models.Personal);
 models.Wall = mongoose.model('wall', models.Wall);
 models.Session = mongoose.model('session', models.Session);
+models.Message = mongoose.model('message', models.Message);
 
 module.exports = models;

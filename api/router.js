@@ -73,6 +73,11 @@ var postRequests = [
 		url: '/avatarupload',
 		middleware: checkFileAccess,
 		callback: postRequestsHandlers.avatarUpload
+	},
+	{
+		url:'/sendmessage',
+		middleware: checkAccess,
+		callback: postRequestsHandlers.sendMessage
 	}
 ];
 

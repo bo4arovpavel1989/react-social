@@ -6,6 +6,7 @@ import AvatarPlace from './AvatarPlace';
 import PersonalData from './PersonalData';
 import Sidebar from './Sidebar';
 import Wall from './Wall';
+import MsgBox from './MsgBox';
 import './Personal.css';
 
 class Personal extends React.Component {
@@ -17,10 +18,12 @@ class Personal extends React.Component {
 			login:'',
 			error:false,
 			data:{},
-			myPage:true
+			myPage:true,
+			msgBoxOpened:false
 		}
 		
 		this.getPersonalData = this.getPersonalData.bind(this);
+		this.openMsgBox = this.openMsgBox.bind(this);
 	}
 	
 	getPersonalData(person){
@@ -41,6 +44,11 @@ class Personal extends React.Component {
 				console.log(error)
 				this.setState({error:true})
 			})
+	}
+	
+	openMsgBox(){
+		let opened = this.state.msgBoxOpened;
+		this.setState({msgBoxOpened: !opened});
 	}
 	
 	componentDidMount(){
@@ -68,7 +76,7 @@ class Personal extends React.Component {
 	}
 	
 	render(){
-		let data = this.state.data;	
+		let {person, data} = this.state;	
 		
 		if(this.state.error || !data)
 			return(
@@ -86,6 +94,12 @@ class Personal extends React.Component {
 			
 		return (
 			<div className='container'>
+				{this.state.msgBoxOpened ? 
+					<MsgBox
+						openMsgBox = {this.openMsgBox}
+						person = {person}
+					/> : ''
+				}
 				<div className="row">
 					<div className="col-md-2">
 						<Sidebar/>
@@ -94,6 +108,7 @@ class Personal extends React.Component {
 						<AvatarPlace
 							img = {data.thumbAvatar}
 							myPage= {this.state.myPage}
+							openMsgBox = {this.openMsgBox}
 						/>
 					</div>
 					<div className="col-md-3">

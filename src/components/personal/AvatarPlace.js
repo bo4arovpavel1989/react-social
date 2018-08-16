@@ -3,7 +3,7 @@ import './AvatarPlace.css';
 import PropTypes from 'prop-types';
 
 const AvatarPlace = (props) => {
-	const {img,myPage} = props;
+	const {img,myPage,openMsgBox} = props;
 	
 	return (	
 			<div>
@@ -13,7 +13,7 @@ const AvatarPlace = (props) => {
 					</div>
 					{myPage ? '' :
 						<div className='text-center'>
-							<button className='btn-success messageButton btn-lrg'>Отправить сообщение</button>
+							<button onClick={openMsgBox} className='btn-success messageButton btn-lrg'>Отправить сообщение</button>
 						</div>
 					}
 						
@@ -24,7 +24,8 @@ const AvatarPlace = (props) => {
 
 AvatarPlace.propTypes = {
 	img: PropTypes.string,
-	myPage:PropTypes.bool.isRequired
+	myPage:PropTypes.bool.isRequired,
+	openMsgBox:PropTypes.func.isRequired
 }
 
 export default  AvatarPlace;
