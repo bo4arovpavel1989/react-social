@@ -29,6 +29,11 @@ var getRequests = [
 		url: '/like/:id',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.likePost
+	},
+	{
+		url:'/getmessages',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.getMessages
 	}
 ];
 

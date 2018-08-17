@@ -105,3 +105,10 @@ module.exports.checkPostRemove = function(rep, remover){
 	console.log ((rep.author === remover) || (rep.id === remover));
 	return ((rep.author === remover) || (rep.id === remover)); //check if its wall owner or post author;
 }
+
+module.exports.markMessagesSeen = function(rep){
+	rep.map(m => {
+		if (!m.isRead)
+			db.update('Message', {_id: m._id}, {$set:{isRead:true}})
+	});
+};

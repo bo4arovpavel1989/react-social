@@ -4,7 +4,6 @@ import {handleResponse,standardFetch, getToken,eventEmitter} from '../../helpers
 import {API_URL} from '../../config';
 import AvatarPlace from './AvatarPlace';
 import PersonalData from './PersonalData';
-import Sidebar from './Sidebar';
 import Wall from './Wall';
 import MsgBox from './MsgBox';
 import './Personal.css';
@@ -93,30 +92,27 @@ class Personal extends React.Component {
 			)	
 			
 		return (
-			<div className='container'>
+			<div className="col-md-10">
 				{this.state.msgBoxOpened ? 
 					<MsgBox
 						openMsgBox = {this.openMsgBox}
 						person = {person}
 					/> : ''
 				}
-				<div className="row">
-					<div className="col-md-2">
-						<Sidebar/>
-					</div>
-					<div className="col-md-3">
+					<div className="avatarAndPersonal">
+					<div className='avatarPlace'>
 						<AvatarPlace
 							img = {data.thumbAvatar}
 							myPage= {this.state.myPage}
 							openMsgBox = {this.openMsgBox}
 						/>
 					</div>
-					<div className="col-md-3">
+					<div  className='personalDataPlace'>
 						<PersonalData
 							data = {data}
 						/>
 					</div>
-				</div>
+					</div>
 				<div className="text-center">	
 					<Wall
 						id = {this.state.person}

@@ -6,6 +6,8 @@ import Login from './components/common/Login';
 import Register from './components/common/Register';
 import NotAllowed from './components/common/NotAllowed';
 import Personal from './components/personal/Personal';
+import Messages from './components/personal/Messages';
+import Sidebar from './components/personal/Sidebar';
 import Edit from './components/personal/Edit';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {checkToken, getToken, eventEmitter} from './helpers';
@@ -79,12 +81,20 @@ class App extends React.Component {
 					id={this.state.id}
 				/>
 				
-				<Switch>
-					<Route path='/' render={this.state.isLogged ? Personal : Login} exact/>
-					<Route path='/register' component={Register} exact/>
-					<Route path='/personal/:id' render={this.state.isLogged ? Personal : NotAllowed} exact/>
-					<Route path='/edit/:id' render={this.state.isLogged ? Edit : NotAllowed} exact/>
-				</Switch>
+				<div className="row">
+					{this.state.isLogged ? 
+						<div className="col-md-2">
+							<Sidebar/>
+						</div> : ''
+					}
+					<Switch>
+						<Route path='/' render={this.state.isLogged ? Personal : Login} exact/>
+						<Route path='/register' component={Register} exact/>
+						<Route path='/personal/:id' render={this.state.isLogged ? Personal : NotAllowed} exact/>
+						<Route path='/messages' render={this.state.isLogged ? Messages : NotAllowed} exact/>
+						<Route path='/edit/:id' render={this.state.isLogged ? Edit : NotAllowed} exact/>
+					</Switch>
+				</div>	
 			</div>
 		</BrowserRouter>		
 		);	

@@ -52,8 +52,7 @@ class MsgBox extends React.Component {
 			})
 			.then(handleResponse)
 			.then((rep)=>{
-				this.setState({loading:false});
-				
+				this.state.openMsgBox();				
 			})
 			.catch((error) => {
 				console.log(error)
@@ -65,7 +64,7 @@ class MsgBox extends React.Component {
 	
 	render(){
 	
-	let {openMsgBox, error} = this.state;
+	let {openMsgBox, error, message, loading} = this.state;
 	
 	return (
 		<div className='msgBoxContainer'>
@@ -80,7 +79,7 @@ class MsgBox extends React.Component {
 					</div>
 					<div className="form-group">
 						<div className="col-sm-offset-2 col-sm-10">
-							<input disabled={this.state.message === '' ? true : false} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
+							<input disabled={(message === '') || (loading) ? true : false} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
 						</div>
 					</div>
 				</form>
@@ -92,7 +91,7 @@ class MsgBox extends React.Component {
 
 MsgBox.propTypes = {
 	openMsgBox: PropTypes.func.isRequired,
-	person: PropTypes.string.isRequired
+	person: PropTypes.string
 }
 
 export default  MsgBox;

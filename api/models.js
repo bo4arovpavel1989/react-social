@@ -41,6 +41,7 @@ models.Wall = new mongoose.Schema({
 
 models.Message =  new mongoose.Schema({
 	id:{type:String, required:true},//from whom message
+	person:{type:String, required:true},//to whom message
 	message:{type:String, required:true},
 	date:{type:Date},
 	isRead:{type:Boolean, default:false}

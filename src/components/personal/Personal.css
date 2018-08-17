@@ -1,3 +1,11 @@
 .wall {
 	margin-top:30px;
 }
+.avatarAndPersonal{
+	display:flex;
+	flex-direction:row;
+}
+.avatarPlace{
+	margin-right:40px;
+	min-height:228px;
+}

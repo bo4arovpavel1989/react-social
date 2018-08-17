@@ -2,6 +2,7 @@ const async = require('async');
 
 const db = require('./dbqueries');
 const handleLike = require('./customfunctions.js').handleLike;
+const markMessagesSeen = require('./customfunctions.js').markMessagesSeen;
 
 module.exports.getPerson = function(req, res){
 	let id = req.params.id;
@@ -30,7 +31,7 @@ module.exports.getWall = function(req, res){
 	let id = req.params.id;//id of the wall owner
 	
 	let skip = Number(req.query.q); //skip value must be numeric
-	const howmany = 10; //number if wall twits got per 1 time
+	const howmany = 10; //number of wall twits got per 1 time
 	
 	let posts = [];
 	let likedPosts = [];
@@ -100,6 +101,20 @@ module.exports.likePost = function(req, res){
 				res.json({newLike:true});
 			else
 				res.json({newLike:false})
+		})
+		.catch(err=>res.status(500).json({err}))
+};
+
+module.exports.getMessages = function(req, res){
+	let person = req.headers.id;
+	
+	let skip = Number(req.query.q); //skip value must be numeric
+	const howmany = 10; //number of messages got per 1 time
+	
+	db.findBy('Message', {person}, {date:-1}, skip, howmany)
+		.then(rep=>{
+			markMessagesSeen(rep);
+			res.json({messages:rep});
 		})
 		.catch(err=>res.status(500).json({err}))
 };

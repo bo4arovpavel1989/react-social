@@ -26,7 +26,7 @@ class Post extends React.Component {
 		this.removePost = this.removePost.bind(this);
 	}
 	
-	componentWillMount(){
+	componentDidMount(){
 		let {data, myWall} = this.props;
 		let me = getToken().id;
 		
