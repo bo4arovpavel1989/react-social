@@ -4,6 +4,11 @@ const db = require('./dbqueries');
 const handleLike = require('./customfunctions.js').handleLike;
 const markMessagesSeen = require('./customfunctions.js').markMessagesSeen;
 
+const cacheData = {
+	postPersonData : {}
+}
+
+
 module.exports.getPerson = function(req, res){
 	let id = req.params.id;
 	
@@ -71,22 +76,34 @@ module.exports.getWall = function(req, res){
 module.exports.getPostPersonData = function(req, res){
 	let id = req.params.id;
 	
-	async.waterfall([
-		(cb)=>{
-			db.findOne('User',{_id:id})
-				.then(rep=>cb(null, rep.login))
-				.catch(err=>cb(err, null))
-		},
-		(login, cb)=>{
-			db.findOne('Personal',{login}, 'name microAvatar')
-				.then(rep=>cb(null, rep))
-				.catch(err=>cb(err, null))
-			
-		}
-		],(err, rep)=>{
-			if(!err) res.json(rep)
-			else res.status(500).json({err})	
+	if(cacheData.postPersonData[id]) {
+		console.log(1)
+		process.nextTick(()=>res.json(cacheData.postPersonData[id]))
+		
+	} else {
+		console.log(2)
+	
+		async.waterfall([
+			(cb)=>{
+				db.findOne('User',{_id:id})
+					.then(rep=>cb(null, rep.login))
+					.catch(err=>cb(err, null))
+			},
+			(login, cb)=>{
+				db.findOne('Personal',{login}, 'name microAvatar')
+					.then(rep=>cb(null, rep))
+					.catch(err=>cb(err, null))
+				
+			}
+			],(err, rep)=>{
+				if(!err) {
+					cacheData.postPersonData[id] = rep;
+					res.json(rep)
+				}	
+				else res.status(500).json({err})	
 	});
+	
+	}
 };
 
 module.exports.likePost = function(req, res){

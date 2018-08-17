@@ -22,6 +22,10 @@
 	margin-left:70px;
 }
 
+.postEntryText{
+	margin-bottom:5px;
+}
+
 .postEntryLike{
 	margin-top:20px;
 	cursor:pointer;
@@ -35,6 +39,7 @@
 
 .deletePost{
 	display:inline;
-	margin-left:20px;
+	margin-left:300px;
 	cursor:pointer;
+	color:#ffd1db;
 }
