@@ -77,12 +77,9 @@ module.exports.getPostPersonData = function(req, res){
 	let id = req.params.id;
 	
 	if(cacheData.postPersonData[id]) {
-		console.log(1)
 		process.nextTick(()=>res.json(cacheData.postPersonData[id]))
 		
 	} else {
-		console.log(2)
-	
 		async.waterfall([
 			(cb)=>{
 				db.findOne('User',{_id:id})
@@ -123,15 +120,19 @@ module.exports.likePost = function(req, res){
 };
 
 module.exports.getMessages = function(req, res){
-	let person = req.headers.id;
+	let me = req.headers.id; //messages to whom and from whom
+	let box = req.params.box;
 	
 	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number of messages got per 1 time
 	
-	db.findBy('Message', {person}, {date:-1}, skip, howmany)
-		.then(rep=>{
-			markMessagesSeen(rep);
-			res.json({messages:rep});
-		})
+	let query = (box === 'in' ? {to:me} : {from:me}) //changes query if it
+		
+	db.findBy('Message', query, {date:-1}, skip, howmany)
+			.then(rep=>{
+				if(box === 'in')
+					markMessagesSeen(rep);
+				res.json({messages:rep});
+			})
 		.catch(err=>res.status(500).json({err}))
 };

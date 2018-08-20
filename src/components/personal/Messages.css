@@ -1,0 +1,18 @@
+.inbox-ooutbox{
+	margin-bottom:20px;
+}
+
+.inbox {
+	cursor:pointer;
+	margin-right:40px;
+}
+
+.outbox {
+	cursor:pointer;
+}
+
+.active {
+	border-radius:20px;
+	background-color: #a7e3ff;
+	padding: 2px 2px 5px 2px;
+}

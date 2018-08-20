@@ -1,6 +1,7 @@
 import React from 'react';
+import {Link, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {handleResponse,attouchCred} from '../../helpers';
+import {handleResponse,attouchCred,standardFetch} from '../../helpers';
 import {API_URL} from '../../config';
 import './MsgBox.css'
 
@@ -12,7 +13,9 @@ class MsgBox extends React.Component {
 			message:'',
 			person:'', //who will receive the message,
 			loading:false,
-			error:false
+			error:false,
+			name:'',
+			microAvatar:''
 		}
 		
 		this.handleChange = this.handleChange.bind(this);
@@ -22,7 +25,7 @@ class MsgBox extends React.Component {
 	componentWillMount(){
 		let {openMsgBox, person} = this.props;
 		
-		this.setState({openMsgBox, person});
+		this.setState({openMsgBox, person}, ()=>this.getUserData() );
 	}
 	
 	
@@ -30,6 +33,20 @@ class MsgBox extends React.Component {
 		let message = e.target.value.toString();
 		
 		this.setState({message});
+	}
+	
+	getUserData(){	
+		let person = this.state.person;
+	
+		fetch(`${API_URL}/post-personal/${person}`, standardFetch())
+			.then(handleResponse)
+			.then((rep)=>{
+				let {name, microAvatar} = rep;
+				this.setState({microAvatar, name});
+			})
+			.catch(error=>{
+				console.log(error)
+			})
 	}
 	
 	handleSubmit(e){
@@ -64,12 +81,17 @@ class MsgBox extends React.Component {
 	
 	render(){
 	
-	let {openMsgBox, error, message, loading} = this.state;
+	let {openMsgBox, error, message, loading, person, microAvatar, name} = this.state;
 	
 	return (
 		<div className='msgBoxContainer'>
 			<div className='blur' onClick={openMsgBox}></div>
 			<div className={'msgBox ' + (error ? 'error' : '')}>
+				<div className='messageName'>
+					<Link to={`/personal/${person}`}>
+						{name}:
+					</Link>
+				</div>
 				<form className="sendmsgform" onSubmit={this.handleSubmit}>
 					<div className="form-group">
 						<div className="input-group">
@@ -94,4 +116,4 @@ MsgBox.propTypes = {
 	person: PropTypes.string
 }
 
-export default  MsgBox;
+export default  withRouter(MsgBox);

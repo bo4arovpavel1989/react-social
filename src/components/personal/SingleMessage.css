@@ -7,7 +7,9 @@
 .messageAuthor{
 		margin-right:10px;
 }
-
+.message {
+	cursor:pointer;
+}
 .new {
 	background-color:#e9e9e9;
 }

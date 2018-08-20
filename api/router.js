@@ -31,7 +31,7 @@ var getRequests = [
 		callback: getRequestsHandlers.likePost
 	},
 	{
-		url:'/getmessages',
+		url:'/getmessages/:box',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.getMessages
 	}

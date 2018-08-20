@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './SingleMessage.css'
-import {handleResponse, standardFetch, getToken} from '../../helpers';
+import {handleResponse, standardFetch, getToken, eventEmitter} from '../../helpers';
 import {API_URL} from '../../config';
 
 class SingleMessage extends React.Component {
@@ -11,8 +11,11 @@ class SingleMessage extends React.Component {
 		this.state = {
 			deleted:false,
 			microAvatar:'',
-			id:'',
+			id:'', //id of person, viewed in message
+			from:'',
+			to:'',
 			message:'',
+			name:'',
 			date:'',
 			isRead:true
 		}
@@ -22,8 +25,14 @@ class SingleMessage extends React.Component {
 	}
 	
 	componentDidMount(){
-		let {data} = this.props;
-		let me = getToken().id;
+		let {data, box} = this.props;
+		
+		/*
+		 set id of the person whether its sender or receiver. 
+		 if its inbox i set id of the sender, if its outbox i set od of the receiver
+		*/
+		
+		data.id = (box === 'in' ? data.from : data.to) 
 			
 		this.setState(data, ()=>{
 			this.getUserData();
@@ -50,8 +59,12 @@ class SingleMessage extends React.Component {
 			}
 	}
 	
+	emitClickOnMessage(id){
+		eventEmitter.emit('messageClick', id); 
+	}
+	
 	render(){	
-		let {deleted, isRead, id, microAvatar, date, message} = this.state;
+		let {deleted, isRead, id, microAvatar, date, message, name} = this.state;
 	
 		if(!deleted)
 			return (
@@ -62,7 +75,12 @@ class SingleMessage extends React.Component {
 						</Link>
 					</div>
 					<div className={'messageText ' + (isRead ? '' : 'new')}>
-						<div className='message'>{message}</div>
+						<div className='messageName'>
+							<Link to={`/personal/${id}`}>
+								{name}:
+							</Link>
+						</div>
+						<div className='message' onClick={()=>this.emitClickOnMessage(id)}>{message}</div>
 						<div className='messageDate'>{date.split('T')[0]}</div>
 					</div>
 				</div>
