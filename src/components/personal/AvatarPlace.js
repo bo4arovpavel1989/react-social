@@ -13,7 +13,12 @@ const AvatarPlace = (props) => {
 					</div>
 					{myPage ? '' :
 						<div className='text-center'>
-							<button onClick={openMsgBox} className='btn-success messageButton btn-lrg'>Отправить сообщение</button>
+							<div>
+								<button onClick={openMsgBox} className='btn-success messageButton btn-lrg'>Отправить сообщение</button>
+							</div>
+							<div>
+								<button className='btn-success messageButton btn-lrg'>Добавить в контакты</button>
+							</div>
 						</div>
 					}
 						

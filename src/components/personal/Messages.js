@@ -49,7 +49,7 @@ class Messages extends React.Component {
 	}
 	
 	listenToClickOnMessage(){
-		eventEmitter.on('messageClick', (id) =>this.openMsgBox(id) );
+		eventEmitter.on('messageClick', (id) => this.openMsgBox(id) );
 	}
 		
 	openMsgBox(id){
@@ -68,6 +68,7 @@ class Messages extends React.Component {
 	
 	return (
 		<div className="col-md-10">
+		
 			<div className='inbox-ooutbox'>
 				<span className={'inbox ' + (box === 'in' ? 'active' : "")} onClick={()=>this.setBox('in')}>
 					Входящие
@@ -76,12 +77,14 @@ class Messages extends React.Component {
 					Отправленные
 				</span>
 			</div>
+			
 			{this.state.msgBoxOpened ? 
 				<MsgBox
 					openMsgBox = {this.openMsgBox}
 					person = {id}
 				/> : ''
 			}
+			
 			<div className='messagesColumn'>
 				{
 					messages.map((m, i) => {

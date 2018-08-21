@@ -13,6 +13,17 @@
 .new {
 	background-color:#e9e9e9;
 }
+.messageText {
+	width:300px;
+	min-width:300px;
+}
 .messageDate{
 	color:#b4b0b0;
+}
+
+.removeMessage {
+	display:inline;
+	margin-left:300px;
+	cursor:pointer;
+	color:#ffd1db;
 }

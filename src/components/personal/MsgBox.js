@@ -85,13 +85,17 @@ class MsgBox extends React.Component {
 	
 	return (
 		<div className='msgBoxContainer'>
+		
 			<div className='blur' onClick={openMsgBox}></div>
+			
 			<div className={'msgBox ' + (error ? 'error' : '')}>
+			
 				<div className='messageName'>
 					<Link to={`/personal/${person}`}>
 						{name}:
 					</Link>
 				</div>
+				
 				<form className="sendmsgform" onSubmit={this.handleSubmit}>
 					<div className="form-group">
 						<div className="input-group">
@@ -105,6 +109,7 @@ class MsgBox extends React.Component {
 						</div>
 					</div>
 				</form>
+				
 			</div>
 		</div>	
 		)

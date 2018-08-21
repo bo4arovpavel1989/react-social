@@ -91,6 +91,11 @@ var deleteRequests = [
 		url: '/removepost/:id',
 		middleware: checkAccess,
 		callback: deleteRequestsHandlers.removePost
+	},
+	{
+		url: '/removemessage/:id',
+		middleware: checkAccess,
+		callback: deleteRequestsHandlers.removeMessage
 	}
 ];
 

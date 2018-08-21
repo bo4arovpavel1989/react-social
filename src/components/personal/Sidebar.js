@@ -9,11 +9,14 @@ const Sidebar = (props) => {
 				<Link to='/'>
 					<button className='btn-primary sidebutton'>Моя страница</button>
 				</Link>
+				<Link to='/contacts'>
+					<button className='btn-primary sidebutton'>Контакты</button>
+				</Link>
 				<Link to='/messages'>
-					<button className='btn-primary sidebutton'>Мои сообщеньки</button>
+					<button className='btn-primary sidebutton'>Сообщеньки</button>
 				</Link>
 				<Link to='/options'>
-					<button className='btn-primary sidebutton'>Мои настройки</button>
+					<button className='btn-primary sidebutton'>Настройки</button>
 				</Link>
 			</div>
 		)

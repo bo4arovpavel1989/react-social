@@ -138,7 +138,7 @@ module.exports.avatarUpload = function(req, res){
 
 module.exports.sendMessage = function(req, res){
 	let {message, person, id} = req.body; //person - to whom, id - from whom;
-	let data = {message, to:person, from:id, date:Date.now()};
+	let data = {message, to:person, from:id, date:Date.now(), isSeenBy:[id, person]};
 	
 	db.create('Message', data)
 		.then(rep=>res.json({success:true}))

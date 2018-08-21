@@ -126,7 +126,7 @@ module.exports.getMessages = function(req, res){
 	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number of messages got per 1 time
 	
-	let query = (box === 'in' ? {to:me} : {from:me}) //changes query if it
+	let query = (box === 'in' ? {to:me, isSeenBy: {$in: [me] }} : {from:me, isSeenBy: {$in: [me] }}) //changes query if its inbox or outbox
 		
 	db.findBy('Message', query, {date:-1}, skip, howmany)
 			.then(rep=>{

@@ -44,6 +44,7 @@ models.Message =  new mongoose.Schema({
 	to:{type:String, required:true},//to whom message
 	message:{type:String, required:true},
 	date:{type:Date},
+	isSeenBy:{type:Array},
 	isRead:{type:Boolean, default:false}
 });
 

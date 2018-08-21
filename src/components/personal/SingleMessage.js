@@ -11,6 +11,7 @@ class SingleMessage extends React.Component {
 		this.state = {
 			deleted:false,
 			microAvatar:'',
+			_id:'', //id of the message
 			id:'', //id of person, viewed in message
 			from:'',
 			to:'',
@@ -55,7 +56,24 @@ class SingleMessage extends React.Component {
 		
 	removeMessage(){
 		if(window.confirm('Уверен?')){
-			
+				let id = this.state._id;
+				
+				fetch(`${API_URL}/removemessage/${id}`,{
+						method:'DELETE',
+						mode:'cors',
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						body:JSON.stringify(getToken())
+					})
+					.then(handleResponse)
+					.then((rep)=>{
+						this.setState({deleted:true});
+					})
+					.catch((error) => {
+						console.log(error);
+					});
 			}
 	}
 	
@@ -69,20 +87,33 @@ class SingleMessage extends React.Component {
 		if(!deleted)
 			return (
 				<div className='singleMessage'>
+				
 					<div className='messageAuthor'>
 						<Link to={`/personal/${id}`}>
 							<img src={microAvatar} alt='avatar_image'/>
 						</Link>
 					</div>
+					
 					<div className={'messageText ' + (isRead ? '' : 'new')}>
+					
 						<div className='messageName'>
 							<Link to={`/personal/${id}`}>
 								{name}:
 							</Link>
 						</div>
-						<div className='message' onClick={()=>this.emitClickOnMessage(id)}>{message}</div>
-						<div className='messageDate'>{date.split('T')[0]}</div>
-					</div>
+						
+						<div className='message' onClick={()=>this.emitClickOnMessage(id)}>
+							{message}
+						</div>
+						
+						<div className='messageDate'>
+							{date.split('T')[0]}
+						</div>
+						
+					</div>		
+					
+					<span className='removeMessage' onClick={this.removeMessage}>Удалить</span>
+					
 				</div>
 				)
 				
