@@ -123,8 +123,8 @@ module.exports.getMessages = function(req, res){
 	let me = req.headers.id; //messages to whom and from whom
 	let box = req.params.box;
 	
-	let skip = Number(req.query.q); //skip value must be numeric
 	const howmany = 10; //number of messages got per 1 time
+	let skip = Number(req.query.page) * howmany; //skip value must be numeric
 	
 	let query = (box === 'in' ? {to:me, isSeenBy: {$in: [me] }} : {from:me, isSeenBy: {$in: [me] }}) //changes query if its inbox or outbox
 		

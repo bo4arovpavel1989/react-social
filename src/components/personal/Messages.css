@@ -16,3 +16,24 @@
 	background-color: #a7e3ff;
 	padding: 2px 2px 5px 2px;
 }
+
+.navButtons{
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.prevButton {
+	border-radius:20px;
+	cursor:pointer;
+	
+}
+
+.nextButton{
+	margin-left:40px;
+	border-radius:20px;
+	cursor:pointer;
+}
+
+.activeButton{
+	background-color: #a7e3ff;
+}

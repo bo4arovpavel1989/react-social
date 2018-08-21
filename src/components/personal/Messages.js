@@ -10,6 +10,8 @@ class Messages extends React.Component {
 	constructor(){
 		super();
 		this.state = {
+			page:0,
+			isMore:true,
 			error:false,
 			loading:false,
 			msgBoxOpened:false,
@@ -32,15 +34,17 @@ class Messages extends React.Component {
 	}
 	
 	getMessages(){	
-		let box = this.state.box;
+		let {box, page} = this.state;
 		this.setState({loading:true});
 		
 		
-		fetch(`${API_URL}/getmessages/${box}`,standardFetch()) 
+		fetch(`${API_URL}/getmessages/${box}?page=${page}`, standardFetch()) 
 			.then(handleResponse)
 			.then((rep)=>{
-				this.setState({loading:false, messages:rep.messages});
-				
+				if(rep.messages.length === 10)
+					this.setState({loading:false,  isMore:true, messages:rep.messages});
+				else 
+					this.setState({loading:false, isMore:false, messages:rep.messages});
 			})
 			.catch(error=>{
 				console.log(error)
@@ -58,13 +62,22 @@ class Messages extends React.Component {
 	}
 	
 	setBox(box){
-		this.setState({box}, ()=>{
+		this.setState({box, page:0}, ()=>{
 			this.getMessages();
 		});
 	}
 	
+	changePage(dir){
+		let {page, isMore} = this.state;
+		
+		if (dir === 'next' && isMore) 
+			this.setState({page: ++page}, () => this.getMessages())
+		else if (page > 0)
+			this.setState({page: --page}, () => this.getMessages())
+	}
+	
 	render(){
-	let {id, messages, box} = this.state;
+	let {id, messages, box, page, isMore} = this.state;
 	
 	return (
 		<div className="col-md-10">
@@ -92,6 +105,24 @@ class Messages extends React.Component {
 					})
 				}
 			</div>
+			
+			<div className='navButtons'>
+				<button 
+					disabled={page === 0 ? true : false} 
+					onClick={() => this.changePage('prev')}
+					className={'prevButton ' + (page > 0 ? 'activeButton' : '')}
+				>
+					&larr;
+				</button>
+				<button 
+					disabled={isMore ? false : true} 
+					onClick={() => this.changePage('next')} 
+					className={'nextButton ' + (isMore ? 'activeButton' : '')}
+				>
+					&rarr;
+				</button>
+			</div>
+			
 		</div>
 		)
 	}	
