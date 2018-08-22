@@ -12,27 +12,39 @@ class Wall extends React.Component {
 		super();
 		
 		this.state = {
-			person:'', //owner of the wall
+			person:false, //owner of the wall
 			data:[],
+			isMore:true,
 			myWall:false,
+			scroll:0, //number of scrolls by order
 			loading:false
 		}
 		
+		this.scrollTrigger =  React.createRef();
 		this.checkLikedPosts = this.checkLikedPosts.bind(this);
+		this.getOlderPosts = this.getOlderPosts.bind(this);
 	}
 	
 	
-	getWall(person){
+	getWall(){
 		this.setState({loading:true});
 		let me = getToken().id;
+		let q = this.state.scroll;
+		let person = this.state.person;
 		
 		if(person)
-			fetch(`${API_URL}/getwall/${person}?q=0`,standardFetch()) //q means quantity of wall posts already loaded 
+			fetch(`${API_URL}/getwall/${person}?q=${q}`,standardFetch()) //q means quantity of wall posts already loaded 
 				.then(handleResponse)
 				.then((rep)=>{
 					if(!rep.err && !rep.forbidden){
-						let data = this.checkLikedPosts(rep);
-						this.setState({data,loading:false, myWall:(me === person)})
+						let newData = this.checkLikedPosts(rep);
+						let data, 
+							isMore = true;
+						
+						if(newData.length < 10)
+							isMore = false;
+												
+						this.setState({data:[...this.state.data, ...newData], isMore, loading:false, myWall:(me === person)})
 					}
 					else if(rep.forbidden)
 						eventEmitter.emit('logoff')
@@ -50,7 +62,7 @@ class Wall extends React.Component {
 		let likedPosts = rep.likedPosts;
 		let postsToRender = [];
 		
-		posts.map((p,i) => {
+		posts.forEach((p,i) => {
 			if(_.includes(likedPosts, p._id))
 				p.liked = true;
 			else
@@ -64,24 +76,38 @@ class Wall extends React.Component {
 	
 	listenToNewPosts(){
 		eventEmitter.on('newpost',()=>{
-			this.getWall(this.state.person)
+			this.setState({scroll:0}, () => this.getWall(this.state.person) );
 		})
 	}
 	
 	componentDidMount(){
 		this.setState({person:this.props.id},() => {
-			this.getWall(this.state.person);
+			this.getWall();
 			this.listenToNewPosts();
 		});
 		
+		window.addEventListener('scroll', this.getOlderPosts, true);
 	}
 	
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
 			
-			this.setState({person:newPerson});
-			this.getWall(newPerson);
+			this.setState({person:newPerson}, this.getWall);
+		}
+	}
+	
+	getOlderPosts(){
+		if(this.state.isMore) {
+			let scrTrg = this.scrollTrigger;
+			
+			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
+			let bodyHeight = document.body.offsetHeight;
+			
+			if(scr >= bodyHeight) {
+				let scrollNum = this.state.scroll;
+				this.setState({scroll:++scrollNum}, this.getWall)
+			}
 		}
 	}
 	
@@ -111,7 +137,7 @@ class Wall extends React.Component {
 			)
 		
 		return (	
-				<div className='wall text-center'>
+				<div className='wall text-center' onScroll={this.getOlderPosts}>
 					<div className='text-center'>
 						<MakePost
 							id = {this.state.person} //make post to who
@@ -121,6 +147,8 @@ class Wall extends React.Component {
 						{data.map((e, i) => {
 							return (<Post key={e._id} myWall = {myWall} data={e}/>)
 						})}
+					</div>
+					<div className='scrollToGetOld' ref={this.scrollTrigger}>
 					</div>
 				</div>
 			)

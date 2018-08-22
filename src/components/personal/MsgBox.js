@@ -14,8 +14,7 @@ class MsgBox extends React.Component {
 			person:'', //who will receive the message,
 			loading:false,
 			error:false,
-			name:'',
-			microAvatar:''
+			name:''
 		}
 		
 		this.handleChange = this.handleChange.bind(this);
@@ -41,8 +40,8 @@ class MsgBox extends React.Component {
 		fetch(`${API_URL}/post-personal/${person}`, standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				let {name, microAvatar} = rep;
-				this.setState({microAvatar, name});
+				let {name} = rep;
+				this.setState({ name});
 			})
 			.catch(error=>{
 				console.log(error)
@@ -81,7 +80,7 @@ class MsgBox extends React.Component {
 	
 	render(){
 	
-	let {openMsgBox, error, message, loading, person, microAvatar, name} = this.state;
+	let {openMsgBox, error, message, loading, person, name} = this.state;
 	
 	return (
 		<div className='msgBoxContainer'>
