@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './Post.css'
-import {handleResponse, standardFetch, getToken} from '../../helpers';
+import {handleResponse, standardFetch, getToken, eventEmitter} from '../../helpers';
 import {API_URL} from '../../config';
 
 class Post extends React.Component {
@@ -63,6 +63,8 @@ class Post extends React.Component {
 					this.setState({like:++like, liked:true})
 				else
 					this.setState({like:--like, liked:false})
+				
+				eventEmitter.emit('like', this.state._id)
 			})
 			.catch(error=>{
 				console.log(error)

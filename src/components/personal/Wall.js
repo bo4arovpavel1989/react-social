@@ -38,13 +38,12 @@ class Wall extends React.Component {
 				.then((rep)=>{
 					if(!rep.err && !rep.forbidden){
 						let newData = this.checkLikedPosts(rep);
-						let data, 
-							isMore = true;
+						let isMore = true;
 						
 						if(newData.length < 10)
 							isMore = false;
 												
-						this.setState({data:[...this.state.data, ...newData], isMore, loading:false, myWall:(me === person)})
+						this.setState( {data:[...this.state.data, ...newData], isMore, loading:false, myWall:(me === person)} )
 					}
 					else if(rep.forbidden)
 						eventEmitter.emit('logoff')
@@ -60,18 +59,15 @@ class Wall extends React.Component {
 	checkLikedPosts(rep){
 		let posts = rep.posts;
 		let likedPosts = rep.likedPosts;
-		let postsToRender = [];
 		
 		posts.forEach((p,i) => {
 			if(_.includes(likedPosts, p._id))
 				p.liked = true;
 			else
 				p.liked = false;
-			
-			postsToRender.push(p);
 		});
 		
-		return postsToRender;
+		return posts;
 	}
 	
 	listenToNewPosts(){
@@ -80,10 +76,29 @@ class Wall extends React.Component {
 		})
 	}
 	
+	listenToLikes(){		
+		eventEmitter.on('like', (_id) => {
+			
+		let data = this.state.data;
+			
+			for (let i = 0; i < data.length; i++) {
+				if (data[i]._id === _id) {
+					data[i].liked = !data[i].liked;
+					data[i].liked ? ++data[i].like : --data[i].like;
+					break;
+				}	
+ 			} 
+			
+			console.log(data);
+			this.setState({data});
+		});
+	}
+	
 	componentDidMount(){
 		this.setState({person:this.props.id},() => {
 			this.getWall();
 			this.listenToNewPosts();
+			this.listenToLikes();
 		});
 		
 		window.addEventListener('scroll', this.getOlderPosts, true);
@@ -93,14 +108,13 @@ class Wall extends React.Component {
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
 			
-			this.setState({person:newPerson}, this.getWall);
+			this.setState({person:newPerson, data:[], scroll:0}, this.getWall);
 		}
 	}
 	
 	getOlderPosts(){
 		if(this.state.isMore) {
 			let scrTrg = this.scrollTrigger;
-			
 			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
 			let bodyHeight = document.body.offsetHeight;
 			
