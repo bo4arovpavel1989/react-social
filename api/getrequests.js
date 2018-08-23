@@ -10,6 +10,7 @@ const cacheData = {
 
 
 module.exports.getPerson = function(req, res){
+	let me = req.headers.id;
 	let id = req.params.id;
 	
 	async.waterfall([
@@ -19,16 +20,16 @@ module.exports.getPerson = function(req, res){
 				.catch(err=>cb(err, null))
 		},
 		(login, cb)=>{
-			db.findOne('Personal',{login})
+			db.findOne('Personal',{login}, 'name birthDate activity thumbAvatar')
 				.then(rep=>cb(null, rep))
 				.catch(err=>cb(err, null))
 			
 		},
-		(personData, cb)=>{
-			db.findOne('Contact', {me:id, person:personData._id})
+		(personData, cb)=>{			
+			db.findOne('Contact', {me, person:id})
 				.then(rep=> {
 					if(rep)
-						personData.isContact = true;
+						personData._doc.isContact = true; //added _doc to get access to datafiled of mongo document
 					
 					cb(null, personData)
 				})
@@ -161,7 +162,7 @@ module.exports.getContacts = function(req, res){
 
 module.exports.addContacts = function(req, res){
 	let me = req.headers.id;
-	let person = req.query.person;
+	let person = req.query.p;
 	
 	db.findOne('Contact', {me, person})
 		.then(rep => {
