@@ -34,6 +34,16 @@ var getRequests = [
 		url:'/getmessages/:box',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.getMessages
+	},
+	{
+		url:'/getcontacts',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.getContacts
+	},
+	{
+		url:'/addtocontact',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.addContacts
 	}
 ];
 

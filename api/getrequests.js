@@ -23,6 +23,17 @@ module.exports.getPerson = function(req, res){
 				.then(rep=>cb(null, rep))
 				.catch(err=>cb(err, null))
 			
+		},
+		(personData, cb)=>{
+			db.findOne('Contact', {me:id, person:personData._id})
+				.then(rep=> {
+					if(rep)
+						personData.isContact = true;
+					
+					cb(null, personData)
+				})
+				.catch(err=>cb(err, null))
+			
 		}
 		],(err, rep)=>{
 			if(!err) res.json(rep)
@@ -134,5 +145,32 @@ module.exports.getMessages = function(req, res){
 					markMessagesSeen(rep);
 				res.json({messages:rep});
 			})
+		.catch(err=>res.status(500).json({err}))
+};
+
+module.exports.getContacts = function(req, res){
+	let me = req.headers.id;
+	const howmany = 10; //number of contacts got per 1 time
+	let skip = Number(req.query.q) * howmany; 
+	
+	db.findBy('Contact', {me}, {rate:-1}, skip, howmany)
+		.then(rep => res.json({contacts:rep}))
+		.catch(err=>res.status(500).json({err}))
+		
+};
+
+module.exports.addContacts = function(req, res){
+	let me = req.headers.id;
+	let person = req.query.person;
+	
+	db.findOne('Contact', {me, person})
+		.then(rep => {
+			if(!rep)
+				db.create('Contact', {me, person})
+			else
+				db.del('Contact', {me, person})
+			
+			res.json({success:true})
+		})
 		.catch(err=>res.status(500).json({err}))
 };

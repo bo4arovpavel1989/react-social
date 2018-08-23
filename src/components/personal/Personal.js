@@ -18,11 +18,13 @@ class Personal extends React.Component {
 			error:false,
 			data:{},
 			myPage:true,
-			msgBoxOpened:false
+			msgBoxOpened:false,
+			isContact: false
 		}
 		
 		this.getPersonalData = this.getPersonalData.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
+		this.addToContacts = this.addToContacts.bind(this);
 	}
 	
 	getPersonalData(person){
@@ -74,8 +76,28 @@ class Personal extends React.Component {
 		}
 	}
 	
+	addToContacts(){
+		let { person, isContact } = this.state;
+		
+		fetch(`${API_URL}/addtocontact?p=${person}`,standardFetch())
+			.then(handleResponse)
+			.then((rep)=>{
+				if(!rep.err && !rep.forbidden)
+					this.setState({isContact: !isContact, loading:false})
+				else if(rep.forbidden)
+					eventEmitter.emit('logoff')
+				else
+					this.setState({error:true})
+			})
+			.catch(error=>{
+				console.log(error)
+				this.setState({error:true})
+			})
+	}
+	
 	render(){
-		let {person, data} = this.state;	
+		let {person, data, isContact} = this.state;	
+		
 		
 		if(this.state.error || !data)
 			return(
@@ -105,6 +127,8 @@ class Personal extends React.Component {
 							img = {data.thumbAvatar}
 							myPage= {this.state.myPage}
 							openMsgBox = {this.openMsgBox}
+							isContact = {isContact}
+							addToContacts = {this.addToContacts}
 						/>
 					</div>
 					<div  className='personalDataPlace'>

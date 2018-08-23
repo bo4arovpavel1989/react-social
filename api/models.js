@@ -48,10 +48,17 @@ models.Message =  new mongoose.Schema({
 	isRead:{type:Boolean, default:false}
 });
 
+models.Contact =  new mongoose.Schema({
+	me:{type:String, required:true},//contacts owner
+	person:{type:String, required:true},//id of the contact person
+	rate:{type:Number, default:0}
+});
+
 models.User = mongoose.model('user', models.User);
 models.Personal = mongoose.model('personal', models.Personal);
 models.Wall = mongoose.model('wall', models.Wall);
 models.Session = mongoose.model('session', models.Session);
 models.Message = mongoose.model('message', models.Message);
+models.Contact = mongoose.model('contact', models.Contact);
 
 module.exports = models;

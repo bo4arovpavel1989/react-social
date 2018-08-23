@@ -3,7 +3,7 @@ import './AvatarPlace.css';
 import PropTypes from 'prop-types';
 
 const AvatarPlace = (props) => {
-	const {img,myPage,openMsgBox} = props;
+	const {img,myPage,openMsgBox, isContact, addToContacts} = props;
 	
 	return (	
 			<div>
@@ -14,10 +14,14 @@ const AvatarPlace = (props) => {
 					{myPage ? '' :
 						<div className='text-center'>
 							<div>
-								<button onClick={openMsgBox} className='btn-success messageButton btn-lrg'>Отправить сообщение</button>
+								<button onClick={openMsgBox} className='btn-success messageButton btn-lg'>Отправить сообщение</button>
 							</div>
 							<div>
-								<button className='btn-success messageButton btn-lrg'>Добавить в контакты</button>
+							{isContact ? 
+								<button className='btn-danger messageButton btn-lrg' onClick={addToContacts}>Удалить из контактов</button>
+								:
+								<button className='btn-success messageButton btn-lrg' onClick={addToContacts}>Добавить в контакты</button>
+							}
 							</div>
 						</div>
 					}
