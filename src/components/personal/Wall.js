@@ -114,7 +114,6 @@ class Wall extends React.Component {
 	
 	getOlderPosts(){
 		if(this.state.isMore) {
-			let scrTrg = this.scrollTrigger;
 			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
 			let bodyHeight = document.body.offsetHeight;
 			

@@ -34,7 +34,6 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				console.log(rep.isContact)
 				if(!rep.err && !rep.forbidden)
 					this.setState({data:rep, isContact: rep.isContact, loading:false})
 				else if(rep.forbidden)
@@ -83,7 +82,6 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/addtocontact?p=${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				console.log(rep);
 				if(!rep.err && !rep.forbidden)
 					this.setState({isContact: !isContact, loading:false})
 				else if(rep.forbidden)

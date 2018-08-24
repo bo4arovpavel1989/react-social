@@ -21,6 +21,7 @@ const dbQueries = {
 		return new Promise((resolve, reject)=>{
 			models[schema].findOne(val, opt, (err, rep)=>{
 				if(err) reject(err)
+				else if(rep) resolve(rep.toObject())
 				else resolve(rep);	
 			})
 		});

@@ -36,7 +36,7 @@ var getRequests = [
 		callback: getRequestsHandlers.getMessages
 	},
 	{
-		url:'/getcontacts',
+		url:'/contacts',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.getContacts
 	},
