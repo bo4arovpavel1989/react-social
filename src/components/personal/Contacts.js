@@ -14,6 +14,7 @@ class Contacts extends React.Component {
 			loading:false,
 			error:false,
 			scroll:0,
+			isMore:true,
 			msgBoxOpened:false,
 			personToWrite:''
 		}
@@ -24,7 +25,13 @@ class Contacts extends React.Component {
 	
 	componentDidMount(){
 		this.getContacts()
-			.then(this.getContactsData)
+			.then(this.getContactsData);
+			
+		window.addEventListener('scroll', this.getMoreContacts, true);
+	}
+	
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.getMoreContacts, true);
 	}
 	
 	getContacts(){	
@@ -34,8 +41,11 @@ class Contacts extends React.Component {
 			fetch(`${API_URL}/contacts?q=${q}`,standardFetch())
 				.then(handleResponse)
 				.then((rep)=>{
-					if(!rep.err && !rep.forbidden)
-						this.setState({data:rep.contacts,loading:false}, resolve)
+					if(!rep.err && !rep.forbidden){
+						let isMore = (rep.contacts.length === 10) ? true : false; //number of contacts per 1 time
+						
+						this.setState({data:rep.contacts, isMore, loading:false}, resolve)
+					}	
 					else if(rep.forbidden)
 						eventEmitter.emit('logoff', resolve)
 					else
@@ -64,6 +74,19 @@ class Contacts extends React.Component {
 				})
 				
 		})
+	}
+	
+	
+	getMoreContacts(){
+		if(this.state.isMore) {
+			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
+			let bodyHeight = document.body.offsetHeight;
+			
+			if(scr >= bodyHeight) {
+				let scrollNum = this.state.scroll;
+				this.setState({scroll:++scrollNum}, this.getContacts)
+			}
+		}
 	}
 	
 	deleteContact(person){

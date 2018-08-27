@@ -25,6 +25,19 @@ class Wall extends React.Component {
 		this.getOlderPosts = this.getOlderPosts.bind(this);
 	}
 	
+	componentDidMount(){
+		this.setState({person:this.props.id},() => {
+			this.getWall();
+			this.listenToNewPosts();
+			this.listenToLikes();
+		});
+		
+		window.addEventListener('scroll', this.getOlderPosts, true);
+	}
+	
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.getOlderPosts, true);
+	}
 	
 	getWall(){
 		this.setState({loading:true});
@@ -38,10 +51,7 @@ class Wall extends React.Component {
 				.then((rep)=>{
 					if(!rep.err && !rep.forbidden){
 						let newData = this.checkLikedPosts(rep);
-						let isMore = true;
-						
-						if(newData.length < 10)
-							isMore = false;
+						let isMore = (newData.length === 10) ? true : false; //number of wall posts per 1 time
 												
 						this.setState( {data:[...this.state.data, ...newData], isMore, loading:false, myWall:(me === person)} )
 					}
@@ -89,19 +99,8 @@ class Wall extends React.Component {
 				}	
  			} 
 			
-			console.log(data);
 			this.setState({data});
 		});
-	}
-	
-	componentDidMount(){
-		this.setState({person:this.props.id},() => {
-			this.getWall();
-			this.listenToNewPosts();
-			this.listenToLikes();
-		});
-		
-		window.addEventListener('scroll', this.getOlderPosts, true);
 	}
 	
 	componentWillReceiveProps(nextProps){
