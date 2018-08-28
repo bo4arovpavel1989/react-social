@@ -35,6 +35,17 @@ module.exports.getPerson = function(req, res){
 				})
 				.catch(err=>cb(err, null))
 			
+		},
+		(personData, cb)=>{			
+			db.findOne('BlackList', {person: me, list: {$in: [person] } } )
+				.then(rep=> {
+					if(rep)
+						personData.isBanned = true; 
+					
+					cb(null, personData)
+				})
+				.catch(err=>cb(err, null))
+			
 		}
 		],(err, rep)=>{
 			if(!err) res.json(rep)
@@ -121,14 +132,13 @@ module.exports.likePost = function(req, res){
 	
 	db.findOne('Wall', {_id, likers:{$in:[liker]}})
 		.then(rep=>{
-			console.log(rep);
 			handleLike(rep, _id, liker);
 			if(!rep)
 				res.json({newLike:true});
 			else
 				res.json({newLike:false})
 		})
-		.catch(err=>res.status(500).json({err}))
+		.catch(err => res.status(500).json({err}))
 };
 
 module.exports.getMessages = function(req, res){
@@ -146,7 +156,7 @@ module.exports.getMessages = function(req, res){
 					markMessagesSeen(rep);
 				res.json({messages:rep});
 			})
-		.catch(err=>res.status(500).json({err}))
+		.catch(err => res.status(500).json({err}))
 };
 
 module.exports.getContacts = function(req, res){
@@ -156,7 +166,7 @@ module.exports.getContacts = function(req, res){
 	
 	db.findBy('Contact', {me}, {rate:-1}, skip, howmany)
 		.then(rep => res.json({contacts:rep}))
-		.catch(err=>res.status(500).json({err}))
+		.catch(err => res.status(500).json({err}))
 		
 };
 
@@ -173,5 +183,21 @@ module.exports.addContacts = function(req, res){
 			
 			res.json({success:true})
 		})
-		.catch(err=>res.status(500).json({err}))
+		.catch(err => res.status(500).json({err}))
+};
+
+module.exports.banUser = function(req, res){
+	let me = req.headers.id;
+	let person = req.query.p;
+	
+	db.findOne('BlackList', {person: me, list: {$in: [person]}})
+		.then(rep => {
+			if(rep)
+				db.update('BlackList', {person: me}, {$pull: {list: {$in: [person]}}})
+			else
+				db.update('BlackList', {person: me}, {$push: {list: person}}, {upsert: true})
+		})
+		.then(rep => res.json({success: true}))
+		.catch(err => res.status(500).json({err}))
+	
 };

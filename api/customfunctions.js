@@ -96,9 +96,9 @@ function makeResize(files,dst,w,h,cb){
 
 module.exports.handleLike = function(rep, _id, liker){
 	if(!rep) 
-		db.update('Wall', {_id}, {$push:{likers:liker}, $inc:{like:1}});
+		db.update('Wall', {_id}, {$push: {likers: liker}, $inc:{like:1}});
 	else 
-		db.update('Wall', {_id}, {$pull:{likers:{$in:[liker]}}, $inc:{like:-1}});
+		db.update('Wall', {_id}, {$pull: {likers: {$in: [liker]}}, $inc:{like:-1}});
 }
 
 module.exports.checkPostRemove = function(rep, remover){

@@ -19,12 +19,14 @@ class Personal extends React.Component {
 			data:{},
 			myPage:true,
 			msgBoxOpened:false,
-			isContact:false
+			isContact:false,
+			isBanned:false
 		}
 		
 		this.getPersonalData = this.getPersonalData.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
 		this.addToContacts = this.addToContacts.bind(this);
+		this.banUser = this.banUser.bind(this);
 	}
 	
 	getPersonalData(person){
@@ -95,8 +97,27 @@ class Personal extends React.Component {
 			})
 	}
 	
+	banUser(){
+		let { person, isBanned } = this.state;
+		
+		fetch(`${API_URL}/banuser?p=${person}`,standardFetch())
+			.then(handleResponse)
+			.then((rep)=>{
+				if(!rep.err && !rep.forbidden)
+					this.setState({isBanned: !isBanned, loading:false})
+				else if(rep.forbidden)
+					eventEmitter.emit('logoff')
+				else
+					this.setState({error:true})
+			})
+			.catch(error=>{
+				console.log(error)
+				this.setState({error:true})
+			})
+	}
+	
 	render(){
-		let {person, data, isContact} = this.state;	
+		let {person, data, isContact, isBanned} = this.state;	
 		
 		
 		if(this.state.error || !data)
@@ -128,6 +149,8 @@ class Personal extends React.Component {
 							myPage= {this.state.myPage}
 							openMsgBox = {this.openMsgBox}
 							isContact = {isContact}
+							isBanned = {isBanned}
+							banUser = {this.banUser}
 							addToContacts = {this.addToContacts}
 						/>
 					</div>

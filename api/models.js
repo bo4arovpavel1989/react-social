@@ -48,6 +48,11 @@ models.Message =  new mongoose.Schema({
 	isRead:{type:Boolean, default:false}
 });
 
+models.BlackList = new mongoose.Schema({
+	person:{type: String, required:true},
+	list:{type:Array, default:[]}
+});
+
 models.Contact =  new mongoose.Schema({
 	me:{type:String, required:true},//contacts owner
 	person:{type:String, required:true},//id of the contact person
@@ -59,6 +64,7 @@ models.Personal = mongoose.model('personal', models.Personal);
 models.Wall = mongoose.model('wall', models.Wall);
 models.Session = mongoose.model('session', models.Session);
 models.Message = mongoose.model('message', models.Message);
+models.BlackList = mongoose.model('blacklist', models.BlackList);
 models.Contact = mongoose.model('contact', models.Contact);
 
 module.exports = models;

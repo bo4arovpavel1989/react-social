@@ -44,6 +44,11 @@ var getRequests = [
 		url:'/addtocontact',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.addContacts
+	},
+	{
+		url:'/banuser',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.banUser
 	}
 ];
 
