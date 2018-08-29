@@ -49,6 +49,11 @@ var getRequests = [
 		url:'/banuser',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.banUser
+	},
+	{
+		url:'/checkban/:id',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.checkBan
 	}
 ];
 

@@ -37,7 +37,7 @@ class Personal extends React.Component {
 			.then(handleResponse)
 			.then((rep)=>{
 				if(!rep.err && !rep.forbidden)
-					this.setState({data:rep, isContact: rep.isContact, loading:false})
+					this.setState({data:rep, isBanned: rep.isBanned, isContact: rep.isContact, loading:false})
 				else if(rep.forbidden)
 					eventEmitter.emit('logoff')
 				else

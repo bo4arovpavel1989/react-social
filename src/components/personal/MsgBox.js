@@ -14,6 +14,7 @@ class MsgBox extends React.Component {
 			person:'', //who will receive the message,
 			loading:false,
 			error:false,
+			iAmBanned:false,
 			name:''
 		}
 		
@@ -24,9 +25,25 @@ class MsgBox extends React.Component {
 	componentWillMount(){
 		let {openMsgBox, person} = this.props;
 		
-		this.setState({openMsgBox, person}, ()=>this.getUserData() );
+		this.setState({openMsgBox, person}, ()=>{
+			this.getUserData();
+			this.checkBan();
+		});
 	}
 	
+	checkBan(){
+		let person = this.state.person;
+	
+		fetch(`${API_URL}/checkBan/${person}`, standardFetch())
+			.then(handleResponse)
+			.then((rep)=>{
+				let { iAmBanned } = rep;
+				this.setState({ iAmBanned });
+			})
+			.catch(error=>{
+				console.log(error)
+			})
+	}
 	
 	handleChange(e){
 		let message = e.target.value.toString();
@@ -40,8 +57,8 @@ class MsgBox extends React.Component {
 		fetch(`${API_URL}/post-personal/${person}`, standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				let {name} = rep;
-				this.setState({ name});
+				let {name, isBanned} = rep;
+				this.setState({ name, isBanned });
 			})
 			.catch(error=>{
 				console.log(error)
@@ -80,7 +97,7 @@ class MsgBox extends React.Component {
 	
 	render(){
 	
-	let {openMsgBox, error, message, loading, person, name} = this.state;
+	let { openMsgBox, error, message, loading, person, name, iAmBanned } = this.state;
 	
 	return (
 		<div className='msgBoxContainer'>
@@ -104,7 +121,7 @@ class MsgBox extends React.Component {
 					</div>
 					<div className="form-group">
 						<div className="col-sm-offset-2 col-sm-10">
-							<input disabled={(message === '') || (loading) ? true : false} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
+							<input disabled={iAmBanned || (message === '') || (loading) ? true : false} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
 						</div>
 					</div>
 				</form>

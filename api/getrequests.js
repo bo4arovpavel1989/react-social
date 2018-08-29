@@ -39,6 +39,7 @@ module.exports.getPerson = function(req, res){
 		(personData, cb)=>{			
 			db.findOne('BlackList', {person: me, list: {$in: [person] } } )
 				.then(rep=> {
+					console.log(rep);
 					if(rep)
 						personData.isBanned = true; 
 					
@@ -97,6 +98,7 @@ module.exports.getWall = function(req, res){
 };
 
 module.exports.getPostPersonData = function(req, res){
+	let me = req.headers.id;
 	let id = req.params.id;
 	
 	if(cacheData.postPersonData[id]) {
@@ -114,6 +116,16 @@ module.exports.getPostPersonData = function(req, res){
 					.then(rep=>cb(null, rep))
 					.catch(err=>cb(err, null))
 				
+			},
+			(data, cb)=>{
+				db.findOne('BlackList',{person: me, list: {$in: [id]}})
+					.then(rep=>{
+						if(rep)
+							data.isBanned = true;
+						cb(null, data)
+					})
+					.catch(err=>cb(err, null))
+				
 			}
 			],(err, rep)=>{
 				if(!err) {
@@ -121,7 +133,7 @@ module.exports.getPostPersonData = function(req, res){
 					res.json(rep)
 				}	
 				else res.status(500).json({err})	
-	});
+		});
 	
 	}
 };
@@ -198,6 +210,21 @@ module.exports.banUser = function(req, res){
 				db.update('BlackList', {person: me}, {$push: {list: person}}, {upsert: true})
 		})
 		.then(rep => res.json({success: true}))
+		.catch(err => res.status(500).json({err}))
+	
+};
+
+module.exports.checkBan = function(req, res){
+	let me = req.headers.id;
+	let person = req.params.id
+	
+	db.findOne('BlackList', {person, list: {$in: [me]}}) //check if i was banned by person
+		.then(rep => {
+			if(rep)
+				res.json({iAmBanned: true});
+			else
+				res.json({iAmBanned: false});
+		})
 		.catch(err => res.status(500).json({err}))
 	
 };
