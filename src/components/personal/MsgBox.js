@@ -104,12 +104,18 @@ class MsgBox extends React.Component {
 		
 			<div className='blur' onClick={openMsgBox}></div>
 			
-			<div className={'msgBox ' + (error ? 'error' : '')}>
+			<div className={'msgBox ' + (error || iAmBanned ? 'error' : '')}>
 			
 				<div className='messageName'>
 					<Link to={`/personal/${person}`}>
-						{name}:
+						{name}
 					</Link>
+					{
+						iAmBanned ? 
+						' ограничил круг лиц, которые могут отправлять ему сообщения'
+						:
+						':'
+					}
 				</div>
 				
 				<form className="sendmsgform" onSubmit={this.handleSubmit}>

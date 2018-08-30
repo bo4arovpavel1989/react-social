@@ -5,6 +5,7 @@ const _ = require('lodash');
 
 const authService = require('./customfunctions.js').authService;
 const saveAvatar = require('./customfunctions.js').saveAvatar;
+const checkBan = require('./customfunctions.js').checkBan;
 const db = require('./dbqueries');
 
 module.exports.login = function(req,res){
@@ -96,17 +97,24 @@ module.exports.makePost = function(req, res){
 		post.id = req.body.person;
 		post.entry = req.body.post;
 		post.date = Date.now();
-	db.create('Wall', post)
-		.then(rep=>res.json({success:true}))
-		.catch(err=>res.status(500).json({err}))
+		
+	checkBan(post.author, post.id)	
+		.then( rep => {
+			if(!rep) //if author is not banned
+				return db.create('Wall', post)
+			else
+				return Promise.resolve(false)
+		})
+		.then( rep => res.json( { success: rep } ) )
+		.catch(err=> res.status(500).json({ err }) )
 };
 
 module.exports.editPerson = function(req, res){
 	let login = req.body.login;
 	let data = req.body;
 	
-	db.update('Personal', {login},{$set:data})
-		.then(rep=>res.json({success:true}))
+	db.update('Personal', { login },{ $set:data })
+		.then(rep=>res.json({ success:true }))
 		.catch(err=>res.status(500).end())
 }
 
@@ -124,23 +132,30 @@ module.exports.avatarUpload = function(req, res){
 		
 		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
 				.then((rep)=>{
-					db.update('Personal',{login:fields.login},{$set:{avatar,thumbAvatar,microAvatar}})
-						.then(()=>res.json({success:true}))
-						.catch(err=>res.json({err:err}))
+					db.update('Personal',{ login:fields.login },{ $set:{ avatar,thumbAvatar,microAvatar } })
+						.then(()=>res.json({ success:true }))
+						.catch(err=>res.json({ err:err }))
 				})
-				.catch(err=>res.status(500).json({err:err}))
+				.catch(err=>res.status(500).json({ err:err }))
 		
 	} else {
-		res.json({empty:true});
+		res.json({ empty:true });
 	}
 	
 };
 
 module.exports.sendMessage = function(req, res){
 	let {message, person, id} = req.body; //person - to whom, id - from whom;
-	let data = {message, to:person, from:id, date:Date.now(), isSeenBy:[id, person]};
+	let data = { message, to:person, from:id, date:Date.now(), isSeenBy:[id, person] };
 	
-	db.create('Message', data)
-		.then(rep=>res.json({success:true}))
-		.catch(err=>res.status(500).json({err}))
+	checkBan(id, person)
+		.then( rep => {
+			if(!rep) //if user is not banned
+				return db.create('Message', data)
+			else
+				return Promise.resolve(false)
+		})
+		.then( rep => res.json({ success: rep }) )
+		.catch( err => res.status(500).json({ err }) )
+	
 };

@@ -17,17 +17,20 @@ class Wall extends React.Component {
 			isMore:true,
 			myWall:false,
 			scroll:0, //number of scrolls by order
-			loading:false
+			loading:false,
+			iAmBanned:false
 		}
 		
 		this.scrollTrigger =  React.createRef();
 		this.checkLikedPosts = this.checkLikedPosts.bind(this);
 		this.getOlderPosts = this.getOlderPosts.bind(this);
+		this.checkBan = this.checkBan.bind(this);
 	}
 	
 	componentDidMount(){
 		this.setState({person:this.props.id},() => {
 			this.getWall();
+			this.checkBan();
 			this.listenToNewPosts();
 			this.listenToLikes();
 		});
@@ -63,6 +66,22 @@ class Wall extends React.Component {
 				.catch(error=>{
 					console.log(error)
 					this.setState({error:true})
+				})
+	}
+	
+	checkBan(){
+		let person = this.state.person;
+		let me = getToken().id;
+	
+		if(me !== person)
+			fetch(`${API_URL}/checkBan/${person}`, standardFetch())
+				.then(handleResponse)
+				.then((rep)=>{
+					let { iAmBanned } = rep;
+					this.setState({ iAmBanned });
+				})
+				.catch(error=>{
+					console.log(error)
 				})
 	}
 	
@@ -124,8 +143,7 @@ class Wall extends React.Component {
 	}
 	
 	render(){
-		let data = this.state.data;
-		let myWall = this.state.myWall;
+		let { data,  myWall, iAmBanned } = this.state;
 		
 		if(this.state.loading)
 			return(
@@ -150,11 +168,16 @@ class Wall extends React.Component {
 		
 		return (	
 				<div className='wall text-center' onScroll={this.getOlderPosts}>
-					<div className='text-center'>
-						<MakePost
-							id = {this.state.person} //make post to who
-						/>
-					</div>
+					{
+						iAmBanned ? 
+							''
+						:
+							<div className='text-center'>
+								<MakePost
+									id = {this.state.person} //make post to who
+								/>
+							</div>	
+					}
 					<div className='text-left'>
 						{data.map((e, i) => {
 							return (<Post key={e._id} myWall = {myWall} data={e}/>)

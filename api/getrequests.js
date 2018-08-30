@@ -3,6 +3,7 @@ const async = require('async');
 const db = require('./dbqueries');
 const handleLike = require('./customfunctions.js').handleLike;
 const markMessagesSeen = require('./customfunctions.js').markMessagesSeen;
+const checkBan = require('./customfunctions.js').checkBan;
 
 const cacheData = {
 	postPersonData : {}
@@ -39,7 +40,6 @@ module.exports.getPerson = function(req, res){
 		(personData, cb)=>{			
 			db.findOne('BlackList', {person: me, list: {$in: [person] } } )
 				.then(rep=> {
-					console.log(rep);
 					if(rep)
 						personData.isBanned = true; 
 					
@@ -218,13 +218,13 @@ module.exports.checkBan = function(req, res){
 	let me = req.headers.id;
 	let person = req.params.id
 	
-	db.findOne('BlackList', {person, list: {$in: [me]}}) //check if i was banned by person
+	checkBan(me, person)
 		.then(rep => {
 			if(rep)
 				res.json({iAmBanned: true});
 			else
-				res.json({iAmBanned: false});
+				res.json({iAmBanned: false});	
 		})
-		.catch(err => res.status(500).json({err}))
+		.catch(err => res.status(500).json({err}) );
 	
 };

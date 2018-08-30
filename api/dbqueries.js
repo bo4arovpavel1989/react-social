@@ -48,7 +48,7 @@ const dbQueries = {
 		return new Promise((resolve, reject)=>{
 			return new models[schema](val).save((err, rep)=>{
 				if(err) reject(err);
-				else resolve(rep);
+				else resolve(true);
 			});
 		});	
 	},

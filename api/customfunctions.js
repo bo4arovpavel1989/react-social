@@ -112,3 +112,13 @@ module.exports.markMessagesSeen = function(rep){
 			db.update('Message', {_id: m._id}, {$set:{isRead:true}})
 	});
 };
+
+module.exports.checkBan = function(me, person){
+	
+	return new Promise((resolve, reject) => {
+		db.findOne('BlackList', {person, list: {$in: [me]}}) //check if i was banned by person
+			.then(rep => resolve(rep !== null) ) //returns true if user is banned
+			.catch(err => reject(err))
+	});
+	
+}
