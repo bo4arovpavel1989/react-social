@@ -16,18 +16,18 @@ module.exports.getPerson = function(req, res){
 	
 	async.waterfall([
 		(cb)=>{
-			db.findOne('User',{_id:person})
+			db.findOne('User',{ _id:person })
 				.then(rep=>cb(null, rep.login))
 				.catch(err=>cb(err, null))
 		},
 		(login, cb)=>{
-			db.findOne('Personal',{login}, 'name birthDate activity thumbAvatar')
+			db.findOne('Personal',{ login }, 'name birthDate activity thumbAvatar')
 				.then(rep=>cb(null, rep))
 				.catch(err=>cb(err, null))
 			
 		},
 		(personData, cb)=>{			
-			db.findOne('Contact', {me, person})
+			db.findOne('Contact', { me, person })
 				.then(rep=> {
 					if(rep)
 						personData.isContact = true; 
@@ -38,7 +38,7 @@ module.exports.getPerson = function(req, res){
 			
 		},
 		(personData, cb)=>{			
-			db.findOne('BlackList', {person: me, list: {$in: [person] } } )
+			db.findOne('BlackList', { person: me, list: {$in: [person] } } )
 				.then(rep=> {
 					if(rep)
 						personData.isBanned = true; 
@@ -67,7 +67,7 @@ module.exports.getWall = function(req, res){
 	
 	async.parallel([
 		(cb)=>{
-			db.findBy('Wall', {id}, {date:-1}, skip, howmany, 'author like entry date') //find wall posts by the id of the wall owner
+			db.findBy('Wall', { id }, { date: -1 }, skip, howmany, 'author like entry date') //find wall posts by the id of the wall owner
 				.then(rep=>{
 					posts = rep;
 					cb();
@@ -107,18 +107,18 @@ module.exports.getPostPersonData = function(req, res){
 	} else {
 		async.waterfall([
 			(cb)=>{
-				db.findOne('User',{_id:id})
+				db.findOne('User',{ _id: id })
 					.then(rep=>cb(null, rep.login))
 					.catch(err=>cb(err, null))
 			},
 			(login, cb)=>{
-				db.findOne('Personal',{login}, 'name microAvatar')
+				db.findOne('Personal',{ login }, 'name microAvatar')
 					.then(rep=>cb(null, rep))
 					.catch(err=>cb(err, null))
 				
 			},
 			(data, cb)=>{
-				db.findOne('BlackList',{person: me, list: {$in: [id]}})
+				db.findOne('BlackList',{ person: me, list: {$in: [id]} })
 					.then(rep=>{
 						if(rep)
 							data.isBanned = true;
@@ -132,7 +132,7 @@ module.exports.getPostPersonData = function(req, res){
 					cacheData.postPersonData[id] = rep;
 					res.json(rep)
 				}	
-				else res.status(500).json({err})	
+				else res.status(500).json({ err })	
 		});
 	
 	}
@@ -142,13 +142,13 @@ module.exports.likePost = function(req, res){
 	let liker = req.headers.id;
 	let _id = req.params.id;
 	
-	db.findOne('Wall', {_id, likers:{$in:[liker]}})
+	db.findOne('Wall', { _id, likers:{ $in: [liker] } })
 		.then(rep=>{
 			handleLike(rep, _id, liker);
 			if(!rep)
-				res.json({newLike:true});
+				res.json({ newLike: true });
 			else
-				res.json({newLike:false})
+				res.json({ newLike: false })
 		})
 		.catch(err => res.status(500).json({err}))
 };
@@ -160,7 +160,7 @@ module.exports.getMessages = function(req, res){
 	const howmany = 10; //number of messages got per 1 time
 	let skip = Number(req.query.page) * howmany; //skip value must be numeric
 	
-	let query = (box === 'in' ? {to:me, isSeenBy: {$in: [me] }} : {from:me, isSeenBy: {$in: [me] }}) //changes query if its inbox or outbox
+	let query = (box === 'in' ? { to:me, isSeenBy: {$in: [me] } } : { from:me, isSeenBy: {$in: [me] } } ) //changes query if its inbox or outbox
 		
 	db.findBy('Message', query, {date:-1}, skip, howmany)
 			.then(rep=>{
@@ -176,8 +176,8 @@ module.exports.getContacts = function(req, res){
 	const howmany = 10; //number of contacts got per 1 time
 	let skip = Number(req.query.q) * howmany; 
 	
-	db.findBy('Contact', {me}, {rate:-1}, skip, howmany)
-		.then(rep => res.json({contacts:rep}))
+	db.findBy('Contact', { me }, { rate: -1 }, skip, howmany)
+		.then( rep => res.json({ contacts: rep }) )
 		.catch(err => res.status(500).json({err}))
 		
 };
@@ -186,12 +186,12 @@ module.exports.addContacts = function(req, res){
 	let me = req.headers.id;
 	let person = req.query.p;
 	
-	db.findOne('Contact', {me, person})
+	db.findOne('Contact', { me, person })
 		.then(rep => {
 			if(!rep)
-				db.create('Contact', {me, person})
+				db.create('Contact', { me, person })
 			else
-				db.del('Contact', {me, person})
+				db.del('Contact', { me, person })
 			
 			res.json({success:true})
 		})
@@ -202,15 +202,15 @@ module.exports.banUser = function(req, res){
 	let me = req.headers.id;
 	let person = req.query.p;
 	
-	db.findOne('BlackList', {person: me, list: {$in: [person]}})
+	db.findOne('BlackList', { person: me, list: { $in: [person] } })
 		.then(rep => {
 			if(rep)
-				db.update('BlackList', {person: me}, {$pull: {list: {$in: [person]}}})
+				db.update('BlackList', { person: me }, { $pull: {list: {$in: [person] } } })
 			else
-				db.update('BlackList', {person: me}, {$push: {list: person}}, {upsert: true})
+				db.update('BlackList', { person: me }, { $push: { list: person } }, { upsert: true })
 		})
-		.then(rep => res.json({success: true}))
-		.catch(err => res.status(500).json({err}))
+		.then(rep => res.json({ success: true }))
+		.catch(err => res.status(500).json({ err }))
 	
 };
 
@@ -219,12 +219,7 @@ module.exports.checkBan = function(req, res){
 	let person = req.params.id
 	
 	checkBan(me, person)
-		.then(rep => {
-			if(rep)
-				res.json({iAmBanned: true});
-			else
-				res.json({iAmBanned: false});	
-		})
+		.then(rep => res.json({ iAmBanned: rep }) )
 		.catch(err => res.status(500).json({err}) );
 	
 };

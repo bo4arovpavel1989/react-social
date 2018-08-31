@@ -18,8 +18,8 @@ module.exports.login = function(req,res){
 			else
 				return Promise.resolve([{auth:false}]) //made array coz i use array in first case if rep.auth === true
 		})
-		.then(reps=>res.json(reps[0]))
-		.catch(err=>{
+		.then(reps => res.json(reps[0]))
+		.catch(err => {
 			res.status(500).json({err:err})
 		})
 }
@@ -31,7 +31,7 @@ module.exports.logoff = function(req, res){
 		.then(rep=>{
 			res.end();
 		})
-		.catch(err=>{
+		.catch(err => {
 			res.end();
 		})
 }
@@ -62,18 +62,18 @@ module.exports.register = function(req, res){
 	async.parallel([
 		(cb)=>{
 			db.create('User', data)
-				.then(rep=>cb())
-				.catch(err=>cb(new Error('An error occured creating user')));
+				.then( rep => cb())
+				.catch(err => cb(new Error('An error occured creating user')));
 		},
 		(cb)=>{
 			db.create('Personal', data)
-				.then(rep=>cb())
-				.catch(err=>cb(new Error('An error occured creating user')));
+				.then(rep => cb())
+				.catch(err => cb(new Error('An error occured creating user')));
 			
 		}
 		],(err)=>{
-			if(!err) res.json({success:true});
-			else res.status(500).json({success:false});
+			if(!err) res.json({ success: true });
+			else res.status(500).json({ success: false });
 	});
 
 		
@@ -83,8 +83,8 @@ module.exports.checkToken = function(req, res){
 	let data = req.body;
 	
 	authService.checkToken(data)
-				.then(rep=>{
-					res.json({auth:rep})
+				.then(rep => {
+					res.json({ auth: rep })
 				})
 				.catch(err=>{
 					res.status(500).json({err:'Internal server error!'})

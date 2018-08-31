@@ -101,7 +101,7 @@ class Wall extends React.Component {
 	
 	listenToNewPosts(){
 		eventEmitter.on('newpost',()=>{
-			this.setState({scroll:0}, () => this.getWall(this.state.person) );
+			this.setState({scroll:0, data:[]}, () => this.getWall(this.state.person) );
 		})
 	}
 	
