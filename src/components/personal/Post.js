@@ -20,26 +20,26 @@ class Post extends React.Component {
 			myPost:false,
 			deleted:false
 		}
-		
+
 		this.like = this.like.bind(this);
 		this.getUserData = this.getUserData.bind(this);
 		this.removePost = this.removePost.bind(this);
 	}
-	
+
 	componentDidMount(){
 		let {data, myWall} = this.props;
 		let me = getToken().id;
-		
+
 		data.myPost = (myWall || (me === data.author));
-		
+
 		this.setState(data, ()=>{
 			this.getUserData();
 		});
 	}
-	
-	getUserData(){	
+
+	getUserData(){
 		let author = this.state.author;
-	
+
 		fetch(`${API_URL}/post-personal/${author}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
@@ -50,32 +50,32 @@ class Post extends React.Component {
 				console.log(error)
 			})
 	}
-	
+
 	like(){
 		let postId = this.state._id;
-		
+
 		fetch(`${API_URL}/like/${postId}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
 				let like = this.state.like;
-				
+
 				if(rep.newLike)
 					this.setState({like:++like, liked:true})
 				else
 					this.setState({like:--like, liked:false})
-				
+
 				eventEmitter.emit('like', this.state._id)
 			})
 			.catch(error=>{
 				console.log(error)
 			})
-		
+
 	}
-	
+
 	removePost(){
 		if(window.confirm('Уверен?')){
 			let id = this.state._id;
-				
+
 			fetch(`${API_URL}/removepost/${id}`,{
 					method:'DELETE',
 					mode:'cors',
@@ -93,15 +93,15 @@ class Post extends React.Component {
 				.catch((error) => {
 					console.log(error);
 				});
-			
+
 			}
 	}
-	
+
 	render(){
 		let {author, entry, date, like, name, microAvatar, liked, myPost, deleted} = this.state;
-		
+
 		if(!deleted)
-			return (	
+			return (
 					<div className='post'>
 						<div className='postHeader'>
 							<div className='postAvatar'>
@@ -123,9 +123,9 @@ class Post extends React.Component {
 						</div>
 					</div>
 				)
-				
-		return null;	
-	}	
+
+		return null;
+	}
 }
 
 Post.propTypes = {

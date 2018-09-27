@@ -5,7 +5,7 @@ const dbQueries = {
 		return new Promise((resolve, reject)=>{
 			models[schema].find(val, opt, (err, rep)=>{
 				if(err) reject(err)
-				else resolve(rep);	
+				else resolve(rep);
 			});
 		});
 	},
@@ -22,16 +22,16 @@ const dbQueries = {
 			models[schema].findOne(val, opt, (err, rep)=>{
 				if(err) reject(err)
 				else if(rep) resolve(rep.toObject())
-				else resolve(rep);	
+				else resolve(rep);
 			})
 		});
 	},
 	update: function(schema, get, set, opt){
 		return new Promise((resolve, reject)=>{
-			models[schema].update(get, set, opt).exec((err, rep)=>{
+			models[schema].updateOne(get, set, opt).exec((err, rep)=>{
 				console.log(rep)
 				if(err) reject(err)
-				else resolve(rep);	
+				else resolve(rep);
 			})
 		});
 	},
@@ -40,7 +40,7 @@ const dbQueries = {
 			models[schema].find(val).remove().exec((err, rep)=>{
 				console.log(rep)
 				if(err) reject(err)
-				else resolve(rep);	
+				else resolve(rep);
 			})
 		});
 	},
@@ -50,7 +50,7 @@ const dbQueries = {
 				if(err) reject(err);
 				else resolve(true);
 			});
-		});	
+		});
 	},
 };
 
