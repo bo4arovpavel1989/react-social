@@ -7,6 +7,7 @@ var deleteRequestsHandlers=require('./deleterequests.js');
 var noMiddleware = require('./middlewarefunctions.js').noMiddleware;
 var checkAccess = require('./middlewarefunctions.js').checkAccess;
 var checkFileAccess = require('./middlewarefunctions.js').checkFileAccess;
+var checkAccessAndCash = require('./middlewarefunctions.js').checkAccessAndCash;
 
 
 var getRequests = [
@@ -22,7 +23,7 @@ var getRequests = [
 	},
 	{
 		url: '/post-personal/:id',
-		middleware: checkAccess,
+		middleware: checkAccessAndCash,
 		callback: getRequestsHandlers.getPostPersonData
 	},
 	{
@@ -87,7 +88,7 @@ var postRequests = [
 		url:'/makepost',
 		middleware: checkAccess,
 		callback: postRequestsHandlers.makePost
-		
+
 	},
 	{
 		url: '/edit',
