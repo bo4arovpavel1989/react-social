@@ -59,6 +59,11 @@ models.Contact =  new mongoose.Schema({
 	rate:{type:Number, default:0}
 });
 
+models.Options = new mongoose.Schema({
+	me:{type:String, required:true},//options owner
+	amIVisible: {type: Boolean, default:true}
+});
+
 models.User = mongoose.model('user', models.User);
 models.Personal = mongoose.model('personal', models.Personal);
 models.Wall = mongoose.model('wall', models.Wall);
@@ -66,5 +71,6 @@ models.Session = mongoose.model('session', models.Session);
 models.Message = mongoose.model('message', models.Message);
 models.BlackList = mongoose.model('blacklist', models.BlackList);
 models.Contact = mongoose.model('contact', models.Contact);
+models.Options = mongoose.model('options', models.Options);
 
 module.exports = models;

@@ -56,7 +56,9 @@ class Wall extends React.Component {
 						let newData = this.checkLikedPosts(rep);
 						let isMore = (newData.length === 10) ? true : false; //number of wall posts per 1 time
 												
-						this.setState( {data:[...this.state.data, ...newData], isMore, loading:false, myWall:(me === person)} )
+						this.setState( prevState => ({
+							data:[...prevState.data, ...newData], isMore, loading:false, myWall:(me === person)
+						}))
 					}
 					else if(rep.forbidden)
 						eventEmitter.emit('logoff')

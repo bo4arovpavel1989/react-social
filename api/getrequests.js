@@ -210,3 +210,8 @@ module.exports.checkBan = function(req, res){
 		.catch(err => res.status(500).json({err}) );
 
 };
+
+module.exports.getOptions = function(req, res){
+	let me = req.headers.id;
+	
+};

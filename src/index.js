@@ -8,6 +8,7 @@ import NotAllowed from './components/common/NotAllowed';
 import Personal from './components/personal/Personal';
 import Contacts from './components/personal/Contacts';
 import Messages from './components/personal/Messages';
+import Options from './components/personal/Options';
 import Sidebar from './components/personal/Sidebar';
 import Edit from './components/personal/Edit';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
@@ -94,6 +95,7 @@ class App extends React.Component {
 						<Route path='/personal/:id' render={this.state.isLogged ? Personal : NotAllowed} exact/>
 						<Route path='/contacts' render={this.state.isLogged ? Contacts : NotAllowed} exact/>
 						<Route path='/messages' render={this.state.isLogged ? Messages : NotAllowed} exact/>
+						<Route path='/options' render={this.state.isLogged ? Options : NotAllowed} exact/>
 						<Route path='/edit/:id' render={this.state.isLogged ? Edit : NotAllowed} exact/>
 					</Switch>
 				</div>	
