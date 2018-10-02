@@ -10,7 +10,7 @@ import {API_URL} from '../../config';
 class Wall extends React.Component {
 	constructor(){
 		super();
-		
+
 		this.state = {
 			person:false, //owner of the wall
 			data:[],
@@ -20,13 +20,13 @@ class Wall extends React.Component {
 			loading:false,
 			iAmBanned:false
 		}
-		
+
 		this.scrollTrigger =  React.createRef();
 		this.checkLikedPosts = this.checkLikedPosts.bind(this);
 		this.getOlderPosts = this.getOlderPosts.bind(this);
 		this.checkBan = this.checkBan.bind(this);
 	}
-	
+
 	componentDidMount(){
 		this.setState({person:this.props.id},() => {
 			this.getWall();
@@ -34,30 +34,32 @@ class Wall extends React.Component {
 			this.listenToNewPosts();
 			this.listenToLikes();
 		});
-		
+
 		window.addEventListener('scroll', this.getOlderPosts, true);
 	}
-	
+
 	componentWillUnmount() {
 		window.removeEventListener('scroll', this.getOlderPosts, true);
 	}
-	
+
 	getWall(){
 		this.setState({loading:true});
 		let me = getToken().id;
 		let q = this.state.scroll;
 		let person = this.state.person;
-		
+
 		if(person)
-			fetch(`${API_URL}/getwall/${person}?q=${q}`,standardFetch()) //q means quantity of wall posts already loaded 
+			fetch(`${API_URL}/getwall/${person}?q=${q}`,standardFetch()) //q means quantity of wall posts already loaded
 				.then(handleResponse)
 				.then((rep)=>{
 					if(!rep.err && !rep.forbidden){
 						let newData = this.checkLikedPosts(rep);
 						let isMore = (newData.length === 10) ? true : false; //number of wall posts per 1 time
-												
+						let loading = false;
+						let myWall = (me === person);
+
 						this.setState( prevState => ({
-							data:[...prevState.data, ...newData], isMore, loading:false, myWall:(me === person)
+							data:[...prevState.data, ...newData], isMore, loading, myWall
 						}))
 					}
 					else if(rep.forbidden)
@@ -70,11 +72,11 @@ class Wall extends React.Component {
 					this.setState({error:true})
 				})
 	}
-	
+
 	checkBan(){
 		let person = this.state.person;
 		let me = getToken().id;
-	
+
 		if(me !== person)
 			fetch(`${API_URL}/checkBan/${person}`, standardFetch())
 				.then(handleResponse)
@@ -86,74 +88,67 @@ class Wall extends React.Component {
 					console.log(error)
 				})
 	}
-	
+
 	checkLikedPosts(rep){
 		let posts = rep.posts;
 		let likedPosts = rep.likedPosts;
-		
+
 		posts.forEach((p,i) => {
 			if(_.includes(likedPosts, p._id))
 				p.liked = true;
 			else
 				p.liked = false;
 		});
-		
+
 		return posts;
 	}
-	
+
 	listenToNewPosts(){
 		eventEmitter.on('newpost',()=>{
 			this.setState({scroll:0, data:[]}, () => this.getWall(this.state.person) );
 		})
 	}
-	
-	listenToLikes(){		
+
+	listenToLikes(){
 		eventEmitter.on('like', (_id) => {
-			
+
 		let data = this.state.data;
-			
+
 			for (let i = 0; i < data.length; i++) {
 				if (data[i]._id === _id) {
 					data[i].liked = !data[i].liked;
 					data[i].liked ? ++data[i].like : --data[i].like;
 					break;
-				}	
- 			} 
-			
+				}
+ 			}
+
 			this.setState({data});
 		});
 	}
-	
+
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
-			
+
 			this.setState({person:newPerson, data:[], scroll:0}, this.getWall);
 		}
 	}
-	
+
 	getOlderPosts(){
 		if(this.state.isMore) {
 			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
 			let bodyHeight = document.body.offsetHeight;
-			
+
 			if(scr >= bodyHeight) {
 				let scrollNum = this.state.scroll;
 				this.setState({scroll:++scrollNum}, this.getWall)
 			}
 		}
 	}
-	
+
 	render(){
-		let { data,  myWall, iAmBanned } = this.state;
-		
-		if(this.state.loading)
-			return(
-				<div className='text-center'>
-					Загрузка...
-				</div>
-			)
-		
+		let { data,  myWall, iAmBanned, loading } = this.state;
+
 		if(data.length === 0)
 			return (
 				<div className='wall text-center'>
@@ -167,31 +162,39 @@ class Wall extends React.Component {
 					</div>
 				</div>
 			)
-		
-		return (	
+
+		return (
 				<div className='wall text-center' onScroll={this.getOlderPosts}>
 					{
-						iAmBanned ? 
+						iAmBanned ?
 							''
 						:
 							<div className='text-center'>
 								<MakePost
 									id = {this.state.person} //make post to who
 								/>
-							</div>	
+							</div>
 					}
 					<div className='text-left'>
 						{data.map((e, i) => {
 							return (<Post key={e._id} myWall = {myWall} data={e}/>)
 						})}
 					</div>
+					{
+						loading ?
+								<div className='text-center'>
+									Загрузка...
+								</div>
+						:
+								''
+					}
 					<div className='scrollToGetOld' ref={this.scrollTrigger}>
 					</div>
 				</div>
 			)
-		
+
 	}
-	
+
 }
 
 Wall.propTypes = {
