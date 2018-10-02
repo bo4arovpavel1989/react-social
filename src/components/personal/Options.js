@@ -1,10 +1,12 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse, standardFetch} from '../../helpers';
 
 class Options extends React.Component {
 	constructor(){
 		super();
+		
 		this.state = {
 			error: false,
 			loading:false
@@ -40,4 +42,4 @@ class Options extends React.Component {
 	}	
 }
 
-export default Options;
+export default withRouter(Options);
