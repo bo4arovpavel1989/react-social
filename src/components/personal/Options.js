@@ -2,29 +2,32 @@ import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
 import {handleResponse, standardFetch} from '../../helpers';
+import SettingsForm from './forms/SettingsForm'
 
 class Options extends React.Component {
 	constructor(){
 		super();
-		
+
 		this.state = {
 			error: false,
-			loading:false
+			loading:false,
+			data:[]
 		}
-		
+
 	}
-	
+
 	componentDidMount(){
 		this.getOptions();
 	}
-	
+
 	getOptions(){
 		this.setState({loading:true});
-		
-		fetch(`${API_URL}/getoptions`, standardFetch()) 
+
+		fetch(`${API_URL}/getoptions`, standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
 				console.log(rep)
+					this.setState({loading:false, data:rep})
 			})
 			.catch(error=>{
 				this.setState({error:true, loading:false})
@@ -32,21 +35,33 @@ class Options extends React.Component {
 	}
 
 	render(){
-	
-		if(this.state.error )
+		let {error, data, loading} = this.state;
+
+		if(error)
 			return(
 				<div>
 					Произошла ошибка во время обработки запроса. Попробуйте позже!
 				</div>
 			)
-			
-	return (
-		<div>
-		
-			
-		</div>
-		)
-	}	
+
+		if(data.length === 0 || loading)
+			return (
+				<div>
+					Загрузка...
+				</div>
+			)
+
+		return (
+			<div>
+				<h1>Настройки</h1>
+
+					<SettingsForm data={data}/>
+
+
+			</div>
+			)
+
+	}
 }
 
 export default withRouter(Options);
