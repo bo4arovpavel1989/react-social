@@ -8,12 +8,24 @@ const checkBan = require('./customfunctions.js').checkBan;
 module.exports.getPerson = function(req, res){
 	let me = req.headers.id; //id of me
 	let person = req.params.id; //id of the page owner
+	let myPage = (me === person);
 
 	async.waterfall([
 		(cb)=>{
 			db.findOne('User',{ _id:person })
 				.then(rep=>cb(null, rep.login))
 				.catch(err=>cb(err, null))
+		},
+		(login, cb) => {
+			db.findOne('Options',{ login })
+				.then(rep=> {
+					(rep.amIVisible || myPage) ? 
+						cb(null, login) 
+					:
+						cb(new Error('invisible'))
+				})
+				.catch(err=>cb(err, null))
+			
 		},
 		(login, cb)=>{
 			db.findOne('Personal',{ login }, 'name birthDate activity thumbAvatar')
@@ -45,6 +57,7 @@ module.exports.getPerson = function(req, res){
 		}
 		],(err, rep)=>{
 			if(!err) res.json(rep)
+			else if (err === 'invisible') res.json({invisible:true})	
 			else res.status(500).json({err})
 	});
 
@@ -214,4 +227,20 @@ module.exports.checkBan = function(req, res){
 module.exports.getOptions = function(req, res){
 	let me = req.headers.id;
 	
+	async.waterfall([
+		(cb)=>{
+			db.findOne('User',{ _id: me })
+				.then(rep=>cb(null, rep.login))
+				.catch(err=>cb(err, null))
+		},
+		(login, cb)=>{
+			db.findOne('Options',{ login }, 'amIVisible')
+				.then(rep=>cb(null, rep))
+				.catch(err=>cb(err, null))
+
+		}
+		],(err, rep)=>{
+			if(!err) 	res.json(rep)
+			else res.status(500).json({ err })
+	});
 };

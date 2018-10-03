@@ -60,7 +60,7 @@ models.Contact =  new mongoose.Schema({
 });
 
 models.Options = new mongoose.Schema({
-	me:{type:String, required:true},//options owner
+	login: {type: String, required: true},
 	amIVisible: {type: Boolean, default:true}
 });
 

@@ -119,7 +119,6 @@ class Personal extends React.Component {
 	render(){
 		let {person, data, isContact, isBanned} = this.state;	
 		
-		
 		if(this.state.error || !data)
 			return(
 				<div>

@@ -70,6 +70,12 @@ module.exports.register = function(req, res){
 				.then(rep => cb())
 				.catch(err => cb(new Error('An error occured creating user')));
 			
+		},
+		(cb)=>{
+			db.create('Options', data)
+				.then(rep => cb())
+				.catch(err => cb(new Error('An error occured creating user')));
+			
 		}
 		],(err)=>{
 			if(!err) res.json({ success: true });

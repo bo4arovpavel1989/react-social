@@ -24,7 +24,7 @@ class Options extends React.Component {
 		fetch(`${API_URL}/getoptions`, standardFetch()) 
 			.then(handleResponse)
 			.then((rep)=>{
-				
+				console.log(rep)
 			})
 			.catch(error=>{
 				this.setState({error:true, loading:false})
@@ -33,6 +33,13 @@ class Options extends React.Component {
 
 	render(){
 	
+		if(this.state.error )
+			return(
+				<div>
+					Произошла ошибка во время обработки запроса. Попробуйте позже!
+				</div>
+			)
+			
 	return (
 		<div>
 		
