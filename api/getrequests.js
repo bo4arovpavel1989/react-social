@@ -19,7 +19,7 @@ module.exports.getPerson = function(req, res){
 		(login, cb) => {
 			db.findOne('Options',{ login })
 				.then(rep=> {
-					(rep.amIVisible || myPage) ? 
+					(!rep.amIVisible || myPage) ? 
 						cb(null, login) 
 					:
 						cb(new Error('invisible'))
@@ -57,7 +57,7 @@ module.exports.getPerson = function(req, res){
 		}
 		],(err, rep)=>{
 			if(!err) res.json(rep)
-			else if (err === 'invisible') res.json({invisible:true})	
+			else if (err.message === 'invisible') res.json({invisible:true})	
 			else res.status(500).json({err})
 	});
 

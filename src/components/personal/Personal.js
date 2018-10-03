@@ -20,7 +20,8 @@ class Personal extends React.Component {
 			myPage:true,
 			msgBoxOpened:false,
 			isContact:false,
-			isBanned:false
+			isBanned:false,
+			invisible:false
 		}
 		
 		this.getPersonalData = this.getPersonalData.bind(this);
@@ -36,12 +37,14 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then((rep)=>{
-				if(!rep.err && !rep.forbidden)
-					this.setState({data:rep, isBanned: rep.isBanned, isContact: rep.isContact, loading:false})
+				if(!rep.err && !rep.forbidden && !rep.invisible)
+					this.setState({data:rep, isBanned: rep.isBanned, isContact: rep.isContact, loading:false, invisible: false})
+				else if(rep.invisible)
+					this.setState( {invisible: true, loading:false} )
 				else if(rep.forbidden)
 					eventEmitter.emit('logoff')
 				else
-					this.setState({error:true})
+					this.setState({error:true, loading:false})
 			})
 			.catch(error=>{
 				console.log(error)
@@ -117,21 +120,28 @@ class Personal extends React.Component {
 	}
 	
 	render(){
-		let {person, data, isContact, isBanned} = this.state;	
+		let {person, data, isContact, isBanned, loading, error, invisible} = this.state;	
 		
-		if(this.state.error || !data)
-			return(
+		if(error || !data)
+			return (
 				<div>
 					Произошла ошибка во время обработки запроса. Попробуйте позже!
 				</div>
 			)
 		
-		if(this.state.loading)
-			return(
+		if(loading)
+			return (
 				<div>
 					Загрузка...
 				</div>
-			)	
+			)
+
+		if(invisible)
+			return (
+				<div>
+					Пользователь скрыл свою страницу
+				</div>
+			)
 			
 		return (
 			<div className="col-md-10">
