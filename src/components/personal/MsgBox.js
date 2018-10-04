@@ -8,72 +8,74 @@ import './MsgBox.css'
 class MsgBox extends React.Component {
 	constructor(){
 		super();
-		
+
 		this.state = {
 			message:'',
-			person:'', //who will receive the message,
+			person:'', // Who will receive the message,
 			loading:false,
 			error:false,
 			iAmBanned:false,
 			name:''
 		}
-		
+
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	
+
 	componentWillMount(){
-		let {openMsgBox, person} = this.props;
-		
+		const {openMsgBox, person} = this.props;
+
 		this.setState({openMsgBox, person}, ()=>{
 			this.getUserData();
 			this.checkBan();
 		});
 	}
-	
+
 	checkBan(){
-		let person = this.state.person;
-	
+		const {person} = this.state;
+
 		fetch(`${API_URL}/checkBan/${person}`, standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
-				let { iAmBanned } = rep;
-				this.setState({ iAmBanned });
+			.then(rep=>{
+				const {iAmBanned} = rep;
+
+				this.setState({iAmBanned});
 			})
 			.catch(error=>{
 				console.log(error)
 			})
 	}
-	
+
 	handleChange(e){
-		let message = e.target.value.toString();
-		
+		const message = e.target.value.toString();
+
 		this.setState({message});
 	}
-	
-	getUserData(){	
-		let person = this.state.person;
-	
+
+	getUserData(){
+		const {person} = this.state;
+
 		fetch(`${API_URL}/post-personal/${person}`, standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
-				let {name, isBanned} = rep;
-				this.setState({ name, isBanned });
+			.then(rep=>{
+				const {name, isBanned} = rep;
+
+				this.setState({name, isBanned});
 			})
 			.catch(error=>{
 				console.log(error)
 			})
 	}
-	
+
 	handleSubmit(e){
 		e.preventDefault();
-		let {message, person} = this.state;
-		let data = {message, person};
-		
+		const {message, person} = this.state,
+			data = {message, person};
+
 		this.setState({loading:true})
-		
+
 		attouchCred(data);
-		
+
 		fetch(`${API_URL}/sendmessage`,{
 				method:'POST',
 				mode:'cors',
@@ -84,40 +86,38 @@ class MsgBox extends React.Component {
 				body:JSON.stringify(data)
 			})
 			.then(handleResponse)
-			.then((rep)=>{
-				this.state.openMsgBox();				
+			.then(rep=>{
+				this.state.openMsgBox();
 			})
-			.catch((error) => {
+			.catch(error=>{
 				console.log(error)
 				this.setState({loading:false, error:true});
 			});
 	}
-	
-	
-	
+
+
 	render(){
-	
-	let { openMsgBox, error, message, loading, person, name, iAmBanned } = this.state;
-	
+
+	const {openMsgBox, error, message, loading, person, name, iAmBanned} = this.state;
+
 	return (
 		<div className='msgBoxContainer'>
-		
+
 			<div className='blur' onClick={openMsgBox}></div>
-			
-			<div className={'msgBox ' + (error || iAmBanned ? 'error' : '')}>
-			
+
+			<div className={`msgBox ${error || iAmBanned ? 'error' : ''}`}>
+
 				<div className='messageName'>
 					<Link to={`/personal/${person}`}>
 						{name}
 					</Link>
 					{
-						iAmBanned ? 
-						' ограничил круг лиц, которые могут отправлять ему сообщения'
-						:
+						iAmBanned ?
+						' ограничил круг лиц, которые могут отправлять ему сообщения'						:
 						':'
 					}
 				</div>
-				
+
 				<form className="sendmsgform" onSubmit={this.handleSubmit}>
 					<div className="form-group">
 						<div className="input-group">
@@ -127,15 +127,15 @@ class MsgBox extends React.Component {
 					</div>
 					<div className="form-group">
 						<div className="col-sm-offset-2 col-sm-10">
-							<input disabled={iAmBanned || (message === '') || (loading) ? true : false} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
+							<input disabled={Boolean(iAmBanned || message === '' || loading)} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
 						</div>
 					</div>
 				</form>
-				
+
 			</div>
-		</div>	
+		</div>
 		)
-	}	
+	}
 }
 
 MsgBox.propTypes = {
@@ -143,4 +143,4 @@ MsgBox.propTypes = {
 	person: PropTypes.string
 }
 
-export default  withRouter(MsgBox);
+export default withRouter(MsgBox);

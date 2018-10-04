@@ -12,23 +12,23 @@ class Wall extends React.Component {
 		super();
 
 		this.state = {
-			person:false, //owner of the wall
+			person:false, // Owner of the wall
 			data:[],
 			isMore:true,
 			myWall:false,
-			scroll:0, //number of scrolls by order
+			scroll:0, // Number of scrolls by order
 			loading:false,
 			iAmBanned:false
 		}
 
-		this.scrollTrigger =  React.createRef();
+		this.scrollTrigger = React.createRef();
 		this.checkLikedPosts = this.checkLikedPosts.bind(this);
 		this.getOlderPosts = this.getOlderPosts.bind(this);
 		this.checkBan = this.checkBan.bind(this);
 	}
 
 	componentDidMount(){
-		this.setState({person:this.props.id},() => {
+		this.setState({person:this.props.id},()=>{
 			this.getWall();
 			this.checkBan();
 			this.listenToNewPosts();
@@ -44,25 +44,28 @@ class Wall extends React.Component {
 
 	getWall(){
 		this.setState({loading:true});
-		let me = getToken().id;
-		let q = this.state.scroll;
-		let person = this.state.person;
+		const me = getToken().id,
+			q = this.state.scroll,
+			{person} = this.state,
+			wallPostsPerTime = 10;
 
 		if(person)
-			fetch(`${API_URL}/getwall/${person}?q=${q}`,standardFetch()) //q means quantity of wall posts already loaded
+			fetch(`${API_URL}/getwall/${person}?q=${q}`,standardFetch()) // Q means quantity of wall posts already loaded
 				.then(handleResponse)
-				.then((rep)=>{
+				.then(rep=>{
 					if(!rep.err && !rep.forbidden){
-						let newData = this.checkLikedPosts(rep);
-						let isMore = (newData.length === 10) ? true : false; //number of wall posts per 1 time
-						let loading = false;
-						let myWall = (me === person);
+						const newData = this.checkLikedPosts(rep),
+							isMore = (newPata.length === wallPostsPerTime),
+							loading = false,
+							myWall = (me === person);
 
-						this.setState( prevState => ({
-							data:[...prevState.data, ...newData], isMore, loading, myWall
+						this.setState(prevState=>({
+							data:[
+...prevState.data,
+...newData
+], isMore, loading, myWall
 						}))
-					}
-					else if(rep.forbidden)
+					} else if(rep.forbidden)
 						eventEmitter.emit('logoff')
 					else
 						this.setState({error:true})
@@ -74,15 +77,16 @@ class Wall extends React.Component {
 	}
 
 	checkBan(){
-		let person = this.state.person;
-		let me = getToken().id;
+		const {person} = this.state,
+			me = getToken().id;
 
 		if(me !== person)
 			fetch(`${API_URL}/checkBan/${person}`, standardFetch())
 				.then(handleResponse)
-				.then((rep)=>{
-					let { iAmBanned } = rep;
-					this.setState({ iAmBanned });
+				.then(rep=>{
+					const {iAmBanned} = rep;
+
+					this.setState({iAmBanned});
 				})
 				.catch(error=>{
 					console.log(error)
@@ -90,10 +94,9 @@ class Wall extends React.Component {
 	}
 
 	checkLikedPosts(rep){
-		let posts = rep.posts;
-		let likedPosts = rep.likedPosts;
+		const {posts, likedPosts} = rep;
 
-		posts.forEach((p,i) => {
+		posts.forEach((p,i)=>{
 			if(_.includes(likedPosts, p._id))
 				p.liked = true;
 			else
@@ -105,14 +108,14 @@ class Wall extends React.Component {
 
 	listenToNewPosts(){
 		eventEmitter.on('newpost',()=>{
-			this.setState({scroll:0, data:[]}, () => this.getWall(this.state.person) );
+			this.setState({scroll:0, data:[]}, ()=>this.getWall(this.state.person));
 		})
 	}
 
 	listenToLikes(){
-		eventEmitter.on('like', (_id) => {
+		eventEmitter.on('like', _id=>{
 
-		let data = this.state.data;
+		const {data} = this.state;
 
 			for (let i = 0; i < data.length; i++) {
 				if (data[i]._id === _id) {
@@ -128,33 +131,36 @@ class Wall extends React.Component {
 
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
-			let newPerson = nextProps.match.params.id;
+			const newPerson = nextProps.match.params.id;
 
 			this.setState({person:newPerson, data:[], scroll:0}, this.getWall);
 		}
 	}
 
 	getOlderPosts(){
+		const distanceBeforeLoading = 300;//  to make load earlier
+
 		if(this.state.isMore) {
-			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
-			let bodyHeight = document.body.offsetHeight;
+			const scr = window.scrollY + window.innerHeight + distanceBeforeLoading,
+				bodyHeight = document.body.offsetHeight;
 
 			if(scr >= bodyHeight) {
 				let scrollNum = this.state.scroll;
+
 				this.setState({scroll:++scrollNum}, this.getWall)
 			}
 		}
 	}
 
 	render(){
-		let { data,  myWall, iAmBanned, loading } = this.state;
+		const {data, myWall, iAmBanned, loading} = this.state;
 
 		if(data.length === 0)
 			return (
 				<div className='wall text-center'>
 					<div className='text-center'>
 						<MakePost
-							id = {this.state.person} //make post to who
+							id = {this.state.person} // Make post to who
 						/>
 					</div>
 					<div className='text-center postEntry'>
@@ -167,25 +173,21 @@ class Wall extends React.Component {
 				<div className='wall text-center' onScroll={this.getOlderPosts}>
 					{
 						iAmBanned ?
-							''
-						:
+							''						:
 							<div className='text-center'>
 								<MakePost
-									id = {this.state.person} //make post to who
+									id = {this.state.person} // Make post to who
 								/>
 							</div>
 					}
 					<div className='text-left'>
-						{data.map((e, i) => {
-							return (<Post key={e._id} myWall = {myWall} data={e}/>)
-						})}
+						{data.map((e, i)=><Post key={e._id} myWall = {myWall} data={e}/>)}
 					</div>
 					{
 						loading ?
 								<div className='text-center'>
 									Загрузка...
-								</div>
-						:
+								</div>						:
 								''
 					}
 					<div className='scrollToGetOld' ref={this.scrollTrigger}>
@@ -197,8 +199,6 @@ class Wall extends React.Component {
 
 }
 
-Wall.propTypes = {
-	id:PropTypes.string.isRequired
-}
+Wall.propTypes = {id:PropTypes.string.isRequired}
 
-export default  withRouter(Wall);
+export default withRouter(Wall);

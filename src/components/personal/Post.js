@@ -27,10 +27,10 @@ class Post extends React.Component {
 	}
 
 	componentDidMount(){
-		let {data, myWall} = this.props;
-		let me = getToken().id;
+		const {data, myWall} = this.props,
+			me = getToken().id;
 
-		data.myPost = (myWall || (me === data.author));
+		data.myPost = myWall || me === data.author;
 
 		this.setState(data, ()=>{
 			this.getUserData();
@@ -38,12 +38,13 @@ class Post extends React.Component {
 	}
 
 	getUserData(){
-		let author = this.state.author;
+		const {author} = this.state;
 
 		fetch(`${API_URL}/post-personal/${author}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
-				let {name, microAvatar} = rep;
+			.then(rep=>{
+				const {name, microAvatar} = rep;
+
 				this.setState({microAvatar, name});
 			})
 			.catch(error=>{
@@ -52,12 +53,12 @@ class Post extends React.Component {
 	}
 
 	like(){
-		let postId = this.state._id;
+		const postId = this.state._id;
 
 		fetch(`${API_URL}/like/${postId}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
-				let like = this.state.like;
+			.then(rep=>{
+				let {like} = this.state;
 
 				if(rep.newLike)
 					this.setState({like:++like, liked:true})
@@ -74,7 +75,7 @@ class Post extends React.Component {
 
 	removePost(){
 		if(window.confirm('Уверен?')){
-			let id = this.state._id;
+			const id = this.state._id;
 
 			fetch(`${API_URL}/removepost/${id}`,{
 					method:'DELETE',
@@ -86,11 +87,11 @@ class Post extends React.Component {
 					body:JSON.stringify(getToken())
 				})
 				.then(handleResponse)
-				.then((rep)=>{
+				.then(rep=>{
 					console.log(rep);
 					this.setState({deleted:true});
 				})
-				.catch((error) => {
+				.catch(error=>{
 					console.log(error);
 				});
 
@@ -98,7 +99,7 @@ class Post extends React.Component {
 	}
 
 	render(){
-		let {author, entry, date, like, name, microAvatar, liked, myPost, deleted} = this.state;
+		const {author, entry, date, like, name, microAvatar, liked, myPost, deleted} = this.state;
 
 		if(!deleted)
 			return (
@@ -118,8 +119,8 @@ class Post extends React.Component {
 						</div>
 						<div className='postEntry'>
 							<div className='postEntryText'>{entry}</div>
-							<div className={'postEntryLike ' + (liked ? 'liked' : '')} onClick={this.like}>&#x2764; {like}</div>
-							<span className={'deletePost ' + (myPost ? '' : 'hidden')} onClick={this.removePost}>Удалить</span>
+							<div className={`postEntryLike ${liked ? 'liked' : ''}`} onClick={this.like}>&#x2764; {like}</div>
+							<span className={`deletePost ${myPost ? '' : 'hidden'}`} onClick={this.removePost}>Удалить</span>
 						</div>
 					</div>
 				)

@@ -26,7 +26,7 @@ class Options extends React.Component {
 
 		fetch(`${API_URL}/getoptions`, standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
+			.then(rep=>{
 				console.log(rep)
 					this.setState({loading:false, data:rep})
 			})
@@ -42,13 +42,13 @@ class Options extends React.Component {
 	handleChange(e){
 		console.log(this.state)
 		
-		let data = e.currentTarget.dataset;
+		const data = e.currentTarget.dataset;
 		
-		this.setState({ data} );
+		this.setState({data});
 	}
 	
 	render(){
-		let {error, data, loading} = this.state;
+		const {error, data, loading} = this.state;
 
 		if(error)
 			return(

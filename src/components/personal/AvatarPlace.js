@@ -2,7 +2,7 @@ import React from 'react';
 import './AvatarPlace.css';
 import PropTypes from 'prop-types';
 
-const AvatarPlace = (props) => {
+const AvatarPlace = props=>{
 	const {img,myPage,openMsgBox, isContact, addToContacts, isBanned, banUser} = props;
 	
 	return (	
@@ -19,14 +19,12 @@ const AvatarPlace = (props) => {
 							<div>
 							{
 								isContact ? 
-								<button className='btn-danger' onClick={addToContacts}>Удалить</button>
-								:
+								<button className='btn-danger' onClick={addToContacts}>Удалить</button>								:
 								<button className='btn-success' onClick={addToContacts}>Добавить</button>
 							}
 							{
 								isBanned ? 
-								<button className='btn-secondary ban' onClick={banUser}>Разблокировать</button>
-								:
+								<button className='btn-secondary ban' onClick={banUser}>Разблокировать</button>								:
 								<button className='btn-secondary ban' onClick={banUser}>Заблокировать</button>
 							}
 							</div>
@@ -44,4 +42,4 @@ AvatarPlace.propTypes = {
 	openMsgBox:PropTypes.func.isRequired
 }
 
-export default  AvatarPlace;
+export default AvatarPlace;

@@ -3,9 +3,9 @@ import {Link,withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './Header.css'
 
-const Header = (props) => {
+const Header = props=>{
 	const {isLogged, logoff, id} = props;
-	
+
 	return (
 		<div>
 			<Link className='header' to='/'>
@@ -13,16 +13,16 @@ const Header = (props) => {
 			</Link>
 			{
 				isLogged ?
-					(<div className='pull-right logoff'>
+					<div className='pull-right logoff'>
 						<Link to={`/edit/${id}`}>
 							Редактировать страницу
 						</Link>
 						<a className='pull-right' onClick={logoff}>
 							Выйти
 						</a>
-					</div>) : ''
+					</div> : ''
 			}
-		</div>	
+		</div>
 		)
 }
 
@@ -32,4 +32,4 @@ Header.propTypes = {
 	logoff: PropTypes.func.isRequired
 }
 
-export default  withRouter(Header);
+export default withRouter(Header);

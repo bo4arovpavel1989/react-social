@@ -17,48 +17,48 @@ import {API_URL} from './config';
 
 
 class App extends React.Component {
-	
+
 	constructor(){
 		super();
 		this.state={
 			isLogged:false,
 			id:''
 		}
-		
+
 		this.listenToLogin = this.listenToLogin.bind(this);
 		this.checkLogging = this.checkLogging.bind(this);
 		this.logoff = this.logoff.bind(this);
 	}
-	
+
 	componentWillMount(){
 		this.checkLogging();
 		this.listenToLogin();
 	}
-	
+
 	listenToLogin(){
 		eventEmitter.on('login',()=>{
 			this.setState({isLogged:true})
 		})
-		
+
 		eventEmitter.on('logoff',()=>{
 			this.setState({isLogged:false})
 		})
 	}
-	
-	checkLogging(){		
-		if(!getToken()) 
+
+	checkLogging(){
+		if(!getToken())
 			return;
-		
+
 		checkToken(JSON.stringify(getToken()))
 					.then(rep=>{
 						if(!rep.err)
 							this.setState({isLogged:rep.auth,id:getToken().id});
 					})
 	}
-	
+
 	logoff(){
 		localStorage.clear();
-		
+
 		if(getToken())
 			fetch(`${API_URL}/logoff`,{
 				method:'POST',
@@ -69,22 +69,22 @@ class App extends React.Component {
 				},
 				body:getToken()
 			});
-	
+
 		this.setState({isLogged:false});
 	}
-	
+
 	render(){
 		return (
 		<BrowserRouter>
 			<div className='container'>
-				<Header 
+				<Header
 					isLogged={this.state.isLogged}
 					logoff={this.logoff}
 					id={this.state.id}
 				/>
-				
+
 				<div className="row">
-					{this.state.isLogged ? 
+					{this.state.isLogged ?
 						<div className="col-md-2">
 							<Sidebar/>
 						</div> : ''
@@ -98,10 +98,10 @@ class App extends React.Component {
 						<Route path='/options' render={this.state.isLogged ? Options : NotAllowed} exact/>
 						<Route path='/edit/:id' render={this.state.isLogged ? Edit : NotAllowed} exact/>
 					</Switch>
-				</div>	
+				</div>
 			</div>
-		</BrowserRouter>		
-		);	
+		</BrowserRouter>
+		);
 	}
 }
 

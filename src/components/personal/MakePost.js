@@ -17,8 +17,9 @@ class MakePost extends React.Component {
 	}
 	
 	handleChange(e) {
-		let post = e.target.value;
-		this.setState({post, allFieldsUsed:(post !== '')});
+		const post = e.target.value;
+
+		this.setState({post, allFieldsUsed:post !== ''});
 	}
 	
 	handleSubmit(e){
@@ -26,7 +27,8 @@ class MakePost extends React.Component {
 		
 		this.setState({loading:true});
 		
-		let data = {};
+		const data = {};
+
 			data.post = this.state.post;
 			data.person = this.props.id;
 		
@@ -42,15 +44,16 @@ class MakePost extends React.Component {
 				body:JSON.stringify(data)
 			})
 			.then(handleResponse)
-			.then((rep)=>{
+			.then(rep=>{
 				this.setState({loading:false});
 				eventEmitter.emit('newpost');
 			})
-			.catch((error) => {
+			.catch(error=>{
 				this.setState({loading:false});
 			});
 		
 	}
+
 	render(){
 		return (	
 				<form className="makepostform form-inline" onSubmit={this.handleSubmit}>
@@ -63,7 +66,7 @@ class MakePost extends React.Component {
 					</div>
 					<div className="form-group">
 						<div className="col-sm-offset-2 col-sm-10">
-							<input disabled={this.state.allFieldsUsed ? false : true} className="btn btn-primary btn-lg" type="submit" value="Отправить"/>
+							<input disabled={!this.state.allFieldsUsed} className="btn btn-primary btn-lg" type="submit" value="Отправить"/>
 						</div>
 					</div>
 				</form>
@@ -71,4 +74,4 @@ class MakePost extends React.Component {
 	}	
 }
 
-export default  MakePost;
+export default MakePost;

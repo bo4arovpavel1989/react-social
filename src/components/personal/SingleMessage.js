@@ -11,8 +11,8 @@ class SingleMessage extends React.Component {
 		this.state = {
 			deleted:false,
 			microAvatar:'',
-			_id:'', //id of the message
-			id:'', //id of person, viewed in message
+			_id:'', // Id of the message
+			id:'', // Id of person, viewed in message
 			from:'',
 			to:'',
 			message:'',
@@ -26,14 +26,14 @@ class SingleMessage extends React.Component {
 	}
 	
 	componentDidMount(){
-		let {data, box} = this.props;
+		const {data, box} = this.props;
 		
 		/*
-		 set id of the person whether its sender or receiver. 
-		 if its inbox i set id of the sender, if its outbox i set od of the receiver
-		*/
+		 * Set id of the person whether its sender or receiver. 
+		 * if its inbox i set id of the sender, if its outbox i set od of the receiver
+		 */
 		
-		data.id = (box === 'in' ? data.from : data.to) 
+		data.id = box === 'in' ? data.from : data.to 
 			
 		this.setState(data, ()=>{
 			this.getUserData();
@@ -41,12 +41,13 @@ class SingleMessage extends React.Component {
 	}
 	
 	getUserData(){	
-		let author = this.state.id;
+		const author = this.state.id;
 	
 		fetch(`${API_URL}/post-personal/${author}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
-				let {name, microAvatar} = rep;
+			.then(rep=>{
+				const {name, microAvatar} = rep;
+
 				this.setState({microAvatar, name});
 			})
 			.catch(error=>{
@@ -56,7 +57,7 @@ class SingleMessage extends React.Component {
 		
 	removeMessage(){
 		if(window.confirm('Уверен?')){
-				let id = this.state._id;
+				const id = this.state._id;
 				
 				fetch(`${API_URL}/removemessage/${id}`,{
 						method:'DELETE',
@@ -68,10 +69,10 @@ class SingleMessage extends React.Component {
 						body:JSON.stringify(getToken())
 					})
 					.then(handleResponse)
-					.then((rep)=>{
+					.then(rep=>{
 						this.setState({deleted:true});
 					})
-					.catch((error) => {
+					.catch(error=>{
 						console.log(error);
 					});
 			}
@@ -82,7 +83,7 @@ class SingleMessage extends React.Component {
 	}
 	
 	render(){	
-		let {deleted, isRead, id, microAvatar, date, message, name} = this.state;
+		const {deleted, isRead, id, microAvatar, date, message, name} = this.state;
 	
 		if(!deleted)
 			return (
@@ -94,7 +95,7 @@ class SingleMessage extends React.Component {
 						</Link>
 					</div>
 					
-					<div className={'messageText ' + (isRead ? '' : 'new')}>
+					<div className={`messageText ${isRead ? '' : 'new'}`}>
 					
 						<div className='messageName'>
 							<Link to={`/personal/${id}`}>
@@ -121,8 +122,6 @@ class SingleMessage extends React.Component {
 	}	
 }
 
-SingleMessage.propTypes = {
-	data:PropTypes.object.isRequired
-}
+SingleMessage.propTypes = {data:PropTypes.object.isRequired}
 
 export default withRouter(SingleMessage);

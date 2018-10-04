@@ -13,7 +13,7 @@ class Personal extends React.Component {
 		super();
 		this.state = {
 			loading:true,
-			person:'', //id of the page owner
+			person:'', // Id of the page owner
 			login:'',
 			error:false,
 			data:{},
@@ -31,16 +31,16 @@ class Personal extends React.Component {
 	}
 	
 	getPersonalData(person){
-		this.setState({person}) //set id of the pages's owner
-		this.setState({myPage:person === getToken().id}) //check if its my page
+		this.setState({person}) // Set id of the pages's owner
+		this.setState({myPage:person === getToken().id}) // Check if its my page
 		
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
+			.then(rep=>{
 				if(!rep.err && !rep.forbidden && !rep.invisible)
 					this.setState({data:rep, isBanned: rep.isBanned, isContact: rep.isContact, loading:false, invisible: false})
 				else if(rep.invisible)
-					this.setState( {invisible: true, loading:false} )
+					this.setState({invisible: true, loading:false})
 				else if(rep.forbidden)
 					eventEmitter.emit('logoff')
 				else
@@ -53,7 +53,8 @@ class Personal extends React.Component {
 	}
 	
 	openMsgBox(){
-		let opened = this.state.msgBoxOpened;
+		const opened = this.state.msgBoxOpened;
+
 		this.setState({msgBoxOpened: !opened});
 	}
 	
@@ -72,7 +73,8 @@ class Personal extends React.Component {
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
-			if(!newPerson && getToken()) { //if user clicked header when been logged in
+
+			if(!newPerson && getToken()) { // If user clicked header when been logged in
 				newPerson = getToken().id;
 				this.props.history.push(`/personal/${newPerson}`);
 			}
@@ -82,11 +84,11 @@ class Personal extends React.Component {
 	}
 	
 	addToContacts(){
-		let { person, isContact } = this.state;
+		const {person, isContact} = this.state;
 		
 		fetch(`${API_URL}/addtocontact?p=${person}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
+			.then(rep=>{
 				if(!rep.err && !rep.forbidden)
 					this.setState({isContact: !isContact, loading:false})
 				else if(rep.forbidden)
@@ -101,11 +103,11 @@ class Personal extends React.Component {
 	}
 	
 	banUser(){
-		let { person, isBanned } = this.state;
+		const {person, isBanned} = this.state;
 		
 		fetch(`${API_URL}/banuser?p=${person}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
+			.then(rep=>{
 				if(!rep.err && !rep.forbidden)
 					this.setState({isBanned: !isBanned, loading:false})
 				else if(rep.forbidden)
@@ -120,7 +122,7 @@ class Personal extends React.Component {
 	}
 	
 	render(){
-		let {person, data, isContact, isBanned, loading, error, invisible} = this.state;	
+		const {person, data, isContact, isBanned, loading, error, invisible} = this.state;	
 		
 		if(error || !data)
 			return (
@@ -163,7 +165,7 @@ class Personal extends React.Component {
 							addToContacts = {this.addToContacts}
 						/>
 					</div>
-					<div  className='personalDataPlace'>
+					<div className='personalDataPlace'>
 						<PersonalData
 							data = {data}
 						/>

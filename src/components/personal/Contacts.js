@@ -18,35 +18,36 @@ class Contacts extends React.Component {
 			msgBoxOpened:false,
 			personToWrite:''
 		}
-		
+
 		this.getContactsData = this.getContactsData.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
 	}
-	
+
 	componentDidMount(){
 		this.getContacts()
 			.then(this.getContactsData);
-			
+
 		window.addEventListener('scroll', this.getMoreContacts, true);
 	}
-	
+
 	componentWillUnmount() {
 		window.removeEventListener('scroll', this.getMoreContacts, true);
 	}
-	
-	getContacts(){	
-		return new Promise((resolve, reject) => {
-			let q = this.state.scroll;
-		
+
+	getContacts(){
+		const contactsPerTime = 10;
+
+		return new Promise((resolve, reject)=>{
+			const q = this.state.scroll;
+
 			fetch(`${API_URL}/contacts?q=${q}`,standardFetch())
 				.then(handleResponse)
-				.then((rep)=>{
+				.then(rep=>{
 					if(!rep.err && !rep.forbidden){
-						let isMore = (rep.contacts.length === 10) ? true : false; //number of contacts per 1 time
-						
+						const isMore = rep.contacts.length === contactsPerTime; // Number of contacts per 1 time
+
 						this.setState({data:rep.contacts, isMore, loading:false}, resolve)
-					}	
-					else if(rep.forbidden)
+					} else if(rep.forbidden)
 						eventEmitter.emit('logoff', resolve)
 					else
 						this.setState({error:true}, reject)
@@ -55,54 +56,57 @@ class Contacts extends React.Component {
 					console.log(error)
 					this.setState({error:true}, reject)
 				})
-		});	
+		});
 	}
-	
+
 	getContactsData(){
-		let { data, contacts } = this.state;
-		
-		data.forEach((d) => {
-			
+		const {data, contacts} = this.state;
+
+		data.forEach(d=>{
+
 			fetch(`${API_URL}/post-personal/${d.person}`,standardFetch())
 				.then(handleResponse)
-				.then((rep)=>{
+				.then(rep=>{
 					contacts.push({...rep, person:d.person});
 					this.setState({contacts});
 				})
 				.catch(error=>{
 					console.log(error)
 				})
-				
+
 		})
 	}
-	
-	
+
+
 	getMoreContacts(){
+		const distanceBeforeLoading = 300;
+
 		if(this.state.isMore) {
-			let scr = window.scrollY + window.innerHeight + 300; // +300 to make load earlier
-			let bodyHeight = document.body.offsetHeight;
-			
+			const scr = window.scrollY + window.innerHeight + distanceBeforeLoading, // distance to make load earlier
+				bodyHeight = document.body.offsetHeight;
+
 			if(scr >= bodyHeight) {
 				let scrollNum = this.state.scroll;
+
 				this.setState({scroll:++scrollNum}, this.getContacts)
 			}
 		}
 	}
-	
+
 	deleteContact(person){
-		let { contacts } = this.state;
-		
+		const {contacts} = this.state;
+
 		for (let i = 0; i < contacts.length; i++) {
 				if(contacts[i].person === person){
 					contacts[i].isDeleted = true;
 					break;
-				}	
+				}
 		}
-		
-		
+
+
 		fetch(`${API_URL}/addtocontact?p=${person}`,standardFetch())
 			.then(handleResponse)
-			.then((rep)=>{
+			.then(rep=>{
 				if(!rep.err && !rep.forbidden)
 					this.getContacts()
 				else if(rep.forbidden)
@@ -115,29 +119,28 @@ class Contacts extends React.Component {
 				this.setState({error:true})
 			})
 	}
-	
+
 	openMsgBox(person){
-		let opened = this.state.msgBoxOpened;
+		const opened = this.state.msgBoxOpened;
+
 		this.setState({msgBoxOpened: !opened, personToWrite:person});
 	}
-	
+
 	render(){
-		let { contacts, personToWrite } = this.state;
-				
+		const {contacts, personToWrite} = this.state;
+
 		return (
 			<div className='contactsList'>
-				{this.state.msgBoxOpened ? 
+				{this.state.msgBoxOpened ?
 					<MsgBox
 						openMsgBox = {this.openMsgBox}
 						person = {personToWrite}
 					/> : ''
 				}
 			{
-				contacts.map((c) => {
-					return (c.isDeleted) ? 
-					''
-					:
-					(
+				contacts.map(c=>c.isDeleted ?
+					''					:
+
 						<div className='contactItem' key={c._id}>
 							<div className='contactAvatar'>
 								<Link to={`personal/${c.person}`}>
@@ -150,18 +153,16 @@ class Contacts extends React.Component {
 								</Link>
 							</div>
 							<div className='buttons'>
-								<button className='btn-success contactbuttons' onClick={() => this.openMsgBox(c.person)}>Отправить сообщение</button>
-								<button className='btn-danger contactbuttons' onClick={() => this.deleteContact(c.person)}>Удалить из контактов</button>
+								<button className='btn-success contactbuttons' onClick={()=>this.openMsgBox(c.person)}>Отправить сообщение</button>
+								<button className='btn-danger contactbuttons' onClick={()=>this.deleteContact(c.person)}>Удалить из контактов</button>
 							</div>
-						</div>
-					)
-				})
+						</div>)
 			}
 			</div>
 		)
-		
+
 	}
-		
+
 }
 
 export default withRouter(Contacts);

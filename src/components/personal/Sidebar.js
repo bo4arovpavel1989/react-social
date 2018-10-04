@@ -2,10 +2,7 @@ import React from 'react';
 import {Link,withRouter} from 'react-router-dom';
 import './Sidebar.css';
 
-const Sidebar = (props) => {
-	
-	return (	
-			<div>
+const Sidebar = props=><div>
 				<Link to='/'>
 					<button className='btn-primary sidebutton'>Моя страница</button>
 				</Link>
@@ -19,7 +16,6 @@ const Sidebar = (props) => {
 					<button className='btn-primary sidebutton'>Настройки</button>
 				</Link>
 			</div>
-		)
-}
+		
 
-export default  withRouter(Sidebar);
+export default withRouter(Sidebar);

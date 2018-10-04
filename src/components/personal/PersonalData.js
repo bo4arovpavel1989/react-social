@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const PersonalData = (props) => {
+const PersonalData = props=>{
 	const {data} = props;
-	
+
 	if (data.birthDate)
-		data.birthDate = data.birthDate.split('T')[0];
-	
-	
-	return (	
+		[data.birthDate] = data.birthDate.split('T');
+
+
+	return (
 			<div>
 				<div>
 					<h3>{data.name}</h3>
@@ -23,8 +23,6 @@ const PersonalData = (props) => {
 		)
 }
 
-PersonalData.propTypes = {
-	data:PropTypes.object.isRequired
-}
+PersonalData.propTypes = {data:PropTypes.object.isRequired}
 
-export default  PersonalData;
+export default PersonalData;

@@ -16,38 +16,37 @@ class Login extends React.Component	{
 			authFail: false,
 			allFieldsUsed:false
 		}
-		
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 	}
-	
+
 	loginEmitter(){
 		eventEmitter.emit('login');
 	}
-	
+
 	handleChange(e) {
 		let fieldType = e.target.id.toString(),
 			state = {};
-			
+
 		state[fieldType] = e.target.value.toString();
-		
+
 		this.setState(state,()=>{
 			if (this.state.login !== '' && this.state.passwd !== '')
 				this.setState({allFieldsUsed:true})
-			else 
-				this.setState({allFieldsUsed:false})	
+			else
+				this.setState({allFieldsUsed:false})
 		});
 	}
-	
+
 	handleSubmit(e){
 		e.preventDefault();
-		
+
 		this.setState({loading:true})
-		
-		let {login,passwd} = this.state;
-		
-		let data = JSON.stringify({login,passwd});
-				
+
+		const {login,passwd} = this.state,
+			data = JSON.stringify({login,passwd});
+
 		fetch(`${API_URL}/login`,{
 				method:'POST',
 				mode:'cors',
@@ -58,30 +57,30 @@ class Login extends React.Component	{
 				body:data
 			})
 			.then(handleResponse)
-			.then((data)=>{
-				this.setState({ 
+			.then(tokenData=>{
+				this.setState({
 					loading:false,
-					authFail: !data.auth,
+					authFail: !tokenData.auth,
 					passwd:''
 				},()=>{
-					if(data.auth) {
+					if(tokenData.auth) {
 						this.loginEmitter();
-						setToken(data);
-						this.props.history.push(`/personal/${data.id}`);
-					}	
+						setToken(tokenData);
+						this.props.history.push(`/personal/${tokenData.id}`);
+					}
 				});
 			})
-			.catch((error) => {
+			.catch(error=>{
 				console.log(error)
 				this.setState({
-					error: error.errorMessage, 
+					error: error.errorMessage,
 					loading:false
 				});
 			});
 	}
-	
+
 	render(){
-		
+
 		return (
 		<div>
 			<form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -101,15 +100,15 @@ class Login extends React.Component	{
 				</div>
 				<div className="form-group">
 					<div className="col-sm-offset-2 col-sm-10">
-						<input disabled={this.state.allFieldsUsed ? false : true} className="btn btn-primary btn-lg" type="submit" value="Вход"/>
+						<input disabled={!this.state.allFieldsUsed} className="btn btn-primary btn-lg" type="submit" value="Вход"/>
 					</div>
 				</div>
 			</form>
-			<div className={"alert alert-danger" + (this.state.authFail ? '' : ' hidden')}>
-			  <strong>Oh snap!</strong> Wrong login or password!
+			<div className={`alert alert-danger${this.state.authFail ? '' : ' hidden'}`}>
+			<strong>Oh snap!</strong> Wrong login or password!
 			</div>
 		<div className='register'>
-			<Link to={`/register`}>Регистрация</Link>
+			<Link to={'/register'}>Регистрация</Link>
 		</div>
 		</div>
 		);

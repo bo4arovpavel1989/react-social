@@ -1,16 +1,10 @@
 import {API_URL} from './config';
 import EventEmitter from 'events';
 
-export const handleResponse = (response) => {
-	return response.json().then(json=>{
-		return response.ok ? json : Promise.reject(json);
-	})
-}
+export const handleResponse = response=>response.json().then(json=>response.ok ? json : Promise.reject(json))
 
-export const checkToken = (data) => {
-	
-	return new Promise((resolve, reject) => {
-	
+export const checkToken = data=>new Promise((resolve, reject)=>{
+
 	fetch(`${API_URL}/checktoken`,{
 			method:'POST',
 			mode:'cors',
@@ -21,44 +15,42 @@ export const checkToken = (data) => {
 			body:data
 		})
 		.then(handleResponse)
-		.then((result)=>{
+		.then(result=>{
 			if(!result.err)
 				resolve(result)
-			else	
+			else
 				reject(result.err)
 		})
-		.catch((error) => {
+		.catch(error=>{
 			reject(error);
 		});
-	
-	});
-}
 
-export const setToken = (data) => {
+	})
+
+export const setToken = data=>{
 	if(!data)
 		return;
-	
+
 	localStorage.setItem('token',data.token);
 	localStorage.setItem('login',data.login);
-	localStorage.setItem('id',data.id);	
+	localStorage.setItem('id',data.id);
 }
 
-export const getToken = () => {
+export const getToken = ()=>{
 	if(localStorage.getItem('token') && localStorage.getItem('login'))
 		return {
 			id:localStorage.getItem('id'),
 			token:localStorage.getItem('token'),
 			login:localStorage.getItem('login')
 		}
-		
-	return false;	
+
+	return false;
 }
 
 export const eventEmitter = new EventEmitter();
 
 
-export const standardFetch = ()=>{
-	return {
+export const standardFetch = ()=>({
 				method:'GET',
 				mode:'cors',
 				headers: {
@@ -68,9 +60,6 @@ export const standardFetch = ()=>{
 					'login':getToken().login,
 					'token':getToken().token
 				}
-			}
-}	
+			})
 
-export const attouchCred = (obj) => {
-	return Object.assign(obj, getToken());
-}
+export const attouchCred = obj=>Object.assign(obj, getToken())
