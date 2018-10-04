@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Data = (props) => {
-	const {data, loading, handleSubmit, handleChange} = props;
+	const {data, handleSubmit, handleChange, loading} = props;
 	
 	return (
 			<form className="form-horizontal" onSubmit={handleSubmit}>
