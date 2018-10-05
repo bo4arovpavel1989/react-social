@@ -11,9 +11,9 @@ class Options extends React.Component {
 		this.state = {
 			error: false,
 			loading:false,
-			data:[]
+			data:{}
 		}
-	
+
 	this.handleChange = this.handleChange.bind(this);
 	}
 
@@ -34,19 +34,19 @@ class Options extends React.Component {
 				this.setState({error:true, loading:false})
 			})
 	}
-	
+
 	handleSubmit(){
-		
+
 	}
-	
+
 	handleChange(e){
 		console.log(this.state)
-		
+
 		const data = e.currentTarget.dataset;
-		
+
 		this.setState({data});
 	}
-	
+
 	render(){
 		const {error, data, loading} = this.state;
 
@@ -68,7 +68,7 @@ class Options extends React.Component {
 			<div>
 				<h1>Настройки</h1>
 
-					<SettingsForm 
+					<SettingsForm
 						data={data}
 						loading={loading}
 						handleSubmit={this.handleSubmit}

@@ -1,15 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const Data = (props) => {
+const Data = props=>{
 	const {data, handleSubmit, handleChange, loading} = props;
-	
+
 	return (
 			<form className="form-horizontal" onSubmit={handleSubmit}>
 				<div className="form-group">
 					<label htmlFor="name" className="col-sm-2 control-label">Имя</label>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input type="text"  value={data.name} id="name" placeholder="Ваше имя..." onChange={handleChange}/>
+							<input type="text" value={data.name} id="name" placeholder="Ваше имя..." onChange={handleChange}/>
 						</div>
 					</div>
 				</div>
@@ -17,7 +18,7 @@ const Data = (props) => {
 					<label htmlFor="date" className="col-sm-2 control-label">Дата рождения</label>
 					<div className="col-sm-10">
 						<div className="input-group">
-							<input type="date"  value={data.birthDate ? data.birthDate.split('T')[0] : ''} id="birthDate" onChange={handleChange}/>
+							<input type="date" value={data.birthDate ? data.birthDate.split('T')[0] : ''} id="birthDate" onChange={handleChange}/>
 						</div>
 					</div>
 				</div>
@@ -25,17 +26,23 @@ const Data = (props) => {
 					<label htmlFor="activity" className="col-sm-2 control-label">Род деятельности</label>
 						<div className="col-sm-10">
 						<div className="input-group">
-							<input type="text"  value={data.activity} id="activity" onChange={handleChange}/>
+							<input type="text" value={data.activity} id="activity" onChange={handleChange}/>
 						</div>
 					</div>
 				</div>
 				<div className="form-group">
 					<div className="col-sm-offset-2 col-sm-10">
-						<input  disabled={loading ? true : false} className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
+						<input disabled={loading} className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
 					</div>
 				</div>
-			</form>	
+			</form>
 		)
 }
 
-export default  Data;
+Data.propTypes = {
+	handleSubmit: PropTypes.func.isRequired,
+	handleChange: PropTypes.func.isRequired,
+	loading: PropTypes.bool.isRequired
+}
+
+export default Data;

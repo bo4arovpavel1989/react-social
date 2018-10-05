@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SettingsForm = (props) => {
+const SettingsForm = props => {
 	const {data, handleSubmit, loading, handleChange} = props;
 
 	return (
@@ -15,13 +15,13 @@ const SettingsForm = (props) => {
 							</div>
 						</div>
 					</div>
-					
+
 					<div className="form-group">
 						<div className="col-sm-offset-2 col-sm-10">
-							<input  disabled={loading ? true : false} className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
+							<input disabled={loading} className="btn btn-primary btn-lg" type="submit" value="Сохранить"/>
 						</div>
 					</div>
-				</form>		
+				</form>
 			</div>
 		)
 }

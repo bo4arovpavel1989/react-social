@@ -55,15 +55,15 @@ class Wall extends React.Component {
 				.then(rep=>{
 					if(!rep.err && !rep.forbidden){
 						const newData = this.checkLikedPosts(rep),
-							isMore = (newPata.length === wallPostsPerTime),
+							isMore = (newData.length === wallPostsPerTime),
 							loading = false,
 							myWall = (me === person);
 
 						this.setState(prevState=>({
 							data:[
-...prevState.data,
-...newData
-], isMore, loading, myWall
+								...prevState.data,
+								...newData
+								], isMore, loading, myWall
 						}))
 					} else if(rep.forbidden)
 						eventEmitter.emit('logoff')
