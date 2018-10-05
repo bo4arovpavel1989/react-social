@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SettingsForm = props => {
-	const {data, handleSubmit, loading, handleChange} = props;
+const SettingsForm = props=>{
+	const {amIVisible, handleSubmit, loading, handleChange} = props;
 
 	return (
 			<div>
 				<form className="form-horizontal" onSubmit={handleSubmit}>
 					<div className="form-group">
-						<label htmlFor="visibility" className="col-sm-2">Скрыть страницу</label>
+						<label htmlFor="amIVisible" className="col-sm-2">Мою страницу видят все</label>
 						<div className="col-sm-6">
 							<div className="input-group">
-								<input id='visibility' type="checkbox" checked={!data.amIVisible} data-field='visibility' onChange={handleChange}/>
+								<input id='amIVisible' type="checkbox" checked={amIVisible} data-field='visibility' onChange={handleChange}/>
 							</div>
 						</div>
 					</div>
@@ -27,7 +27,7 @@ const SettingsForm = props => {
 }
 
 SettingsForm.propTypes = {
-	data: PropTypes.object,
+	amIVisible: PropTypes.bool,
 	handleSubmit: PropTypes.func.isRequired,
 	handleChange: PropTypes.func.isRequired,
 	loading: PropTypes.bool.isRequired

@@ -11,7 +11,7 @@ class Options extends React.Component {
 		this.state = {
 			error: false,
 			loading:false,
-			data:{}
+			amIVisible:true
 		}
 
 	this.handleChange = this.handleChange.bind(this);
@@ -28,7 +28,10 @@ class Options extends React.Component {
 			.then(handleResponse)
 			.then(rep=>{
 				console.log(rep)
-					this.setState({loading:false, data:rep})
+					const newState = rep;
+
+					newState.loading = false;
+					this.setState(newState);
 			})
 			.catch(error=>{
 				this.setState({error:true, loading:false})
@@ -41,14 +44,20 @@ class Options extends React.Component {
 
 	handleChange(e){
 		console.log(this.state)
+		const field = e.target.id;
+		this.settingsFormHandlers()[field]();
+	}
 
-		const data = e.currentTarget.dataset;
-
-		this.setState({data});
+	settingsFormHandlers(){
+		return {
+			amIVisible:()=>{
+				this.setState({amIVisible:!this.state.amIVisible})
+			}
+		}
 	}
 
 	render(){
-		const {error, data, loading} = this.state;
+		const {error, amIVisible, loading} = this.state;
 
 		if(error)
 			return(
@@ -57,7 +66,7 @@ class Options extends React.Component {
 				</div>
 			)
 
-		if(data.length === 0 || loading)
+		if(loading)
 			return (
 				<div>
 					Загрузка...
@@ -69,7 +78,7 @@ class Options extends React.Component {
 				<h1>Настройки</h1>
 
 					<SettingsForm
-						data={data}
+						amIVisible={amIVisible}
 						loading={loading}
 						handleSubmit={this.handleSubmit}
 						handleChange={this.handleChange}
