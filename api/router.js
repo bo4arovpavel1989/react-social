@@ -1,16 +1,16 @@
-var postRequestsHandlers=require('./postrequests.js');
+const postRequestsHandlers=require('./postrequests.js');
 
-var getRequestsHandlers=require('./getrequests.js');
+const getRequestsHandlers=require('./getrequests.js');
 
-var deleteRequestsHandlers=require('./deleterequests.js');
+const deleteRequestsHandlers=require('./deleterequests.js');
 
-var noMiddleware = require('./middlewarefunctions.js').noMiddleware;
-var checkAccess = require('./middlewarefunctions.js').checkAccess;
-var checkFileAccess = require('./middlewarefunctions.js').checkFileAccess;
-var checkAccessAndCash = require('./middlewarefunctions.js').checkAccessAndCash;
+const noMiddleware = require('./middlewarefunctions.js').noMiddleware;
+const checkAccess = require('./middlewarefunctions.js').checkAccess;
+const checkFileAccess = require('./middlewarefunctions.js').checkFileAccess;
+const checkAccessAndCash = require('./middlewarefunctions.js').checkAccessAndCash;
 
 
-var getRequests = [
+const getRequests = [
 	{
 		url: '/getwall/:id',
 		middleware: checkAccess,
@@ -63,7 +63,7 @@ var getRequests = [
 	}
 ];
 
-var postRequests = [
+const postRequests = [
 	{
 		url: '/login',
 		middleware: noMiddleware,
@@ -101,6 +101,11 @@ var postRequests = [
 		callback: postRequestsHandlers.editPerson
 	},
 	{
+		url: '/changesettings',
+		middleware: checkAccess,
+		callback: postRequestsHandlers.changeSettings
+	},
+	{
 		url: '/avatarupload',
 		middleware: checkFileAccess,
 		callback: postRequestsHandlers.avatarUpload
@@ -112,7 +117,7 @@ var postRequests = [
 	}
 ];
 
-var deleteRequests = [
+const deleteRequests = [
 	{
 		url: '/removepost/:id',
 		middleware: checkAccess,
@@ -125,7 +130,7 @@ var deleteRequests = [
 	}
 ];
 
-var router = function (app) {
+const router = function (app) {
 	getRequests.forEach(function(request){
 		app.get(request.url, request.middleware, request.callback);
 	});

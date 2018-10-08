@@ -1,8 +1,8 @@
-var express = require('express');
-var app = express();
-var router = require('./router.js').router;
-var bodyParser = require('body-parser')
-var server = require('http').createServer();
+const express = require('express');
+const app = express();
+const router = require('./router.js').router;
+const bodyParser = require('body-parser')
+const server = require('http').createServer();
 
 app.set('port', (process.env.PORT || 8080));
 

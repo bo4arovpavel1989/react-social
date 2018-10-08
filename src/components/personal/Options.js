@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {API_URL} from '../../config';
-import {handleResponse, standardFetch} from '../../helpers';
+import {handleResponse, standardFetch, attouchCred} from '../../helpers';
 import SettingsForm from './forms/SettingsForm'
 
 class Options extends React.Component {
@@ -14,6 +14,7 @@ class Options extends React.Component {
 			amIVisible:true
 		}
 
+	this.handleSubmit = this.handleSubmit.bind(this);
 	this.handleChange = this.handleChange.bind(this);
 	}
 
@@ -38,13 +39,39 @@ class Options extends React.Component {
 			})
 	}
 
-	handleSubmit(){
+	handleSubmit(e){
+		e.preventDefault();
+
+		this.setState({loading:true})
+
+		const data = this.state;
+
+		attouchCred(data);
+
+		fetch(`${API_URL}/changesettings`,{
+				method:'POST',
+				mode:'cors',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body:JSON.stringify(data)
+			})
+			.then(handleResponse)
+			.then(rep=>{
+				if(rep.success)
+					this.setState({loading:false});
+			})
+			.catch(error=>{
+				this.setState({loading:false});
+			});
 
 	}
 
 	handleChange(e){
 		console.log(this.state)
 		const field = e.target.id;
+
 		this.settingsFormHandlers()[field]();
 	}
 
