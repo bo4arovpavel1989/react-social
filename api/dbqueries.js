@@ -1,7 +1,7 @@
-var models = require('./models')
+const models = require('./models')
 
 const dbQueries = {
-	find: function(schema, val, opt){
+	find(schema, val, opt){
 		return new Promise((resolve, reject)=>{
 			models[schema].find(val, opt, (err, rep)=>{
 				if(err) reject(err)
@@ -9,15 +9,19 @@ const dbQueries = {
 			});
 		});
 	},
-	findBy: function(schema, val, sort, skip, limit, select){
+	findBy(schema, val, sort, skip, limit, select){
 		return new Promise((resolve, reject)=>{
-			models[schema].find(val).sort(sort).skip(skip).limit(limit).select(select).exec((err, rep)=>{
-				if(err) reject(err)
-				else resolve(rep);
-			})
+			models[schema].find(val).sort(sort)
+				.skip(skip)
+				.limit(limit)
+				.select(select)
+				.exec((err, rep)=>{
+					if(err) reject(err)
+					else resolve(rep);
+				})
 		});
 	},
-	findOne: function(schema, val, opt){
+	findOne(schema, val, opt){
 		return new Promise((resolve, reject)=>{
 			models[schema].findOne(val, opt, (err, rep)=>{
 				if(err) reject(err)
@@ -26,7 +30,7 @@ const dbQueries = {
 			})
 		});
 	},
-	update: function(schema, get, set, opt){
+	update(schema, get, set, opt){
 		return new Promise((resolve, reject)=>{
 			models[schema].updateOne(get, set, opt).exec((err, rep)=>{
 				console.log(rep)
@@ -35,23 +39,24 @@ const dbQueries = {
 			})
 		});
 	},
-	del:  function(schema, val, opt){
+	del(schema, val){
 		return new Promise((resolve, reject)=>{
-			models[schema].find(val).remove().exec((err, rep)=>{
-				console.log(rep)
-				if(err) reject(err)
-				else resolve(rep);
-			})
+			models[schema].find(val).remove()
+				.exec((err, rep)=>{
+					console.log(rep)
+					if(err) reject(err)
+					else resolve(rep);
+				})
 		});
 	},
-	create: function(schema, val, opt){
+	create(schema, val){
 		return new Promise((resolve, reject)=>{
-			return new models[schema](val).save((err, rep)=>{
+			return new models[schema](val).save(err=>{
 				if(err) reject(err);
 				else resolve(true);
 			});
 		});
-	},
+	}
 };
 
 module.exports = dbQueries;

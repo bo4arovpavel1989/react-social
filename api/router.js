@@ -1,14 +1,7 @@
 const postRequestsHandlers=require('./postrequests.js');
-
 const getRequestsHandlers=require('./getrequests.js');
-
 const deleteRequestsHandlers=require('./deleterequests.js');
-
-const noMiddleware = require('./middlewarefunctions.js').noMiddleware;
-const checkAccess = require('./middlewarefunctions.js').checkAccess;
-const checkFileAccess = require('./middlewarefunctions.js').checkFileAccess;
-const checkAccessAndCash = require('./middlewarefunctions.js').checkAccessAndCash;
-
+const {noMiddleware, checkAccess, checkFileAccess, checkAccessAndCash} = require('./middlewarefunctions.js');
 
 const getRequests = [
 	{
@@ -131,13 +124,13 @@ const deleteRequests = [
 ];
 
 const router = function (app) {
-	getRequests.forEach(function(request){
+	getRequests.forEach(request=>{
 		app.get(request.url, request.middleware, request.callback);
 	});
-	postRequests.forEach(function(request){
+	postRequests.forEach(request=>{
 		app.post(request.url, request.middleware, request.callback)
 	});
-	deleteRequests.forEach(function(request){
+	deleteRequests.forEach(request=>{
 		app.delete(request.url, request.middleware, request.callback)
 	});
 };

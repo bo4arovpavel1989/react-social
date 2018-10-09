@@ -1,44 +1,42 @@
 const async = require('async');
-const formidable = require('formidable');
-const fs = require('fs-extra');
 const _ = require('lodash');
 
-const authService = require('./customfunctions.js').authService;
-const saveAvatar = require('./customfunctions.js').saveAvatar;
-const checkBan = require('./customfunctions.js').checkBan;
+const {authService, saveAvatar, checkBan} = require('./customfunctions.js');
 const db = require('./dbqueries');
 
 module.exports.login = function(req,res){
-	let cred = req.body;
+	const cred = req.body;
 
 	authService.login(cred)
 		.then(rep=>{
 			if(rep.auth)
-				return Promise.all([rep, db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})])
-			else
-				return Promise.resolve([{auth:false}]) //made array coz i use array in first case if rep.auth === true
+				return Promise.all([
+rep,
+db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
+])
+
+return Promise.resolve([{auth:false}]) // Made array coz i use array in first case if rep.auth === true
 		})
-		.then(reps => res.json(reps[0]))
-		.catch(err => {
-			res.status(500).json({err:err})
+		.then(reps=>res.json(reps[0]))
+		.catch(err=>{
+			res.status(500).json({err})
 		})
 }
 
 module.exports.logoff = function(req, res){
-	let cred = req.body;
+	const cred = req.body;
 
 	authService.logoff(cred)
 		.then(rep=>{
 			res.end();
 		})
-		.catch(err => {
+		.catch(err=>{
 			res.end();
 		})
 }
 
 module.exports.checkValidity = function(req, res){
-	let val = req.body.val,
-		inp = req.body.inp,
+	let {val, inp} = req.body,
 		query = {},
 		validity = {};
 
@@ -46,7 +44,7 @@ module.exports.checkValidity = function(req, res){
 
 	db.find('User', query)
 		.then(rep=>{
-			validity[`${inp}Valid`] = (rep.length === 0);
+			validity[`${inp}Valid`] = rep.length === 0;
 			res.json(validity);
 
 		})
@@ -54,43 +52,43 @@ module.exports.checkValidity = function(req, res){
 }
 
 module.exports.register = function(req, res){
-	let data = req.body;
+	const data = req.body;
 
 	data.loginUpperCase = data.login.toUpperCase();
 	data.emailUpperCase = data.email.toUpperCase();
 
 	async.parallel([
-		(cb)=>{
+		cb=>{
 			db.create('User', data)
-				.then( rep => cb())
-				.catch(err => cb(new Error('An error occured creating user')));
+				.then(rep=>cb())
+				.catch(err=>cb(new Error('An error occured creating user')));
 		},
-		(cb)=>{
+		cb=>{
 			db.create('Personal', data)
-				.then(rep => cb())
-				.catch(err => cb(new Error('An error occured creating user')));
+				.then(rep=>cb())
+				.catch(err=>cb(new Error('An error occured creating user')));
 
 		},
-		(cb)=>{
+		cb=>{
 			db.create('Options', data)
-				.then(rep => cb())
-				.catch(err => cb(new Error('An error occured creating user')));
+				.then(rep=>cb())
+				.catch(err=>cb(new Error('An error occured creating user')));
 
 		}
-		],(err)=>{
-			if(!err) res.json({ success: true });
-			else res.status(500).json({ success: false });
+		],err=>{
+			if(!err) res.json({success: true});
+			else res.status(500).json({success: false});
 	});
 
 
 }
 
 module.exports.checkToken = function(req, res){
-	let data = req.body;
+	const data = req.body;
 
 	authService.checkToken(data)
-				.then(rep => {
-					res.json({ auth: rep })
+				.then(rep=>{
+					res.json({auth: rep})
 				})
 				.catch(err=>{
 					res.status(500).json({err:'Internal server error!'})
@@ -98,78 +96,83 @@ module.exports.checkToken = function(req, res){
 }
 
 module.exports.makePost = function(req, res){
-	let post = {};
+	const post = {};
+
 		post.author = req.body.id;
 		post.id = req.body.person;
 		post.entry = req.body.post;
 		post.date = Date.now();
 
 	checkBan(post.author, post.id)
-		.then( rep => {
-			if(!rep) //if author is not banned
+		.then(rep=>{
+			if(!rep) // If author is not banned
 				return db.create('Wall', post)
-			else
-				return Promise.resolve(false)
+
+return Promise.resolve(false)
 		})
-		.then( rep => res.json( { success: rep } ) )
-		.catch(err=> res.status(500).json({ err }) )
+		.then(rep=>res.json({success: rep}))
+		.catch(err=>res.status(500).json({err}))
 };
 
 module.exports.editPerson = function(req, res){
-	let login = req.body.login;
-	let data = req.body;
+	const login = req.body.login;
+	const data = req.body;
 
-	db.update('Personal', { login },{ $set:data })
-		.then(rep=>res.json({ success:true }))
+	db.update('Personal', {login},{$set:data})
+		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).end())
 }
 
 module.exports.avatarUpload = function(req, res){
-	let files = req.files;
-	let fields = req.fields;
+	const files = req.files;
+	const fields = req.fields;
+
 	if (!_.isEmpty(files)){
 
-		let thumbFileName = __dirname + '/../public/images/personal/' + fields.id + '_thumb.jpg';
-		let microThumbFileName = __dirname + '/../public/images/personal/' + fields.id + '_micro_thumb.jpg';
-		let fileName = __dirname + '/../public/images/personal/' + fields.id + '.jpg';
-		let avatar = '/images/personal/' + fields.id + '.jpg';
-		let thumbAvatar = '/images/personal/' + fields.id + '_thumb.jpg';
-		let microAvatar = '/images/personal/' + fields.id + '_micro_thumb.jpg';
+		const thumbFileName = `${__dirname}/../public/images/personal/${fields.id}_thumb.jpg`;
+		const microThumbFileName = `${__dirname}/../public/images/personal/${fields.id}_micro_thumb.jpg`;
+		const fileName = `${__dirname}/../public/images/personal/${fields.id}.jpg`;
+		const avatar = `/images/personal/${fields.id}.jpg`;
+		const thumbAvatar = `/images/personal/${fields.id}_thumb.jpg`;
+		const microAvatar = `/images/personal/${fields.id}_micro_thumb.jpg`;
 
 		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
-				.then((rep)=>{
-					db.update('Personal',{ login:fields.login },{ $set:{ avatar,thumbAvatar,microAvatar } })
-						.then(()=>res.json({ success:true }))
-						.catch(err=>res.json({ err:err }))
+				.then(rep=>{
+					db.update('Personal',{login:fields.login},{$set:{avatar,thumbAvatar,microAvatar}})
+						.then(()=>res.json({success:true}))
+						.catch(err=>res.json({err}))
 				})
-				.catch(err=>res.status(500).json({ err:err }))
+				.catch(err=>res.status(500).json({err}))
 
 	} else {
-		res.json({ empty:true });
+		res.json({empty:true});
 	}
 
 };
 
 module.exports.sendMessage = function(req, res){
-	let {message, person, id} = req.body; //person - to whom, id - from whom;
-	let data = { message, to:person, from:id, date:Date.now(), isSeenBy:[id, person] };
+	const {message, person, id} = req.body; // Person - to whom, id - from whom;
+	const data = {message, to:person, from:id, date:Date.now(), isSeenBy:[
+id,
+person
+]};
 
 	checkBan(id, person)
-		.then( rep => {
-			if(!rep) //if user is not banned
+		.then(rep=>{
+			if(!rep) // If user is not banned
 				return db.create('Message', data)
-			else
-				return Promise.resolve(false)
+
+return Promise.resolve(false)
 		})
-		.then( rep => res.json({ success: rep }) )
-		.catch( err => res.status(500).json({ err }) )
+		.then(rep=>res.json({success: rep}))
+		.catch(err=>res.status(500).json({err}))
 
 };
 
 module.exports.changeSettings = function(req, res){
-	let {data, login} = req.body;
+	const {data, login} = req.body;
 
 	db.update('Options', {login}, {$set: data})
-		.then(rep=>res.json({ success:true }))
+		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).end())
 };
