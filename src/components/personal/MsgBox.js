@@ -15,6 +15,7 @@ class MsgBox extends React.Component {
 			loading:false,
 			error:false,
 			iAmBanned:false,
+			personIsBanned:false,
 			name:''
 		}
 
@@ -22,7 +23,7 @@ class MsgBox extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	componentWillMount(){
+	componentDidMount(){
 		const {openMsgBox, person} = this.props;
 
 		this.setState({openMsgBox, person}, ()=>{
