@@ -28,7 +28,7 @@ class Options extends React.Component {
 		fetch(`${API_URL}/getoptions`, standardFetch())
 			.then(handleResponse)
 			.then(rep=>{
-				console.log(rep)
+					console.log(rep)
 					const newState = rep;
 
 					newState.loading = false;

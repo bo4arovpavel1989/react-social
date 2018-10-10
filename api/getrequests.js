@@ -235,7 +235,7 @@ module.exports.getOptions = function(req, res){
 				.catch(err=>cb(err, null))
 		},
 		(login, cb)=>{
-			db.findOne('Options',{login}, 'amIVisible')
+			db.findOne('Options',{login}, 'amIVisible -_id')
 				.then(rep=>cb(null, rep))
 				.catch(err=>cb(err, null))
 

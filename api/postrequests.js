@@ -153,16 +153,16 @@ module.exports.avatarUpload = function(req, res){
 module.exports.sendMessage = function(req, res){
 	const {message, person, id} = req.body; // Person - to whom, id - from whom;
 	const data = {message, to:person, from:id, date:Date.now(), isSeenBy:[
-id,
-person
-]};
+			id,
+			person
+	]};
 
 	checkBan(id, person)
 		.then(rep=>{
 			if(!rep) // If user is not banned
 				return db.create('Message', data)
 
-return Promise.resolve(false)
+				return Promise.resolve(false)
 		})
 		.then(rep=>res.json({success: rep}))
 		.catch(err=>res.status(500).json({err}))
@@ -170,9 +170,10 @@ return Promise.resolve(false)
 };
 
 module.exports.changeSettings = function(req, res){
-	const {data, login} = req.body;
+	const {login} = req.body;
 
-	db.update('Options', {login}, {$set: data})
+	console.log(req.body);
+	db.update('Options', {login}, {$set: req.body})
 		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).end())
 };
