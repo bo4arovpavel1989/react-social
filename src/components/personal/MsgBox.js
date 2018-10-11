@@ -15,7 +15,7 @@ class MsgBox extends React.Component {
 			loading:false,
 			error:false,
 			iAmBanned:false,
-			personIsBanned:false,
+			iHaveBanned:false,
 			name:''
 		}
 
@@ -28,14 +28,15 @@ class MsgBox extends React.Component {
 
 		this.setState({openMsgBox, person}, ()=>{
 			this.getUserData();
-			this.checkBan();
+			this.checkIAmBanned();
+			this.checkIBannedPerson();
 		});
 	}
 
-	checkBan(){
+	checkIAmBanned(){
 		const {person} = this.state;
 
-		fetch(`${API_URL}/checkBan/${person}`, standardFetch())
+		fetch(`${API_URL}/checkban/${person}`, standardFetch())
 			.then(handleResponse)
 			.then(rep=>{
 				const {iAmBanned} = rep;
@@ -45,6 +46,22 @@ class MsgBox extends React.Component {
 			.catch(error=>{
 				console.log(error)
 			})
+	}
+
+	checkIBannedPerson(){
+		const {person} = this.state;
+
+		fetch(`${API_URL}/checkmyban/${person}`, standardFetch())
+			.then(handleResponse)
+			.then(rep=>{
+				const {iHaveBanned} = rep;
+
+				this.setState({iHaveBanned});
+			})
+			.catch(error=>{
+				console.log(error)
+			})
+
 	}
 
 	handleChange(e){

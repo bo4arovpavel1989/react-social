@@ -206,14 +206,14 @@ module.exports.markMessagesSeen = function(rep){
 
 /**
  * Function checks if user is banned by a person
- * @param {string} me - user id
- * @param {string} person - id of the person
+ * @param {string} banned - id of user is to be checked for been ban
+ * @param {string} banner - id of the user that has banned (or hasnt)
  * @returns {Promise} returns true if user is banned by the person
  */
-module.exports.checkBan = function(me, person){
+module.exports.checkBan = function(banned, banner){
 
 	return new Promise((resolve, reject)=>{
-		db.findOne('BlackList', {person, list: {$in: [me]}})
+		db.findOne('BlackList', {person: banner, list: {$in: [banned]}})
 			.then(rep=>resolve(rep !== null))
 			.catch(err=>reject(err))
 	});

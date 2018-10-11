@@ -225,6 +225,16 @@ module.exports.checkBan = function(req, res){
 
 };
 
+module.exports.checkMyBan = function(req, res){
+	const me = req.headers.id;
+	const person = req.params.id
+
+	checkBan(person, me)
+		.then(rep=>res.json({iHaveBanned: rep}))
+		.catch(err=>res.status(500).json({err}));
+
+};
+
 module.exports.getOptions = function(req, res){
 	const me = req.headers.id;
 

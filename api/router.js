@@ -53,6 +53,11 @@ const getRequests = [
 		url:'/checkban/:id',
 		middleware: checkAccess,
 		callback: getRequestsHandlers.checkBan
+	},
+	{
+		url:'/checkmyban/:id',
+		middleware: checkAccess,
+		callback: getRequestsHandlers.checkMyBan
 	}
 ];
 
