@@ -43,7 +43,7 @@ class Messages extends React.Component {
 	}
 
 	removeClickOnMessageListener(){
-			eventEmitter.removeListener('messageClick', this.messageClick);
+		eventEmitter.removeListener('messageClick', this.messageClick);
 	}
 
 	messageClick(id){
