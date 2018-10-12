@@ -23,17 +23,17 @@ class Personal extends React.Component {
 			isBanned:false,
 			invisible:false
 		}
-		
+
 		this.getPersonalData = this.getPersonalData.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
 		this.addToContacts = this.addToContacts.bind(this);
 		this.banUser = this.banUser.bind(this);
 	}
-	
+
 	getPersonalData(person){
 		this.setState({person}) // Set id of the pages's owner
 		this.setState({myPage:person === getToken().id}) // Check if its my page
-		
+
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then(rep=>{
@@ -51,25 +51,25 @@ class Personal extends React.Component {
 				this.setState({error:true})
 			})
 	}
-	
+
 	openMsgBox(){
 		const opened = this.state.msgBoxOpened;
 
 		this.setState({msgBoxOpened: !opened});
 	}
-	
+
 	componentDidMount(){
 		let person = this.props.match.params.id;
-		
+
 		if(!person && getToken()) {
 			person = getToken().id
 			this.props.history.push(`/personal/${person}`);
 		}
-		
+
 		this.getPersonalData(person);
 	}
-	
-	
+
+
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			let newPerson = nextProps.match.params.id;
@@ -78,14 +78,14 @@ class Personal extends React.Component {
 				newPerson = getToken().id;
 				this.props.history.push(`/personal/${newPerson}`);
 			}
-			
+
 			this.getPersonalData(newPerson);
 		}
 	}
-	
+
 	addToContacts(){
 		const {person, isContact} = this.state;
-		
+
 		fetch(`${API_URL}/addtocontact?p=${person}`,standardFetch())
 			.then(handleResponse)
 			.then(rep=>{
@@ -101,10 +101,10 @@ class Personal extends React.Component {
 				this.setState({error:true})
 			})
 	}
-	
+
 	banUser(){
 		const {person, isBanned} = this.state;
-		
+
 		fetch(`${API_URL}/banuser?p=${person}`,standardFetch())
 			.then(handleResponse)
 			.then(rep=>{
@@ -120,17 +120,17 @@ class Personal extends React.Component {
 				this.setState({error:true})
 			})
 	}
-	
+
 	render(){
-		const {person, data, isContact, isBanned, loading, error, invisible} = this.state;	
-		
+		const {person, data, isContact, isBanned, loading, error, invisible} = this.state;
+
 		if(error || !data)
 			return (
 				<div>
 					Произошла ошибка во время обработки запроса. Попробуйте позже!
 				</div>
 			)
-		
+
 		if(loading)
 			return (
 				<div>
@@ -144,13 +144,14 @@ class Personal extends React.Component {
 					Пользователь скрыл свою страницу
 				</div>
 			)
-			
+
 		return (
 			<div className="col-md-10">
-				{this.state.msgBoxOpened ? 
+				{this.state.msgBoxOpened ?
 					<MsgBox
 						openMsgBox = {this.openMsgBox}
 						person = {person}
+						banUser = {this.banUser}
 					/> : ''
 				}
 					<div className="avatarAndPersonal">
@@ -171,13 +172,13 @@ class Personal extends React.Component {
 						/>
 					</div>
 					</div>
-				<div className="text-center">	
+				<div className="text-center">
 					<Wall
 						id = {this.state.person}
 					/>
 				</div>
 			</div>
-		)	
+		)
 	}
 }
 

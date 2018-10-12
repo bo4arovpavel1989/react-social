@@ -15,19 +15,20 @@ class Messages extends React.Component {
 			error:false,
 			loading:false,
 			msgBoxOpened:false,
-			person:'', // To whom message, i.e. - me
-			id:'', // From / to whom message, changes whether of chosen message
+			me:'', // To whom message, i.e. - me
+			person:'', // From / to whom message, changes whether of chosen message
 			messages:[],
 			box:'in' // Changes if its inbox or outbox
 		}
 
+		this.banUser = this.banUser.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
 	}
 
 	componentDidMount(){
 		const me = getToken().id;
 
-		this.setState({person:me});
+		this.setState({me});
 
 		this.getMessages();
 		this.listenToClickOnMessage();
@@ -58,10 +59,10 @@ class Messages extends React.Component {
 		eventEmitter.on('messageClick', id=>this.openMsgBox(id));
 	}
 
-	openMsgBox(id){
+	openMsgBox(person){
 		const opened = this.state.msgBoxOpened;
 
-		this.setState({msgBoxOpened: !opened, id});
+		this.setState({msgBoxOpened: !opened, person});
 	}
 
 	setBox(box){
@@ -79,8 +80,21 @@ class Messages extends React.Component {
 			this.setState({page: --page}, ()=>this.getMessages())
 	}
 
+	banUser(){
+		const {person} = this.state;
+
+		fetch(`${API_URL}/banuser?p=${person}`,standardFetch())
+			.then(handleResponse)
+			.then(rep=>{
+
+			})
+			.catch(error=>{
+				console.log(error)
+			})
+	}
+
 	render(){
-	const {id, messages, box, page, isMore} = this.state;
+	const {messages, box, page, isMore, person} = this.state;
 
 	return (
 		<div className="col-md-10">
@@ -97,7 +111,8 @@ class Messages extends React.Component {
 			{this.state.msgBoxOpened ?
 				<MsgBox
 					openMsgBox = {this.openMsgBox}
-					person = {id}
+					person = {person}
+					banUser = {this.banUser}
 				/> : ''
 			}
 

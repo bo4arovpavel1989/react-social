@@ -25,7 +25,7 @@ class MsgBox extends React.Component {
 
 	componentDidMount(){
 		const {openMsgBox, person} = this.props;
-
+		console.log(this.props);
 		this.setState({openMsgBox, person}, ()=>{
 			this.getUserData();
 			this.checkIAmBanned();
@@ -116,7 +116,8 @@ class MsgBox extends React.Component {
 
 	render(){
 
-	const {openMsgBox, error, message, loading, person, name, iAmBanned} = this.state;
+	const {openMsgBox, error, message, loading, person, name, iAmBanned, iHaveBanned} = this.state;
+	const {banUser} = this.props;
 
 	return (
 		<div className='msgBoxContainer'>
@@ -131,8 +132,9 @@ class MsgBox extends React.Component {
 					</Link>
 					{
 						iAmBanned ?
-						' ограничил круг лиц, которые могут отправлять ему сообщения'						:
-						':'
+							' ограничил круг лиц, которые могут отправлять ему сообщения'
+						:
+							':'
 					}
 				</div>
 
@@ -144,7 +146,14 @@ class MsgBox extends React.Component {
 						</div>
 					</div>
 					<div className="form-group">
-						<div className="col-sm-offset-2 col-sm-10">
+						<div className="col-sm-2">
+							{
+								iHaveBanned ?
+									<button className='btn btn-link banButton' onClick={banUser}>Разлокировать пользователя</button>	:
+									<button className='btn btn-link banButton' onClick={banUser}>Заблокировать пользователя</button>
+							}
+						</div>
+						<div className="col-sm-2">
 							<input disabled={Boolean(iAmBanned || message === '' || loading)} className="btn btn-primary btn-lg msgbutton" type="submit" value="Отправить"/>
 						</div>
 					</div>

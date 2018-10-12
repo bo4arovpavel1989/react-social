@@ -14,7 +14,7 @@ module.exports.getPerson = function(req, res){
 				.then(rep=>cb(null, rep.login))
 				.catch(err=>cb(err, null))
 		},
-		//Check if person made his page invisible or its my page
+		// Check if person made his page invisible or its my page
 		(login, cb)=>{
 			db.findOne('Options',{login})
 				.then(rep=>{
@@ -67,7 +67,6 @@ module.exports.getPerson = function(req, res){
 module.exports.getWall = function(req, res){
 	const liker = req.headers.id; // Id of the wall viewer
 	const id = req.params.id;// Id of the wall owner
-
 	const howmany = 10; // Number of wall twits got per 1 time
 	const skip = Number(req.query.q) * howmany; // Skip value must be numeric
 

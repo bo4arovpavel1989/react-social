@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 const AvatarPlace = props=>{
 	const {img,myPage,openMsgBox, isContact, addToContacts, isBanned, banUser} = props;
-	
-	return (	
+
+	return (
 			<div>
 				<div className='avatar text-center'>
 					<div>
@@ -18,19 +18,19 @@ const AvatarPlace = props=>{
 							</div>
 							<div>
 							{
-								isContact ? 
+								isContact ?
 								<button className='btn-danger' onClick={addToContacts}>Удалить</button>								:
 								<button className='btn-success' onClick={addToContacts}>Добавить</button>
 							}
 							{
-								isBanned ? 
+								isBanned ?
 								<button className='btn-secondary ban' onClick={banUser}>Разблокировать</button>								:
-								<button className='btn-secondary ban' onClick={banUser}>Заблокировать</button>
+								<button className='btn-warning ban' onClick={banUser}>Заблокировать</button>
 							}
 							</div>
 						</div>
 					}
-						
+
 				</div>
 			</div>
 		)
