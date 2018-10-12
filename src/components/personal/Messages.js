@@ -23,15 +23,31 @@ class Messages extends React.Component {
 
 		this.banUser = this.banUser.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
+		this.messageClick = this.messageClick.bind(this);
 	}
 
 	componentDidMount(){
 		const me = getToken().id;
 
 		this.setState({me});
-
 		this.getMessages();
 		this.listenToClickOnMessage();
+	}
+
+	componentWillUnmount(){
+		this.removeClickOnMessageListener();
+	}
+
+	listenToClickOnMessage(){
+		eventEmitter.on('messageClick', this.messageClick)
+	}
+
+	removeClickOnMessageListener(){
+			eventEmitter.removeListener('messageClick', this.messageClick);
+	}
+
+	messageClick(id){
+		this.openMsgBox(id);
 	}
 
 	getMessages(){
@@ -55,15 +71,12 @@ class Messages extends React.Component {
 			})
 	}
 
-	listenToClickOnMessage(){
-		eventEmitter.on('messageClick', id=>this.openMsgBox(id));
-	}
-
 	openMsgBox(person){
 		const opened = this.state.msgBoxOpened;
 
 		this.setState({msgBoxOpened: !opened, person});
 	}
+
 
 	setBox(box){
 		this.setState({box, page:0}, ()=>{

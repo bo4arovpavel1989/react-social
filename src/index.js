@@ -35,14 +35,27 @@ class App extends React.Component {
 		this.listenToLogin();
 	}
 
-	listenToLogin(){
-		eventEmitter.on('login',()=>{
-			this.setState({isLogged:true})
-		})
+	componentWillUnmount(){
+		this.removeListeners();
+	}
 
-		eventEmitter.on('logoff',()=>{
-			this.setState({isLogged:false})
-		})
+	listenToLogin(){
+		eventEmitter.on('login', this.setLogin)
+
+		eventEmitter.on('logoff',this.setLogoff)
+	}
+
+	removeListeners(){
+		eventEmitter.removeListener('login')
+		eventEmitter.removeListener('logoff')
+	}
+
+	setLogin(){
+		this.setState({isLogged:true})
+	}
+
+	setLogoff(){
+		this.setState({isLogged:false})
 	}
 
 	checkLogging(){
