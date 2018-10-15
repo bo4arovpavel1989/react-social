@@ -25,6 +25,8 @@ class Wall extends React.Component {
 		this.checkLikedPosts = this.checkLikedPosts.bind(this);
 		this.getOlderPosts = this.getOlderPosts.bind(this);
 		this.checkBan = this.checkBan.bind(this);
+		this.handleNewPost = this.handleNewPost.bind(this);
+		this.handleNewLike = this.handleNewLike.bind(this);
 	}
 
 	componentDidMount(){
@@ -38,8 +40,36 @@ class Wall extends React.Component {
 		window.addEventListener('scroll', this.getOlderPosts, true);
 	}
 
+	listenToNewPosts(){
+		eventEmitter.on('newpost', this.handleNewPost)
+	}
+
+	handleNewPost(){
+		this.setState({scroll:0, data:[]}, ()=>this.getWall(this.state.person))
+	}
+
+	listenToLikes(){
+		eventEmitter.on('like', this.handleNewLike);
+	}
+
+	handleNewLike(_id){
+			const {data} = this.state;
+
+				for (let i = 0; i < data.length; i++) {
+					if (data[i]._id === _id) {
+						data[i].liked = !data[i].liked;
+						data[i].liked ? ++data[i].like : --data[i].like;
+						break;
+					}
+			}
+
+		this.setState({data});
+	}
+
 	componentWillUnmount() {
 		window.removeEventListener('scroll', this.getOlderPosts, true);
+		eventEmitter.removeListener('newpost', this.handleNewPost);
+		eventEmitter.removeListener('like', this.handleNewLike);
 	}
 
 	getWall(){
@@ -104,29 +134,6 @@ class Wall extends React.Component {
 		});
 
 		return posts;
-	}
-
-	listenToNewPosts(){
-		eventEmitter.on('newpost',()=>{
-			this.setState({scroll:0, data:[]}, ()=>this.getWall(this.state.person));
-		})
-	}
-
-	listenToLikes(){
-		eventEmitter.on('like', _id=>{
-
-		const {data} = this.state;
-
-			for (let i = 0; i < data.length; i++) {
-				if (data[i]._id === _id) {
-					data[i].liked = !data[i].liked;
-					data[i].liked ? ++data[i].like : --data[i].like;
-					break;
-				}
- 			}
-
-			this.setState({data});
-		});
 	}
 
 	componentWillReceiveProps(nextProps){
