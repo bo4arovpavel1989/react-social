@@ -11,7 +11,8 @@ class Options extends React.Component {
 		this.state = {
 			error: false,
 			loading:false,
-			amIVisible:true
+			amIVisible:true,
+			isWallOpened:true
 		}
 
 	this.handleSubmit = this.handleSubmit.bind(this);
@@ -79,12 +80,15 @@ class Options extends React.Component {
 		return {
 			amIVisible:()=>{
 				this.setState({amIVisible:!this.state.amIVisible})
+			},
+			isWallOpened:()=>{
+				this.setState({isWallOpened:!this.state.isWallOpened})
 			}
 		}
 	}
 
 	render(){
-		const {error, amIVisible, loading} = this.state;
+		const {error, amIVisible, isWallOpened, loading} = this.state;
 
 		if(error)
 			return(
@@ -106,6 +110,7 @@ class Options extends React.Component {
 
 					<SettingsForm
 						amIVisible={amIVisible}
+						isWallOpened={isWallOpened}
 						loading={loading}
 						handleSubmit={this.handleSubmit}
 						handleChange={this.handleChange}

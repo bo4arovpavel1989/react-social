@@ -61,7 +61,8 @@ models.Contact =  new mongoose.Schema({
 
 models.Options = new mongoose.Schema({
 	login: {type: String, required: true},
-	amIVisible: {type: Boolean, default:true}
+	amIVisible: {type: Boolean, default:true},
+	isWallOpened: {type: Boolean, default:true}
 });
 
 models.User = mongoose.model('user', models.User);
