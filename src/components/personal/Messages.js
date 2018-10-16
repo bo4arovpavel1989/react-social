@@ -96,14 +96,7 @@ class Messages extends React.Component {
 	banUser(){
 		const {person} = this.state;
 
-		fetch(`${API_URL}/banuser?p=${person}`,standardFetch())
-			.then(handleResponse)
-			.then(rep=>{
-
-			})
-			.catch(error=>{
-				console.log(error)
-			})
+		fetch(`${API_URL}/banuser?p=${person}`,standardFetch());
 	}
 
 	render(){

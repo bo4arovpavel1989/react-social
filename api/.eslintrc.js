@@ -84,7 +84,7 @@ module.exports = {
         "jsx-quotes": "off",
         "key-spacing": "off",
         "keyword-spacing": "off",
-        "line-comment-position": "error",
+        "line-comment-position": "off",
         "linebreak-style": [
             "error",
             "windows"
@@ -102,7 +102,7 @@ module.exports = {
         "max-lines-per-function": "off",
         "max-nested-callbacks": "error",
         "max-params": "off",
-        "max-statements": "error",
+        "max-statements": "off",
         "max-statements-per-line": "error",
         "multiline-comment-style": "error",
         "multiline-ternary": "off",
@@ -135,7 +135,7 @@ module.exports = {
         "no-implicit-coercion": "error",
         "no-implicit-globals": "error",
         "no-implied-eval": "error",
-        "no-inline-comments": "error",
+        "no-inline-comments": "off",
         "no-invalid-this": "error",
         "no-iterator": "error",
         "no-label-var": "error",

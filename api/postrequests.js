@@ -11,11 +11,11 @@ module.exports.login = function(req,res){
 		.then(rep=>{
 			if(rep.auth)
 				return Promise.all([
-rep,
-db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
-])
+					rep,
+					db.update('Session', {login:cred.login},{token:rep.token},{upsert:true})
+				])
 
-return Promise.resolve([{auth:false}]) // Made array coz i use array in first case if rep.auth === true
+			return Promise.resolve([{auth:false}]) // Made array coz i use array in first case if rep.auth === true
 		})
 		.then(reps=>res.json(reps[0]))
 		.catch(err=>{
@@ -46,13 +46,13 @@ module.exports.checkValidity = function(req, res){
 		.then(rep=>{
 			validity[`${inp}Valid`] = rep.length === 0;
 			res.json(validity);
-
 		})
 		.catch(err=>res.json({err}))
 }
 
 module.exports.register = function(req, res){
 	const data = req.body;
+	const {login} = data;
 
 	data.loginUpperCase = data.login.toUpperCase();
 	data.emailUpperCase = data.email.toUpperCase();
@@ -64,13 +64,18 @@ module.exports.register = function(req, res){
 				.catch(err=>cb(new Error('An error occured creating user')));
 		},
 		cb=>{
-			db.create('Personal', data)
-				.then(rep=>cb())
+			db.find('User', {login}, '_id')
+				.then(rep=>cb(null, rep._id))
+				.catch(err=>cb(new Error('An error occured creating user')));
+		},
+		(id, cb)=>{
+			db.create('Personal',{id})
+				.then(rep=>cb(null, id))
 				.catch(err=>cb(new Error('An error occured creating user')));
 
 		},
-		cb=>{
-			db.create('Options', data)
+		(id, cb)=>{
+			db.create('Options', {id})
 				.then(rep=>cb())
 				.catch(err=>cb(new Error('An error occured creating user')));
 
@@ -108,7 +113,7 @@ module.exports.makePost = function(req, res){
 			if(!rep) // If author is not banned
 				return db.create('Wall', post)
 
-return Promise.resolve(false)
+				return Promise.resolve(false)
 		})
 		.then(rep=>res.json({success: rep}))
 		.catch(err=>res.status(500).json({err}))
