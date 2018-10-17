@@ -76,7 +76,7 @@ class MakePost extends React.Component {
 }
 
 MakePost.propTypes = {
-	id: PropTypes.string.isRequired
+	id: PropTypes.string
 }
 
 export default MakePost;

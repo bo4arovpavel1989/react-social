@@ -175,10 +175,10 @@ module.exports.sendMessage = function(req, res){
 };
 
 module.exports.changeSettings = function(req, res){
-	const {login} = req.body;
+	const {id} = req.body;
 
 	console.log(req.body);
-	db.update('Options', {login}, {$set: req.body})
+	db.update('Options', {id}, {$set: req.body})
 		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).end())
 };

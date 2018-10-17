@@ -39,7 +39,7 @@ module.exports.getPerson = function(req, res){
 		},
 		// Check if person is in my blacklist
 		(personData, cb)=>{
-			db.findOne('BlackList', {person: me, list: {$in: [id]}})
+			db.findOne('BlackList', {id: me, list: {$in: [id]}})
 				.then(rep=>{
 					if(rep)
 						personData.isBanned = true;

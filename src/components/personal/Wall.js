@@ -12,12 +12,12 @@ class Wall extends React.Component {
 		super();
 
 		this.state = {
-			person:false, // Owner of the wall
+			person:'', // Owner of the wall
 			data:[],
 			isMore:true,
 			myWall:false,
 			scroll:0, // Number of scrolls by order
-			loading:false,
+			loading:true,
 			iAmBanned:false
 		}
 
@@ -140,7 +140,10 @@ class Wall extends React.Component {
 		if (this.props.location.pathname !== nextProps.location.pathname) {
 			const newPerson = nextProps.match.params.id;
 
-			this.setState({person:newPerson, data:[], scroll:0}, this.getWall);
+			this.setState({person:newPerson, data:[], scroll:0}, ()=>{
+				this.getWall();
+				this.checkBan();
+			});
 		}
 	}
 
@@ -162,13 +165,19 @@ class Wall extends React.Component {
 	render(){
 		const {data, myWall, iAmBanned, loading} = this.state;
 
-		if(data.length === 0)
+		if(data.length === 0 && !loading)
 			return (
 				<div className='wall text-center'>
 					<div className='text-center'>
-						<MakePost
-							id = {this.state.person} // Make post to who
-						/>
+						{
+							iAmBanned ?
+								''						:
+								<div className='text-center'>
+									<MakePost
+										id = {this.state.person} // Make post to who
+									/>
+								</div>
+						}
 					</div>
 					<div className='text-center postEntry'>
 						Записей на стене нет...
@@ -206,6 +215,6 @@ class Wall extends React.Component {
 
 }
 
-Wall.propTypes = {id:PropTypes.string.isRequired}
+Wall.propTypes = {id:PropTypes.string}
 
 export default withRouter(Wall);

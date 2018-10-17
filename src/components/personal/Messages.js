@@ -93,10 +93,14 @@ class Messages extends React.Component {
 			this.setState({page: --page}, ()=>this.getMessages())
 	}
 
-	banUser(){
+	banUser(e){
+		e.preventDefault();
 		const {person} = this.state;
 
-		fetch(`${API_URL}/banuser?p=${person}`,standardFetch());
+		return new Promise((resolve, reject)=>fetch(`${API_URL}/banuser?p=${person}`,standardFetch())
+			.then(handleResponse)
+			.then(rep=>resolve(rep))
+			.catch(error=>reject(error)))
 	}
 
 	render(){

@@ -116,8 +116,8 @@ class MsgBox extends React.Component {
 
 	render(){
 
-	const {openMsgBox, error, message, loading, person, name, iAmBanned, iHaveBanned} = this.state;
-	const {banUser} = this.props;
+	const {openMsgBox, error, message, loading, person, name, iAmBanned, iHaveBanned} = this.state,
+		{banUser} = this.props;
 
 	return (
 		<div className='msgBoxContainer'>
@@ -149,8 +149,22 @@ class MsgBox extends React.Component {
 						<div className="col-sm-2">
 							{
 								iHaveBanned ?
-									<button className='btn btn-link banButton' onClick={banUser}>Разлокировать пользователя</button>	:
-									<button className='btn btn-link banButton' onClick={banUser}>Заблокировать пользователя</button>
+									<button
+										className='btn btn-link banButton'
+										onClick={e=>banUser(e)
+												.then(()=>this.checkIBannedPerson())
+										}
+									>
+										Разблокировать пользователя
+									</button>	:
+									<button
+										className='btn btn-link banButton'
+										onClick={e=>banUser(e)
+												.then(()=>this.checkIBannedPerson())
+										}
+										>
+											Заблокировать пользователя
+										</button>
 							}
 						</div>
 						<div className="col-sm-2">
@@ -167,7 +181,8 @@ class MsgBox extends React.Component {
 
 MsgBox.propTypes = {
 	openMsgBox: PropTypes.func.isRequired,
-	person: PropTypes.string
+	person: PropTypes.string,
+	banUser: PropTypes.func.isRequired
 }
 
 export default withRouter(MsgBox);
