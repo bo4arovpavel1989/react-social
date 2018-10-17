@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {handleResponse,attouchCred,eventEmitter} from '../../helpers';
 import {API_URL} from '../../config';
 import './MakePost.css';
@@ -11,29 +12,29 @@ class MakePost extends React.Component {
 			post:'',
 			loading:false
 		}
-		
+
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	
+
 	handleChange(e) {
 		const post = e.target.value;
 
 		this.setState({post, allFieldsUsed:post !== ''});
 	}
-	
+
 	handleSubmit(e){
 		e.preventDefault();
-		
+
 		this.setState({loading:true});
-		
+
 		const data = {};
 
 			data.post = this.state.post;
-			data.person = this.props.id;
-		
+			data.owner = this.props.id; // Owner of the wall
+
 		attouchCred(data);
-		
+
 		fetch(`${API_URL}/makepost`,{
 				method:'POST',
 				mode:'cors',
@@ -51,11 +52,11 @@ class MakePost extends React.Component {
 			.catch(error=>{
 				this.setState({loading:false});
 			});
-		
+
 	}
 
 	render(){
-		return (	
+		return (
 				<form className="makepostform form-inline" onSubmit={this.handleSubmit}>
 					<div className="form-group">
 						<div className="col-sm-10">
@@ -71,7 +72,11 @@ class MakePost extends React.Component {
 					</div>
 				</form>
 			)
-	}	
+	}
+}
+
+MakePost.propTypes = {
+	id: PropTypes.string.isRequired
 }
 
 export default MakePost;

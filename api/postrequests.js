@@ -104,7 +104,7 @@ module.exports.makePost = function(req, res){
 	const post = {};
 
 		post.author = req.body.id;
-		post.id = req.body.person;
+		post.id = req.body.owner;
 		post.entry = req.body.post;
 		post.date = Date.now();
 
