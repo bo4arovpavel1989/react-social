@@ -57,27 +57,27 @@ module.exports.register = function(req, res){
 	data.loginUpperCase = data.login.toUpperCase();
 	data.emailUpperCase = data.email.toUpperCase();
 
-	async.parallel([
+	async.waterfall([
 		cb=>{
 			db.create('User', data)
-				.then(rep=>cb())
+				.then(()=>cb())
 				.catch(err=>cb(new Error('An error occured creating user')));
 		},
 		cb=>{
-			db.find('User', {login}, '_id')
+			db.findOne('User', {login}, '_id')
 				.then(rep=>cb(null, rep._id))
-				.catch(err=>cb(new Error('An error occured creating user')));
+				.catch(err=>cb(new Error('An error occured finding new user')));
 		},
 		(id, cb)=>{
 			db.create('Personal',{id})
 				.then(rep=>cb(null, id))
-				.catch(err=>cb(new Error('An error occured creating user')));
+				.catch(err=>cb(new Error('An error occured creating personal data collection')));
 
 		},
 		(id, cb)=>{
 			db.create('Options', {id})
 				.then(rep=>cb())
-				.catch(err=>cb(new Error('An error occured creating user')));
+				.catch(err=>cb(new Error('An error occured creating options collection')));
 
 		}
 		],err=>{
@@ -120,10 +120,10 @@ module.exports.makePost = function(req, res){
 };
 
 module.exports.editPerson = function(req, res){
-	const login = req.body.login;
+	const {id} = req.body;
 	const data = req.body;
 
-	db.update('Personal', {login},{$set:data})
+	db.update('Personal', {id}, {$set:data})
 		.then(rep=>res.json({success:true}))
 		.catch(err=>res.status(500).end())
 }
@@ -143,7 +143,7 @@ module.exports.avatarUpload = function(req, res){
 
 		saveAvatar(files,fileName,thumbFileName,microThumbFileName)
 				.then(rep=>{
-					db.update('Personal',{login:fields.login},{$set:{avatar,thumbAvatar,microAvatar}})
+					db.update('Personal',{id:fields.id},{$set:{avatar,thumbAvatar,microAvatar}})
 						.then(()=>res.json({success:true}))
 						.catch(err=>res.json({err}))
 				})

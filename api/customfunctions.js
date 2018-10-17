@@ -187,8 +187,6 @@ module.exports.handleLike = function(rep, _id, liker){
  * @returns {boolean} Represents if user has rights to delete post
  */
 module.exports.checkPostRemove = function(rep, remover){
-	console.log(rep.author === remover || rep.id === remover);
-
 	return rep.author === remover || rep.id === remover;
 }
 
@@ -213,7 +211,7 @@ module.exports.markMessagesSeen = function(rep){
 module.exports.checkBan = function(banned, banner){
 
 	return new Promise((resolve, reject)=>{
-		db.findOne('BlackList', {person: banner, list: {$in: [banned]}})
+		db.findOne('BlackList', {id: banner, list: {$in: [banned]}})
 			.then(rep=>resolve(rep !== null))
 			.catch(err=>reject(err))
 	});

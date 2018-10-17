@@ -50,6 +50,7 @@ module.exports.getPerson = function(req, res){
 
 		}
 		],(err, rep)=>{
+			console.log(err)
 			if(!err) res.json(rep)
 			else if (err.message === 'invisible') res.json({invisible:true})
 			else res.status(500).json({err})

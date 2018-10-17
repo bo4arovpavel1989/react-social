@@ -28,6 +28,7 @@ class App extends React.Component {
 		this.listenToLogin = this.listenToLogin.bind(this);
 		this.checkLogging = this.checkLogging.bind(this);
 		this.logoff = this.logoff.bind(this);
+		this.setLogin = this.setLogin.bind(this);
 	}
 
 	componentDidMount(){
