@@ -1,7 +1,7 @@
 const async = require('async');
 const _ = require('lodash');
 
-const {authService, saveAvatar, checkBan} = require('./customfunctions.js');
+const {authService, saveAvatar, checkBan, checkWallOpen} = require('./customfunctions.js');
 const db = require('./dbqueries');
 
 module.exports.login = function(req,res){
@@ -103,17 +103,24 @@ module.exports.checkToken = function(req, res){
 module.exports.makePost = function(req, res){
 	const post = {};
 
-		post.author = req.body.id;
-		post.id = req.body.owner;
-		post.entry = req.body.post;
-		post.date = Date.now();
+	post.author = req.body.id;
+	post.id = req.body.owner;
+	post.entry = req.body.post;
+	post.date = Date.now();
+
+	let isBanned, isAllowed;
 
 	checkBan(post.author, post.id)
 		.then(rep=>{
-			if(!rep) // If author is not banned
-				return db.create('Wall', post)
+			isBanned = rep;
+			checkWallOpen(post.id);
+		})
+		.then(rep=>{
+			isAllowed = rep;
+			if(isAllowed && !isBanned)
+				return db.create('Wall', post);
 
-				return Promise.resolve(false)
+			return Promise.resolve(false)
 		})
 		.then(rep=>res.json({success: rep}))
 		.catch(err=>res.status(500).json({err}))
@@ -162,9 +169,11 @@ module.exports.sendMessage = function(req, res){
 			person
 	]};
 
+
 	checkBan(id, person)
 		.then(rep=>{
 			if(!rep) // If user is not banned
+
 				return db.create('Message', data)
 
 				return Promise.resolve(false)

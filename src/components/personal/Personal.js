@@ -21,7 +21,8 @@ class Personal extends React.Component {
 			msgBoxOpened:false,
 			isContact:false,
 			isBanned:false,
-			invisible:false
+			invisible:false,
+			isWallOpened:false
 		}
 
 		this.getPersonalData = this.getPersonalData.bind(this);
@@ -37,8 +38,18 @@ class Personal extends React.Component {
 		fetch(`${API_URL}/personal/${person}`,standardFetch())
 			.then(handleResponse)
 			.then(rep=>{
-				if(!rep.err && !rep.forbidden && !rep.invisible)
-					this.setState({data:rep, isBanned: rep.isBanned, isContact: rep.isContact, loading:false, invisible: false})
+				if(!rep.err && !rep.forbidden && !rep.invisible) {
+					const {isBanned, isContact, isWallOpened, invisible} = rep;
+
+					this.setState({
+						data:rep,
+						isBanned,
+						isContact,
+						invisible,
+						isWallOpened,
+						loading:false
+					})
+				}
 				else if(rep.invisible)
 					this.setState({invisible: true, loading:false})
 				else if(rep.forbidden)
@@ -122,7 +133,7 @@ class Personal extends React.Component {
 	}
 
 	render(){
-		const {person, data, isContact, isBanned, loading, error, invisible} = this.state;
+		const {person, data, isContact, isBanned, loading, error, invisible, isWallOpened} = this.state;
 
 		if(error || !data)
 			return (
@@ -174,7 +185,8 @@ class Personal extends React.Component {
 					</div>
 				<div className="text-center">
 					<Wall
-						id = {this.state.person}
+						id = {person}
+						isWallOpened = {isWallOpened}
 					/>
 				</div>
 			</div>

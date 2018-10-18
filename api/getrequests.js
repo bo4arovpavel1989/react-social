@@ -11,23 +11,23 @@ module.exports.getPerson = function(req, res){
 	async.waterfall([
 		// Check if person made his page invisible or its my page
 		cb=>{
-			db.findOne('Options',{id})
+			db.findOne('Options',{id}, '-_id')
 				.then(rep=>{
 					rep.amIVisible || myPage ?
-						cb(null)					:
+						cb(null, rep)					:
 						cb(new Error('invisible'))
 				})
 				.catch(err=>cb(err, null))
 		},
 		// Get personal data by id
-		cb=>{
-			db.findOne('Personal',{id}, 'name birthDate activity thumbAvatar')
-				.then(rep=>cb(null, rep))
+		(options, cb)=>{
+			db.findOne('Personal',{id}, 'name birthDate activity thumbAvatar -_id')
+				.then(rep=>cb(null, {...rep, ...options}))
 				.catch(err=>cb(err, null))
 		},
 		// Check if this person in my contacts list
 		(personData, cb)=>{
-			db.findOne('Contact', {me, person:id})
+			db.findOne('Contact', {me, person:id}, '-_id')
 				.then(rep=>{
 					if(rep)
 						personData.isContact = true;
@@ -39,7 +39,7 @@ module.exports.getPerson = function(req, res){
 		},
 		// Check if person is in my blacklist
 		(personData, cb)=>{
-			db.findOne('BlackList', {id: me, list: {$in: [id]}})
+			db.findOne('BlackList', {id: me, list: {$in: [id]}}, '-_id')
 				.then(rep=>{
 					if(rep)
 						personData.isBanned = true;
@@ -50,7 +50,6 @@ module.exports.getPerson = function(req, res){
 
 		}
 		],(err, rep)=>{
-			console.log(err)
 			if(!err) res.json(rep)
 			else if (err.message === 'invisible') res.json({invisible:true})
 			else res.status(500).json({err})

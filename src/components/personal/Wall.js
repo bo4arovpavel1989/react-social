@@ -163,20 +163,22 @@ class Wall extends React.Component {
 	}
 
 	render(){
-		const {data, myWall, iAmBanned, loading} = this.state;
+		const {data, myWall, iAmBanned, loading} = this.state,
+			{isWallOpened} = this.props,
+			showPostForm = myWall || iAmBanned || isWallOpened;
 
 		if(data.length === 0 && !loading)
 			return (
 				<div className='wall text-center'>
 					<div className='text-center'>
 						{
-							iAmBanned ?
-								''						:
+							showPostForm?
 								<div className='text-center'>
 									<MakePost
 										id = {this.state.person} // Make post to who
 									/>
-								</div>
+								</div> 								:
+									''
 						}
 					</div>
 					<div className='text-center postEntry'>
@@ -188,13 +190,13 @@ class Wall extends React.Component {
 		return (
 				<div className='wall text-center' onScroll={this.getOlderPosts}>
 					{
-						iAmBanned ?
-							''						:
+						showPostForm?
 							<div className='text-center'>
 								<MakePost
 									id = {this.state.person} // Make post to who
 								/>
-							</div>
+							</div>								:
+								''
 					}
 					<div className='text-left'>
 						{data.map((e, i)=><Post key={e._id} myWall = {myWall} data={e}/>)}

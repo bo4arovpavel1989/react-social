@@ -217,3 +217,11 @@ module.exports.checkBan = function(banned, banner){
 	});
 
 }
+
+module.exports.checkWallOpen = function(id){
+	return new Promise((resolve, reject)=>{
+		db.findOne('Options', {id}, 'isWallOpened -_id')
+			.then(rep=>resolve(rep.isWallOpened))
+			.catch(err=>reject(err))
+	})
+}
