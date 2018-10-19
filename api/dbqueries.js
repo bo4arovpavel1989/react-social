@@ -59,7 +59,7 @@ const dbQueries = {
 	},
 	count(schema, val){
 		return new Promise((resolve, reject)=>{
-			models[schema].count(val, (err, rep)=>{
+			models[schema].countDocuments(val, (err, rep)=>{
 				if(err) reject(err);
 				else resolve(rep);
 			})

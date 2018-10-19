@@ -20,6 +20,7 @@ class Contacts extends React.Component {
 		}
 
 		this.getContactsData = this.getContactsData.bind(this);
+		this.getMoreContacts = this.getMoreContacts.bind(this);
 		this.openMsgBox = this.openMsgBox.bind(this);
 	}
 

@@ -23,7 +23,9 @@ class App extends React.Component {
 		this.state={
 			isLogged:false,
 			id:'',
-			newMessages:0
+			newMessages:0,
+			timerId:'',
+			timerStarted:false
 		}
 
 		this.listenToLogin = this.listenToLogin.bind(this);
@@ -31,6 +33,8 @@ class App extends React.Component {
 		this.logoff = this.logoff.bind(this);
 		this.setLogin = this.setLogin.bind(this);
 		this.checkNewMessages = this.checkNewMessages.bind(this);
+		this.checkMessagesInterval = this.checkMessagesInterval.bind(this);
+		this.clearCheckMessagesInterval = this.clearCheckMessagesInterval.bind(this);
 	}
 
 	componentDidMount(){
@@ -38,11 +42,21 @@ class App extends React.Component {
 		this.listenToLogin();
 	}
 
+	componentDidUpdate(){
+		if(this.state.isLogged) {
+			if(!this.state.timerStarted){
+				this.checkMessagesInterval()
+			}
+		} else if(this.state.timerStarted){
+				this.clearCheckMessagesInterval();
+			}
+	}
+
 	componentWillUnmount(){
 		this.removeListeners();
 	}
 
-	checkNewMessages() {
+	checkNewMessages(){
 		if(this.state.isLogged)
 			fetch(`${API_URL}/checknewmessages`,standardFetch())
 				.then(handleResponse)
@@ -57,17 +71,26 @@ class App extends React.Component {
 	}
 
 	checkMessagesInterval(){
-		
+		const minute = 1000 * 30,
+			ckMsgInt = setInterval(this.checkNewMessages, minute);
+
+		this.checkNewMessages();
+		this.setState({timerId:ckMsgInt, timerStarted:true})
+	}
+
+	clearCheckMessagesInterval(){
+		clearInterval(this.state.timerId);
+		this.setState({timerStarted:false});
 	}
 
 	listenToLogin(){
-		eventEmitter.on('login', this.setLogin)
-		eventEmitter.on('logoff',this.setLogoff)
+		eventEmitter.on('login', this.setLogin);
+		eventEmitter.on('logoff',this.setLogoff);
 	}
 
 	removeListeners(){
-		eventEmitter.removeListener('login', this.setLogin)
-		eventEmitter.removeListener('logoff',this.setLogoff)
+		eventEmitter.removeListener('login', this.setLogin);
+		eventEmitter.removeListener('logoff',this.setLogoff);
 	}
 
 	setLogin(){
@@ -85,7 +108,7 @@ class App extends React.Component {
 		checkToken(JSON.stringify(getToken()))
 			.then(rep=>{
 				if(!rep.err)
-					this.setState({isLogged:rep.auth,id:getToken().id}, this.checkNewMessages)
+					this.setState({isLogged:rep.auth,id:getToken().id})
 			})
 	}
 
