@@ -113,10 +113,11 @@ module.exports.makePost = function(req, res){
 	checkBan(post.author, post.id)
 		.then(rep=>{
 			isBanned = rep;
-			checkWallOpen(post.id);
+			return checkWallOpen(post.id);
 		})
 		.then(rep=>{
 			isAllowed = rep;
+			console.log(isAllowed)
 			if(isAllowed && !isBanned)
 				return db.create('Wall', post);
 
