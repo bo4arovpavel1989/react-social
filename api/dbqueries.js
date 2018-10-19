@@ -56,6 +56,14 @@ const dbQueries = {
 				else resolve(true);
 			});
 		});
+	},
+	count(schema, val){
+		return new Promise((resolve, reject)=>{
+			models[schema].count(val, (err, rep)=>{
+				if(err) reject(err);
+				else resolve(rep);
+			})
+		})
 	}
 };
 

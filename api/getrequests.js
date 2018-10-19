@@ -228,3 +228,11 @@ module.exports.getOptions = function(req, res){
 		.then(rep=>res.json(rep))
 		.catch(err=>res.status(500).json({err}))
 }
+
+module.exports.checkNewMessages = function(req, res){
+	const me = req.headers.id;
+
+	db.count('Message', {to:me, isRead:false})
+		.then(rep=>res.json(rep))
+		.catch(err=>res.status(500).json({err}))
+};

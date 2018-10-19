@@ -12,7 +12,7 @@ import Options from './components/personal/Options';
 import Sidebar from './components/personal/Sidebar';
 import Edit from './components/personal/Edit';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import {checkToken, getToken, eventEmitter} from './helpers';
+import {checkToken, getToken, eventEmitter, standardFetch, handleResponse} from './helpers';
 import {API_URL} from './config';
 
 
@@ -22,13 +22,15 @@ class App extends React.Component {
 		super();
 		this.state={
 			isLogged:false,
-			id:''
+			id:'',
+			newMessages:0
 		}
 
 		this.listenToLogin = this.listenToLogin.bind(this);
 		this.checkLogging = this.checkLogging.bind(this);
 		this.logoff = this.logoff.bind(this);
 		this.setLogin = this.setLogin.bind(this);
+		this.checkNewMessages = this.checkNewMessages.bind(this);
 	}
 
 	componentDidMount(){
@@ -40,15 +42,27 @@ class App extends React.Component {
 		this.removeListeners();
 	}
 
+	checkNewMessages(){
+			fetch(`${API_URL}/checknewmessages`,standardFetch())
+				.then(handleResponse)
+				.then(rep=>{
+					if(rep !== this.state.newMessages)
+						this.setState({newMessages:rep})
+				})
+					.catch(error=>{
+					console.log(error)
+					this.setState({error:true})
+			})
+	}
+
 	listenToLogin(){
 		eventEmitter.on('login', this.setLogin)
-
 		eventEmitter.on('logoff',this.setLogoff)
 	}
 
 	removeListeners(){
-		eventEmitter.removeListener('login')
-		eventEmitter.removeListener('logoff')
+		eventEmitter.removeListener('login', this.setLogin)
+		eventEmitter.removeListener('logoff',this.setLogoff)
 	}
 
 	setLogin(){
@@ -66,7 +80,9 @@ class App extends React.Component {
 		checkToken(JSON.stringify(getToken()))
 					.then(rep=>{
 						if(!rep.err)
-							this.setState({isLogged:rep.auth,id:getToken().id});
+							this.setState({isLogged:rep.auth,id:getToken().id}, ()=>{
+								this.checkNewMessages();
+							});
 					})
 	}
 
@@ -88,6 +104,8 @@ class App extends React.Component {
 	}
 
 	render(){
+		const {newMessages} = this.state;
+
 		return (
 		<BrowserRouter>
 			<div className='container'>
@@ -100,7 +118,9 @@ class App extends React.Component {
 				<div className="row">
 					{this.state.isLogged ?
 						<div className="col-md-2">
-							<Sidebar/>
+							<Sidebar
+								newMessages={newMessages}
+							/>
 						</div> : ''
 					}
 					<Switch>

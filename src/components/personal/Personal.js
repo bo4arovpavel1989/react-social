@@ -22,7 +22,8 @@ class Personal extends React.Component {
 			isContact:false,
 			isBanned:false,
 			invisible:false,
-			isWallOpened:false
+			isWallOpened:false,
+			newMessages:0
 		}
 
 		this.getPersonalData = this.getPersonalData.bind(this);
@@ -79,7 +80,6 @@ class Personal extends React.Component {
 
 		this.getPersonalData(person);
 	}
-
 
 	componentWillReceiveProps(nextProps){
 		if (this.props.location.pathname !== nextProps.location.pathname) {
