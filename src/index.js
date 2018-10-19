@@ -42,17 +42,22 @@ class App extends React.Component {
 		this.removeListeners();
 	}
 
-	checkNewMessages(){
+	checkNewMessages() {
+		if(this.state.isLogged)
 			fetch(`${API_URL}/checknewmessages`,standardFetch())
 				.then(handleResponse)
 				.then(rep=>{
 					if(rep !== this.state.newMessages)
 						this.setState({newMessages:rep})
 				})
-					.catch(error=>{
+				.catch(error=>{
 					console.log(error)
 					this.setState({error:true})
-			})
+				});
+	}
+
+	checkMessagesInterval(){
+		
 	}
 
 	listenToLogin(){
@@ -78,12 +83,10 @@ class App extends React.Component {
 			return;
 
 		checkToken(JSON.stringify(getToken()))
-					.then(rep=>{
-						if(!rep.err)
-							this.setState({isLogged:rep.auth,id:getToken().id}, ()=>{
-								this.checkNewMessages();
-							});
-					})
+			.then(rep=>{
+				if(!rep.err)
+					this.setState({isLogged:rep.auth,id:getToken().id}, this.checkNewMessages)
+			})
 	}
 
 	logoff(){
@@ -113,6 +116,7 @@ class App extends React.Component {
 					isLogged={this.state.isLogged}
 					logoff={this.logoff}
 					id={this.state.id}
+					checkNewMessages={this.checkNewMessages}
 				/>
 
 				<div className="row">
@@ -120,6 +124,7 @@ class App extends React.Component {
 						<div className="col-md-2">
 							<Sidebar
 								newMessages={newMessages}
+								checkNewMessages={this.checkNewMessages}
 							/>
 						</div> : ''
 					}

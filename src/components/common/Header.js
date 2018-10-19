@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import './Header.css'
 
 const Header = props=>{
-	const {isLogged, logoff, id} = props;
+	const {isLogged, logoff, id, checkNewMessages} = props;
 
 	return (
 		<div>
-			<Link className='header' to='/'>
+			<Link className='header' to='/' onClick={checkNewMessages}>
 				<h1>React Social</h1>
 			</Link>
 			{
