@@ -14,6 +14,8 @@ const memCache = new cache.Cache();
  */
 const setToken = res=>jwt.sign({login:res.login, pass:res.passwd, email:res.email, date:new Date()}, secret.secret);
 
+module.exports.setToken = setToken;
+
 const authService = {
 	login(cred){
 		return new Promise((resolve, reject)=>{
