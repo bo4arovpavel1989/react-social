@@ -15,28 +15,15 @@ describe('setToken', ()=>{
 });
 
 describe('authService', ()=>{
-
-  beforeEach(function () {
-      this.sandbox = sinon.createSandbox()
-  })
-
-  afterEach(function () {
-      this.sandbox.restore()
-  })
-
   const {authService} = customFunctions;
 
   it('should return promise with token data if correct', function * () {
     const cred = {login:'login', passwd:'pass'};
     const query = {loginUpperCase:cred.login.toUpperCase(), passwd:cred.pass}
-    const dbStub = this.sandbox.stub(db, 'findOne', (q, cb) => {
-      cb({auth:true, id:'id', login:'login', token:'token'});
-    });
-
-    const result = yield authService.login(cred);
-
-    expect(dbStub).to().be().calledWith(query);
-    expect(result).to().eql({auth:true, id:'id', login:'login', token:'token'})
+    sinon.stub(db, 'findOne').withArgs('User', query).resolves({auth:true, id:'id', login:'login', token:'token'});
+    authService.login(cred)
+    expect(db).to.be.calledWith(1);
+    expect(authService.login(cred)).to.eventually.eql(1);
   })
 });
 
